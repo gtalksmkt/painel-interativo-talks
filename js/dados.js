@@ -9,7 +9,7 @@
 var WHATS = {
   teme:     '5585998302705',
   premium:  '5585991364591',   // central do TEME Premium (venda high ticket)
-  tep:      '5585997345004',
+  bigpocus: '5585998302705',
   atualiza: '5585998302705',
   revisoes: '5585998302705',
   premio:   '5585998302705'    // resgate dos prêmios da roleta
@@ -18,22 +18,17 @@ var WHATS = {
 /* Vídeos (Vimeo). Para trocar, cole o número do vídeo e o hash (?h=...) */
 var VIDEOS = {
   teme:     { id: '1214813044', h: '7917f77f1b', titulo: 'Conheça o TEME 2027', poster: 'img/galeria-2.jpg' },
-  revisoes: { id: '1193338774', h: '03bbdbfa56', titulo: 'A revisão que vale o título', poster: 'img/pratica-3.jpg' }
+  revisoes: { id: '1193338774', h: '03bbdbfa56', titulo: 'A revisão que vale o título', poster: 'img/pratica-3.jpg' },
+  bigpocus: { id: '1143521837', h: '41570b18ba', titulo: 'Sinta 1% da energia que está por vir', poster: 'img/bp-pratica.jpg' }
 };
 
 /* Lotes de preço: o painel mostra sozinho o lote do dia (horário de Brasília).
-   Mesmos valores das landings do TEME 2027 e do TEP. */
+   Mesmos valores da landing do TEME 2027. */
 var LOTES_TEME = [
   { nome: 'Lançamento', inicio: '2026-08-01', intensivo: '1.164,63', master: '1.553,43' },
   { nome: '1º lote',    inicio: '2026-09-01', intensivo: '1.257,80', master: '1.677,71' },
   { nome: '2º lote',    inicio: '2026-10-01', intensivo: '1.358,43', master: '1.811,92' },
   { nome: '3º lote',    inicio: '2026-11-01', intensivo: '1.467,10', master: '1.956,88' }
-];
-var LOTES_TEP = [
-  { nome: 'Lançamento', inicio: '2026-11-20', valor: 249990 },
-  { nome: '1º lote',    inicio: '2026-12-01', valor: 279990 },
-  { nome: '2º lote',    inicio: '2027-01-01', valor: 309990 },
-  { nome: '3º lote',    inicio: '2027-02-01', valor: 339990 }
 ];
 
 /* ------------------------------------------------------------------
@@ -182,145 +177,101 @@ var PRODUTOS = {
       { tag: 'Toxicologia', q: 'Antídoto da intoxicação por paracetamol?', a: 'N-acetilcisteína', x: 'Indicação guiada pelo nível sérico e pelo tempo desde a ingestão.' },
       { tag: 'Metabólicas', q: 'Hipercalemia com alteração no ECG: primeira medida?', a: 'Gluconato de cálcio IV', x: 'Estabiliza a membrana do miocárdio. Depois, deslocar e remover o potássio.' }
     ]
-  },
-
-  /* ======================= TEP ======================= */
-  tep: {
-    tema: 'tep',
-    nome: 'Preparatório TEP 2027',
-    eyebrow: 'Ped Talks · Turma 2027',
-    titulo: 'Preparatório <span class="accent">TEP</span> 2027',
-    lead: 'A preparação completa para a prova de <b>Título de Especialista em Pediatria</b> da SBP: conteúdo guiado pela análise das provas anteriores, aulas novas toda segunda e professoras tituladas e atuantes em serviço.',
-    stats: [
-      { n: '95', t: 'aulas em vídeo' },
-      { n: '950', t: 'questões no banco' },
-      { n: '1.900', t: 'flashcards' },
-      { n: '4', t: 'simulados' }
-    ],
-    nota: 'Aulas novas toda segunda, às 12h, de 04/01 a 14/06/2027. Acesso até o dia da prova.',
-    foto: 'img/tep-professoras.jpg',
-    logo: 'img/logo-pedtalks.png',
-    fotoCap: 'Rebecca Azulay e Natália Dias',
-    whatsKey: 'tep',
-    whatsMsg: 'Olá! Conheci o Preparatório TEP 2027 no Painel Interativo Talks e quero saber mais.',
-    abas: ['geral', 'portal', 'aula', 'questoes', 'flashcards'],
-
-    feats: [
-      { ic: 'layers', t: 'Trilha única', p: 'Toda a Pediatria do começo ao fim, sem você precisar montar cronograma.' },
-      { ic: 'cal',    t: 'Aulas toda segunda', p: 'Aula nova toda segunda-feira, às 12h, liberada no portal.' },
-      { ic: 'target', t: 'Guiado pelas provas', p: 'Conteúdo construído a partir da análise das provas anteriores da SBP.' },
-      { ic: 'q',      t: '950 questões', p: 'Banco de questões comentadas para treinar no estilo da prova.' },
-      { ic: 'cards',  t: '1.900 flashcards', p: 'Revisão ativa para fixar o que você estudou.' },
-      { ic: 'clip',   t: '4 simulados', p: 'Para medir a evolução ao longo da preparação.' }
-    ],
-
-    profs: [
-      { n: 'Rebecca Azulay', f: 'img/prof-rebecca.png', s: 'Pediatria' },
-      { n: 'Natália Dias',   f: 'img/prof-natalia.png', s: 'Intensiva Pediátrica' }
-    ],
-
-    portal: {
-      url: 'Portal do aluno · Preparatório TEP 2027',
-      marca: 'TEP 2027',
-      ola: 'Olá, doutor(a)!',
-      progresso: 32,
-      cards: [
-        { n: '32%', t: 'do curso concluído', hl: true },
-        { n: '286', t: 'questões resolvidas' },
-        { n: '71%', t: 'de acerto geral' },
-        { n: '640', t: 'flashcards revisados' }
-      ],
-      continuar: { t: 'Bronquiolite viral aguda', s: 'Pneumologia · você parou em 12:05', pct: 38, img: 'img/tep-professoras.jpg' },
-      aulas: [
-        { t: 'Imunizações: calendário da criança', s: 'Imunizações · aula + flashcards', st: 'done', meta: 'Concluída' },
-        { t: 'Bronquiolite viral aguda', s: 'Pneumologia · aula + questões', st: 'now', meta: '38%' },
-        { t: 'Crescimento e desenvolvimento', s: 'Puericultura · aula + questões', st: 'new', meta: 'Nova' },
-        { t: 'Doença de Kawasaki', s: 'Reumatologia · aula + questões', st: 'new', meta: 'Nova' },
-        { t: 'Icterícia neonatal', s: 'Neonatologia', st: 'lock', meta: 'Segunda, 12h' }
-      ],
-      eixos: [
-        { t: 'Neonatologia', s: 'Sala de parto, icterícia, triagens' },
-        { t: 'Puericultura', s: 'Crescimento, desenvolvimento, alimentação' },
-        { t: 'Imunizações', s: 'Calendário e situações especiais' },
-        { t: 'Infectologia', s: 'Febre, doenças exantemáticas' },
-        { t: 'Pneumologia', s: 'Bronquiolite, asma, pneumonias' },
-        { t: 'Gastroenterologia', s: 'Diarreia, desidratação, nutrição' },
-        { t: 'Cardiologia', s: 'Cardiopatias congênitas, Kawasaki' },
-        { t: 'Nefrologia', s: 'ITU, síndrome nefrótica e nefrítica' },
-        { t: 'Neurologia', s: 'Convulsão febril, epilepsias' },
-        { t: 'Emergências pediátricas', s: 'Reanimação, choque, intoxicações' },
-        { t: 'Adolescência', s: 'Puberdade, saúde do adolescente' }
-      ],
-      simulados: [
-        { t: 'Simulado 1', s: 'Formato da prova da SBP', st: 'done', meta: 'Nota 68%' },
-        { t: 'Simulado 2', s: 'Libera após o próximo bloco de aulas', st: 'lock', meta: 'Em breve' },
-        { t: 'Simulado 3', s: 'Ao longo da preparação', st: 'lock', meta: 'Em breve' },
-        { t: 'Simulado 4', s: 'Reta final', st: 'lock', meta: 'Em breve' }
-      ],
-      decks: [
-        { t: 'Imunizações', s: 'cards para hoje: 14' },
-        { t: 'Neonatologia', s: 'cards para hoje: 11' },
-        { t: 'Pneumologia', s: 'cards para hoje: 8' },
-        { t: 'Puericultura', s: 'cards para hoje: 10' }
-      ],
-      desempenho: [
-        { t: 'Imunizações', v: 85 }, { t: 'Puericultura', v: 79 }, { t: 'Neonatologia', v: 74 },
-        { t: 'Pneumologia', v: 71 }, { t: 'Infectologia', v: 66 }, { t: 'Emergências', v: 58 }
-      ],
-      acerto: 71
-    },
-
-    aula: {
-      titulo: 'Bronquiolite viral aguda: o que a prova cobra',
-      slides: [
-        { tipo: 'capa', tag: 'Aula experimental · Pneumologia', titulo: 'Bronquiolite viral aguda', texto: 'Uma amostra do formato das aulas do TEP: o que você precisa saber para a prova e para o plantão de pediatria.', meta: ['6 telas', '3 minutos', 'Teste no final'] },
-        { tipo: 'lista', tag: 'Quem e como', titulo: 'Diagnóstico é clínico', itens: [
-          { b: 'Quem:', t: 'lactentes, principalmente nos primeiros meses de vida.' },
-          { b: 'Agente principal:', t: 'vírus sincicial respiratório (VSR).' },
-          { b: 'Quadro:', t: 'coriza e tosse que evoluem com taquipneia, sibilos e/ou crepitações.' },
-          { b: 'Exames:', t: 'raio X e pesquisa viral não são de rotina.' }
-        ] },
-        { tipo: 'lista', tag: 'Tratamento', titulo: 'O que funciona', estilo: 'yes', itens: [
-          { b: 'Hidratação', t: 'e manutenção da alimentação.' },
-          { b: 'Lavagem e aspiração nasal', t: 'para aliviar a obstrução.' },
-          { b: 'Oxigênio', t: 'quando a saturação cai abaixo de 90 a 92%.' },
-          { b: 'Cânula nasal de alto fluxo', t: 'nos casos que não respondem ao oxigênio convencional.' }
-        ] },
-        { tipo: 'lista', tag: 'Pegadinha de prova', titulo: 'O que NÃO usar de rotina', estilo: 'no', itens: [
-          { b: 'Broncodilatador', t: '(salbutamol)' },
-          { b: 'Corticoide', t: 'sistêmico ou inalatório' },
-          { b: 'Antibiótico', t: 'sem infecção bacteriana associada' },
-          { b: 'Fisioterapia respiratória', t: 'de rotina' }
-        ], dica: 'Na prova, a alternativa com "suporte" costuma ser a correta. Medicação de rotina quase sempre é a distratora.' },
-        { tipo: 'teste', tag: 'Teste rápido', titulo: 'Lactente de 4 meses com bronquiolite, SatO₂ de 95% em ar ambiente, mamando bem. Qual a conduta?', opts: ['Salbutamol inalatório de horário', 'Prednisolona por 5 dias', 'Amoxicilina por 7 dias', 'Suporte: lavagem nasal, hidratação e sinais de alarme'], c: 3, com: 'Sem hipoxemia e aceitando a dieta, o tratamento é de suporte, com orientação dos sinais de alarme aos pais.' },
-        { tipo: 'fim', titulo: 'Gostou do formato?', texto: 'No TEP 2027 são 95 aulas, 950 questões e 1.900 flashcards, numa trilha única até a prova.' }
-      ]
-    },
-
-    questoes: [
-      { tema: 'Pneumologia', e: 'Lactente de 4 meses com bronquiolite viral aguda, SatO₂ de 95% em ar ambiente e aceitando o seio. Qual a conduta mais adequada?', o: ['Salbutamol inalatório de horário', 'Prednisolona por 5 dias', 'Amoxicilina por 7 dias', 'Suporte: lavagem nasal, hidratação e orientação de sinais de alarme', 'Nebulização com adrenalina de rotina'], c: 3,
-        com: 'O tratamento da bronquiolite é de <b>suporte</b>. Broncodilatador, corticoide e antibiótico não são recomendados de rotina. Oxigênio entra quando a saturação cai abaixo de 90 a 92%.' },
-      { tema: 'Imunizações', e: 'Em que momento a vacina BCG deve ser aplicada no calendário da criança?', o: ['Ao nascer', 'Aos 2 meses', 'Aos 4 meses', 'Aos 12 meses', 'Aos 15 meses'], c: 0,
-        com: 'A <b>BCG</b> é aplicada em dose única <b>ao nascer</b>, de preferência ainda na maternidade, em recém-nascidos com peso a partir de 2 kg.' },
-      { tema: 'Gastroenterologia', e: 'Criança com diarreia aguda e desidratação, sem sinais de gravidade (Plano B). Qual a conduta de reidratação?', o: ['Soro fisiológico IV 20 mL/kg em bolus', 'SRO 50 a 100 mL/kg em 4 a 6 horas, na unidade de saúde', 'Apenas aumentar a oferta de líquidos em casa', 'Suspender a alimentação por 24 horas', 'Soro glicosado 5% por via oral'], c: 1,
-        com: 'No <b>Plano B</b>, a reidratação é oral, com <b>SRO 50 a 100 mL/kg em 4 a 6 horas</b>, na unidade de saúde e com reavaliação frequente. A hidratação venosa fica para o Plano C.' },
-      { tema: 'Puericultura', e: 'Por volta de qual idade se espera o sorriso social no desenvolvimento típico?', o: ['15 dias', '2 meses', '6 meses', '9 meses', '12 meses'], c: 1,
-        com: 'O <b>sorriso social</b> aparece por volta dos <b>2 meses</b>. É um dos marcos acompanhados na consulta de puericultura.' },
-      { tema: 'Cardiologia', e: 'Qual é o critério obrigatório para o diagnóstico da doença de Kawasaki clássica?', o: ['Linfonodo cervical maior que 1,5 cm', 'Febre por 5 dias ou mais', 'Conjuntivite exsudativa', 'Trombocitose', 'Descamação periungueal'], c: 1,
-        com: 'A forma clássica exige <b>febre por 5 dias ou mais</b> e pelo menos 4 dos 5 critérios principais. A conjuntivite é bilateral e <b>não</b> exsudativa. O tratamento é imunoglobulina IV 2 g/kg associada ao AAS.' }
-    ],
-
-    flashcards: [
-      { tag: 'Imunizações', q: 'Quando aplicar a BCG?', a: 'Ao nascer, dose única', x: 'De preferência na maternidade, em RN com peso a partir de 2 kg.' },
-      { tag: 'Pneumologia', q: 'Principal agente da bronquiolite viral aguda?', a: 'Vírus sincicial respiratório (VSR)', x: 'Tratamento de suporte; sem broncodilatador ou corticoide de rotina.' },
-      { tag: 'Cardiologia', q: 'Tratamento da doença de Kawasaki?', a: 'Imunoglobulina IV 2 g/kg + AAS', x: 'Para reduzir o risco de aneurisma coronariano.' },
-      { tag: 'Gastroenterologia', q: 'Plano B de hidratação?', a: 'SRO 50 a 100 mL/kg em 4 a 6 h', x: 'Na unidade de saúde, com reavaliação frequente.' },
-      { tag: 'Puericultura', q: 'Sorriso social surge por volta de que idade?', a: '2 meses', x: 'Marco do desenvolvimento acompanhado na puericultura.' },
-      { tag: 'Puericultura', q: 'Com que idade o lactente costuma dobrar o peso de nascimento?', a: 'Por volta de 4 a 5 meses', x: 'E costuma triplicar com 1 ano.' },
-      { tag: 'Infectologia', q: 'Dose de amoxicilina na otite média aguda?', a: '80 a 90 mg/kg/dia', x: 'Divididos de 12 em 12 horas.' },
-      { tag: 'Neonatologia', q: 'Icterícia nas primeiras 24 horas de vida é...', a: 'Patológica', x: 'Sempre investigar, principalmente hemólise.' }
-    ]
   }
+};
+
+/* ------------------------------------------------------------------
+   TEME PREMIUM (textos da landing do Premium)
+   Produto high ticket: sem preço no painel, todo CTA vai para a central.
+   ------------------------------------------------------------------ */
+var PREMIUM = {
+  whatsMsg: 'Olá! Conheci o TEME Premium no Painel Interativo Talks e quero saber mais sobre a Turma 01.',
+  lead: 'A jornada que te possibilita concluir uma <b>pós-graduação em Medicina de Emergência</b> enquanto se prepara para o <b>Título de Especialista (TEME)</b>. Um caminho, duas conquistas: o certificado e o título.',
+  stats: [
+    { n: '+100', t: 'aulas em 11 eixos temáticos' },
+    { n: '10', t: 'encontros ao vivo de questões' },
+    { n: '6', t: 'imersões presenciais em SP' },
+    { n: '4', t: 'dias de revisões na fase final' }
+  ],
+  porque: 'Você não escolhe entre concluir a pós-graduação e conquistar o título. No TEME Premium, o mesmo percurso entrega os dois.',
+  resultados: [
+    { ic: 'award',  t: 'Certificado de Pós-graduação', p: 'Você conclui uma pós-graduação em Medicina de Emergência ao longo do percurso: um certificado que vai alavancar o seu currículo.' },
+    { ic: 'target', t: 'Preparação completa para o TEME', p: 'Aulas, questões, simulados e imersões práticas com a metodologia do preparatório que mais aprova emergencistas no Brasil.' }
+  ],
+  inclui: [
+    { ic: 'video', t: '+100 aulas', p: 'Divididas em 11 eixos temáticos, liberadas semanalmente: conteúdo direto e focado no que cai na prova.' },
+    { ic: 'q',     t: 'Questões comentadas', p: 'Alinhadas à referência da ABRAMEDE, comentadas por professores titulados.' },
+    { ic: 'cards', t: 'Flashcards', p: 'Revisão e memorização ativa dos temas mais cobrados, onde e quando quiser.' },
+    { ic: 'headph', t: 'TEME Cast', p: 'Conteúdo em áudio para revisar no trânsito, no plantão ou em qualquer intervalo.' },
+    { ic: 'live',  t: 'TEME Quest', p: 'Encontros virtuais ao vivo de discussão e resolução estratégica de questões.' },
+    { ic: 'clip',  t: 'Simulados presenciais', p: 'Avalie seu desempenho em condições reais de prova e acompanhe sua evolução.' },
+    { ic: 'chart', t: 'Painel de desempenho', p: 'Seus acertos, suas lacunas e onde focar, com a evolução ao longo do curso.' },
+    { ic: 'gift',  t: 'Bônus: cursos online', p: 'Acesso a cursos online do Talks para complementar a sua formação em emergência.', bonus: true }
+  ],
+  certificado: 'O certificado de pós-graduação é exclusivo da modalidade TEME Premium. Fale com a nossa central para conhecer as condições da Turma 01.',
+  fases: [
+    { tag: 'Fase 1 · Virtual assíncrona', t: '+100 aulas · 11 eixos temáticos', p: 'Mais de 100 aulas divididas nos 11 eixos temáticos, liberadas semanalmente no ritmo da programação didático-pedagógica.',
+      chips: ['Via aérea', 'Cardiovascular', 'Clínica', 'Neuro', 'Trauma e APH', 'POCUS', 'Reanimação', 'Pediatria', 'Toxicologia', 'GO', 'Gestão'] },
+    { tag: 'Fase 2 · Virtual síncrona', t: 'Curso de Questões ao vivo', p: '10 encontros virtuais de 1 hora com foco em estratégia de prova e resolução de questões: o treino que transforma conhecimento em pontos.' },
+    { tag: 'Fase 3 · Reta final', t: 'Revisões intensivas', p: 'Presenciais, para consolidar tudo antes da prova.',
+      itens: ['1 dia · Revisão para a Prova Teórica', '3 dias · Revisão Prática com treinamento hands-on', 'Datas a definir'] }
+  ],
+  notaFases: 'A liberação semanal das aulas segue a programação didático-pedagógica do curso e pode não seguir a sequência cronológica dos módulos.',
+  encontros: [
+    { t: 'ResusTalks', d: '22 a 24 de janeiro' },
+    { t: 'Trauma e APH', d: '26 a 28 de fevereiro' },
+    { t: 'Mapa do Choque + POCUS Cardio', d: '26 a 28 de março' },
+    { t: 'The Big POCUS', d: '23 a 25 de abril' },
+    { t: 'MAVA + Procedimentos', d: '21 a 23 de maio' },
+    { t: 'eMePed Talks', d: '25 a 27 de junho' }
+  ],
+  horarios: [['Sexta-feira', '08:30 às 18:00'], ['Sábado', '08:30 às 18:00'], ['Domingo', '09:00 às 14:00 · simulado da prova teórica TEME']],
+  pratica: 'Simulação realística, uso de materiais e equipamentos, procedimentos e o dia a dia da emergência: a maior parte dos encontros é voltada para a prática real.'
+};
+
+/* ------------------------------------------------------------------
+   THE BIG POCUS (textos da landing do curso, edição 2027)
+   ------------------------------------------------------------------ */
+var BIGPOCUS = {
+  whatsMsg: 'Olá! Conheci o The Big Pocus 2027 no Painel Interativo Talks e quero me inscrever.',
+  quando: 'São Paulo/SP · 05 e 06 de março de 2027',
+  lead: 'O curso presencial de <b>ultrassom à beira-leito (POCUS)</b> da Emergency Talks: a ferramenta que vai transformar sua tomada de decisão. Dois dias de hands-on em <b>São Paulo, 05 e 06 de março de 2027</b>.',
+  stats: [
+    { n: '2', t: 'dias de imersão presencial' },
+    { n: '9', t: 'blocos de aula e prática' },
+    { n: '4', t: 'professores emergencistas' },
+    { n: 'VIP', t: 'grupo de discussão no WhatsApp' }
+  ],
+  sobre: 'Aulas e demonstrações com especialistas reconhecidos na Medicina de Emergência, prática em modelos realistas e técnicas atualizadas para aplicar no seu próximo plantão.',
+  pilares: [
+    { ic: 'users', t: 'Grupo de discussão exclusivo', p: 'Grupo VIP no WhatsApp para trocar experiências com instrutores e colegas antes, durante e depois do evento.' },
+    { ic: 'steth', t: 'Capacitação na prática', p: 'Aprenda diretamente com emergencistas experientes que vivem o dia a dia do departamento de emergência.' },
+    { ic: 'book',  t: 'Técnicas baseadas em evidências', p: 'As técnicas mais atualizadas, para aplicar com mais precisão no seu plantão.' }
+  ],
+  papeis: [
+    { t: 'Instrutor', p: 'Ensina, demonstra e orienta a prática.' },
+    { t: 'Monitor', p: 'Suporte individualizado nas atividades práticas.' },
+    { t: 'Aluno', p: 'Envolvimento ativo com discussões e hands-on.' }
+  ],
+  aulas: [
+    { ic: 'users',  t: 'Discussão tripla', p: 'Grupos de três alunos debatem cenários clínicos reais.' },
+    { ic: 'zap',    t: 'Duelo de cenários', p: 'Competições de imagens para estimular o raciocínio rápido.' },
+    { ic: 'target', t: 'Hands-on', p: 'Sessões práticas em modelos de simulação realistas.' }
+  ],
+  dias: [
+    { t: 'Dia 1', s: 'Bases essenciais e POCUS na emergência', g: [
+      ['8h – 10h45', 'Procedimentos guiados'], ['10h45 – 11h', 'Intervalo'], ['11h – 12h', 'Duelo de imagens'], ['12h – 13h30', 'Almoço'],
+      ['13h30 – 15h15', 'POCUS na insuficiência respiratória'], ['15h15 – 15h30', 'Intervalo'], ['15h30 – 17h15', 'Avaliação de aorta e TVP'] ] },
+    { t: 'Dia 2', s: 'Aprofundamento e simulações realistas', g: [
+      ['8h – 9h45', 'USG cardíaco (habilidades básicas)'], ['9h45 – 10h', 'Intervalo'], ['10h – 12h', 'USG cardíaco (habilidades avançadas)'], ['12h – 13h30', 'Almoço'],
+      ['13h30 – 15h15', 'Avaliação de abdome I (via biliar, apêndice)'], ['15h15 – 15h30', 'Intervalo'], ['15h30 – 17h15', 'Avaliação de abdome II (vias urinárias)'], ['17h15 – 18h15', 'Mesa: USG no choque'] ] }
+  ],
+  profs: [
+    { n: 'Dra. Patrícia Lopes', f: 'img/bp-prof-patricia.jpg' },
+    { n: 'Dr. Khalil Feitosa',  f: 'img/bp-prof-khalil.jpg' },
+    { n: 'Dra. Nicole Pinheiro', f: 'img/bp-prof-nicole.jpg' },
+    { n: 'Dr. Juan Valdivia',   f: 'img/bp-prof-juan.jpg' }
+  ]
 };
 
 /* ------------------------------------------------------------------

@@ -1,6 +1,6 @@
 # Painel Interativo Talks
 
-Portal interativo do Grupo Talks para usar em eventos: Preparatório TEME, Preparatório TEP,
+Portal interativo do Grupo Talks para usar em eventos: Preparatório TEME, TEME Premium, The Big Pocus,
 Atualiza Talks e Revisões TEME, com portal, aula experimental, questões, flashcards e a roleta
 "Ganhe seu Prêmio!".
 

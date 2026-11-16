@@ -107,7 +107,13 @@
     video: { l: 'Vídeo', i: 'video' },
     fotos: { l: 'Fotos', i: 'image' },
     pratica: { l: 'Revisão Prática', i: 'target' },
-    teorica: { l: 'Revisão Teórica', i: 'book' }
+    teorica: { l: 'Revisão Teórica', i: 'book' },
+    pgeral: { l: 'Visão geral', i: 'award' },
+    jornada: { l: 'Jornada', i: 'layers' },
+    presencial: { l: 'Encontros em SP', i: 'cal' },
+    curso: { l: 'O curso', i: 'steth' },
+    programacao: { l: 'Programação', i: 'clock' },
+    bpvideo: { l: 'Vídeo', i: 'video' }
   };
   function tabsHtml(lista) {
     return '<div class="tabs-anchor"></div><div class="tabs-wrap"><div class="tabs" role="tablist">' + lista.map(function (k, n) {
@@ -486,7 +492,7 @@
   }
 
   /* ==================================================================
-     TELAS DOS PREPARATÓRIOS (TEME e TEP)
+     TELA DO PREPARATÓRIO TEME
      ================================================================== */
   function renderPrep(key) {
     var P = PRODUTOS[key], el = $('#s-' + key);
@@ -507,26 +513,13 @@
           btnWhats('teme', 'Olá! Conheci o TEME MasterClass no Painel Interativo Talks e quero garantir minha vaga.', 'Quero o MasterClass', 'btn-primary') + '</div>' +
         '<div class="plan glass gold"><span class="tagp">Inclui pós-graduação</span><h3>TEME <b>Premium</b></h3><ul>' +
           ['Tudo do MasterClass', 'Revisão Teórica e Revisão Prática presenciais', '6 encontros presenciais em São Paulo', 'Certificado de pós-graduação'].map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') +
-          '</ul><a class="btn btn-gold" href="' + wa('premium', 'Olá! Conheci o TEME Premium no Painel Interativo Talks e quero saber mais.') + '" target="_blank" rel="noopener">' + ic('whats') + ' Falar com a central</a></div>' +
-        '</div></div>';
-    } else {
-      var hoje = loteDoDia(LOTES_TEP), aberto = hoje || LOTES_TEP[0];
-      var parc = brl(Math.round(aberto.valor / 6));
-      planos = '<div class="block"><h3>Investimento</h3><div class="plans" style="grid-template-columns:1.2fr 1fr">' +
-        '<div class="plan glass featured"><span class="tagp">' + (hoje ? hoje.nome + ' aberto' : 'Lançamento em ' + diaMes(aberto.inicio)) + '</span><h3>Preparatório <b>TEP 2027</b></h3><ul>' +
-          ['95 aulas em vídeo', '950 questões comentadas', '1.900 flashcards', '4 simulados', 'Acesso até o dia da prova'].map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') +
-          '</ul><div class="price">6x de ' + parc + '<small>sem juros · total de ' + brl(aberto.valor) + '</small></div>' + btnWhats('tep', P.whatsMsg, 'Garantir minha vaga', 'btn-primary') + '</div>' +
-        '<div class="plan glass"><span class="tagp">Próximos lotes</span><ul>' +
-          LOTES_TEP.filter(function (l) { return l !== aberto && dataBR(l.inicio) > dataBR(aberto.inicio); }).map(function (l) {
-            return '<li>' + ic('lock') + '<span><b style="color:#fff">' + l.nome + '</b> · a partir de ' + diaMes(l.inicio) + '</span></li>';
-          }).join('') +
-          '</ul><p style="font-size:.85rem;color:var(--gray-mid)">O valor sobe a cada virada de lote. Quem garante antes paga menos.</p></div>' +
+          '</ul><a class="btn btn-gold" href="#premium">' + ic('arrow') + ' Conhecer o Premium</a></div>' +
         '</div></div>';
     }
     painel.geral = '<div class="feat-grid">' + P.feats.map(function (f) { return '<div class="feat glass"><div class="ic">' + ic(f.ic) + '</div><h3>' + f.t + '</h3><p>' + f.p + '</p></div>'; }).join('') + '</div>' +
       (P.video ? '<div class="block"><h3>' + VIDEOS[P.video].titulo + '</h3>' + videoHtml(P.video) + '</div>' : '') +
       planos +
-      '<div class="block"><h3>' + (key === 'tep' ? 'Professoras' : 'Professores') + '</h3><div class="profs">' + P.profs.map(function (p) {
+      '<div class="block"><h3>Professores</h3><div class="profs">' + P.profs.map(function (p) {
         return '<div class="prof"><div class="ph"><img src="' + p.f + '" alt="' + p.n + '" loading="lazy" /></div><b>' + p.n + '</b><span>' + (p.s || P.profsSub) + '</span></div>';
       }).join('') + '</div></div>';
 
@@ -546,9 +539,88 @@
     ligarVideos(el);
     ligarPortal(el);
     ligarAula(el);
-    var fim = 'No ' + (key === 'tep' ? 'TEP' : 'TEME') + ' 2027 você tem um banco completo de questões comentadas para treinar por tema, com o seu desempenho registrado no portal.';
+    var fim = 'No TEME 2027 você tem um banco completo de questões comentadas para treinar por tema, com o seu desempenho registrado no portal.';
     Quiz($('[data-quiz]', el), P.questoes, { fim: fim, proxima: 'flashcards', whatsKey: P.whatsKey, whatsMsg: P.whatsMsg });
     Flash($('[data-fc]', el), P.flashcards, { whatsKey: P.whatsKey, whatsMsg: P.whatsMsg });
+    wireTabs(el, {});
+  }
+
+  /* ==================================================================
+     TEME PREMIUM (venda só pela central no WhatsApp)
+     ================================================================== */
+  function renderPremium() {
+    var M = PREMIUM, el = $('#s-premium');
+    var painel = {};
+    painel.pgeral = '<div class="sec-head"><span class="eyebrow">Por que o Premium</span><h2>Uma jornada, dois resultados</h2><p>' + M.porque + '</p></div>' +
+      '<div class="two block">' + M.resultados.map(function (r) {
+        return '<div class="feat glass"><div class="ic">' + ic(r.ic) + '</div><h3>' + r.t + '</h3><p>' + r.p + '</p></div>';
+      }).join('') + '</div>' +
+      '<div class="block"><h3>O que está incluído</h3><div class="feat-grid four">' + M.inclui.map(function (f) {
+        return '<div class="feat glass' + (f.bonus ? ' bonus' : '') + '"><div class="ic">' + ic(f.ic) + '</div><h3>' + f.t + '</h3><p>' + f.p + '</p></div>';
+      }).join('') + '</div></div>' +
+      '<div class="diploma-row glass"><div class="diploma"><span class="dp-seal">' + ic('award') + '</span><span class="dp-t">Certificado de</span><b class="dp-h">Pós-graduação</b><span class="dp-line"></span><span class="dp-sm">Medicina de Emergência · Turma 01 · 2027</span></div>' +
+        '<div><h3>Você termina com o título no horizonte e a pós no currículo</h3><p>' + M.certificado + '</p>' + btnWhats('premium', M.whatsMsg, 'Quero minha vaga no Premium', 'btn-gold') + '</div></div>';
+    painel.jornada = '<div class="sec-head"><span class="eyebrow">Como funciona</span><h2>A sua jornada até o título</h2></div>' +
+      '<div class="phases">' + M.fases.map(function (f, n) {
+        return '<div class="phase glass"><span class="ph-n">0' + (n + 1) + '</span><span class="ph-tag">' + f.tag + '</span><h3>' + f.t + '</h3><p>' + f.p + '</p>' +
+          (f.chips ? '<div class="chips">' + f.chips.map(function (c) { return '<span>' + c + '</span>'; }).join('') + '</div>' : '') +
+          (f.itens ? '<ul class="check-list">' + f.itens.map(function (c) { return '<li>' + ic('check') + c + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+      }).join('') + '</div><p class="p-note">' + M.notaFases + '</p>';
+    painel.presencial = '<div class="sec-head"><span class="eyebrow">Programação presencial · Calendário 2027</span><h2>6 encontros presenciais em São Paulo</h2><p>Imersões práticas com simulação realística, procedimentos e contato direto com professores titulados. Sempre em fins de semana, de sexta a domingo.</p></div>' +
+      '<div class="meets">' + M.encontros.map(function (e, n) {
+        return '<div class="meet glass"><span class="mt-n">' + (n + 1) + '</span><div><h4>' + e.t + '</h4><span>' + e.d + '</span></div></div>';
+      }).join('') + '</div>' +
+      '<div class="two block" style="margin-top:22px"><div class="glass" style="padding:22px"><h3 style="font-size:1.4rem;margin-bottom:12px">Horários padronizados</h3><ul class="check-list">' +
+        M.horarios.map(function (h) { return '<li>' + ic('clock') + '<span><b style="color:#fff">' + h[0] + '</b> · ' + h[1] + '</span></li>'; }).join('') + '</ul></div>' +
+        '<div class="glass" style="padding:22px"><h3 style="font-size:1.4rem;margin-bottom:10px">Prática de verdade</h3><p style="color:var(--gray-light);margin-bottom:18px">' + M.pratica + '</p>' +
+        btnWhats('premium', M.whatsMsg, 'Falar com a central', 'btn-whats') + '</div></div>';
+
+    var abas = ['pgeral', 'jornada', 'presencial'];
+    el.innerHTML = '<div class="container">' + voltar() +
+      heroHtml({ eyebrow: 'Emergency Talks · Turma 01 · 2027', titulo: 'TEME <span class="accent">Premium</span>',
+        lead: M.lead, stats: M.stats,
+        cta: btnWhats('premium', M.whatsMsg, 'Quero minha vaga', 'btn-gold') + '<button class="btn btn-glass" data-goto="presencial">' + ic('cal') + ' Ver encontros</button>',
+        nota: 'Vagas limitadas pela capacidade dos encontros presenciais.',
+        foto: 'img/premium.jpg', logo: 'img/logo-emergency.png', fotoCap: 'Preparação para o TEME + Pós-graduação' }) +
+      tabsHtml(abas) +
+      abas.map(function (k) { return '<div class="panel" data-panel="' + k + '">' + painel[k] + '</div>'; }).join('') +
+      '</div>';
+    wireTabs(el, {});
+  }
+
+  /* ==================================================================
+     THE BIG POCUS (curso presencial)
+     ================================================================== */
+  function renderBigPocus() {
+    var G = BIGPOCUS, el = $('#s-bigpocus');
+    var painel = {};
+    painel.curso = '<div class="sec-head"><span class="eyebrow">Aprenda, pratique e transforme</span><h2>Sua rotina na emergência, com POCUS</h2><p>' + G.sobre + '</p></div>' +
+      '<div class="feat-grid">' + G.pilares.map(function (f) { return '<div class="feat glass"><div class="ic">' + ic(f.ic) + '</div><h3>' + f.t + '</h3><p>' + f.p + '</p></div>'; }).join('') + '</div>' +
+      '<div class="block"><h3>Formato do curso</h3><div class="steps">' + G.papeis.map(function (p, n) { return '<div class="step glass"><span class="sn">0' + (n + 1) + '</span><h4>' + p.t + '</h4><p>' + p.p + '</p></div>'; }).join('') + '</div></div>' +
+      '<div class="block"><h3>Formato das aulas</h3><div class="steps">' + G.aulas.map(function (p) { return '<div class="step glass"><div class="feat" style="padding:0"><div class="ic">' + ic(p.ic) + '</div></div><h4>' + p.t + '</h4><p>' + p.p + '</p></div>'; }).join('') + '</div></div>' +
+      '<div class="block"><h3>Professores</h3><div class="profs">' + G.profs.map(function (p) {
+        return '<div class="prof"><div class="ph"><img src="' + p.f + '" alt="' + p.n + '" loading="lazy" /></div><b>' + p.n + '</b><span>Medicina de Emergência</span></div>';
+      }).join('') + '</div></div>';
+    painel.programacao = '<div class="sec-head"><span class="eyebrow">' + G.quando + '</span><h2>Programação do evento</h2></div>' +
+      '<div class="two">' + G.dias.map(function (d) {
+        return '<div class="day glass"><div class="day-h"><b>' + d.t + '</b><span>' + d.s + '</span></div><ul>' + d.g.map(function (g) {
+          var pausa = /Intervalo|Almoço/.test(g[1]);
+          return '<li class="' + (pausa ? 'pause' : '') + '"><time>' + g[0] + '</time><span>' + g[1] + '</span></li>';
+        }).join('') + '</ul></div>';
+      }).join('') + '</div>';
+    painel.bpvideo = '<div class="sec-head"><span class="eyebrow">Assista</span><h2>' + VIDEOS.bigpocus.titulo + '</h2></div>' + videoHtml('bigpocus');
+
+    var abas = ['curso', 'programacao', 'bpvideo'];
+    el.innerHTML = '<div class="container">' + voltar() +
+      heroHtml({ eyebrow: 'Emergency Talks · Curso presencial · Edição 2027', titulo: 'The Big <span class="accent">Pocus</span>',
+        lead: G.lead, stats: G.stats,
+        cta: btnWhats('bigpocus', G.whatsMsg, 'Quero me inscrever', 'btn-primary') + '<button class="btn btn-glass" data-goto="programacao">' + ic('cal') + ' Ver programação</button>',
+        nota: 'Apoio institucional: ABRAMEDE.',
+        foto: 'img/bp-pratica.jpg', logo: 'img/bp-logo.png', fotoCap: G.quando }) +
+      tabsHtml(abas) +
+      abas.map(function (k) { return '<div class="panel" data-panel="' + k + '">' + painel[k] + '</div>'; }).join('') +
+      '</div>';
+    ligarVideos(el);
     wireTabs(el, {});
   }
 
@@ -673,9 +745,9 @@
   /* ==================================================================
      ROTEADOR
      ================================================================== */
-  var TEMAS = { inicio: 'red', teme: 'red', tep: 'tep', atualiza: 'red', revisoes: 'red', premio: 'gold' };
+  var TEMAS = { inicio: 'red', teme: 'red', premium: 'gold', atualiza: 'red', revisoes: 'red', bigpocus: 'lima', premio: 'gold' };
   var montado = {}, rotaAtual = null;
-  var montar = { teme: function () { renderPrep('teme'); }, tep: function () { renderPrep('tep'); }, atualiza: renderAtualiza, revisoes: renderRevisoes };
+  var montar = { teme: function () { renderPrep('teme'); }, premium: renderPremium, atualiza: renderAtualiza, revisoes: renderRevisoes, bigpocus: renderBigPocus };
 
   function rota() {
     var h = (location.hash || '#inicio').slice(1).split('/'), r = h[0], aba = h[1];

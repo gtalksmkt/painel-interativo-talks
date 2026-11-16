@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Painel Interativo Talks | Grupo Talks</title>
-<meta name="description" content="Conheça por dentro o Preparatório TEME, o Preparatório TEP, o Atualiza Talks e as Revisões TEME, e gire a roleta para ganhar seu prêmio." />
+<meta name="description" content="Conheça por dentro o Preparatório TEME, o TEME Premium, as Revisões TEME, o Atualiza Talks e o The Big Pocus, e gire a roleta para ganhar seu prêmio." />
 <meta name="theme-color" content="#040405" />
 <!-- Painel de evento: não precisa aparecer no Google -->
 <meta name="robots" content="noindex, nofollow" />
@@ -35,7 +35,10 @@
   --ease:cubic-bezier(.22,.61,.36,1);
   --spring:cubic-bezier(.34,1.56,.64,1);
 }
-body[data-theme="tep"]{--ac:var(--blue);--ac-l:var(--blue-light);--ac-d:var(--blue-dark);--ac-rgb:0,116,242}
+body[data-theme="lima"]{--ac:#C2ED05;--ac-l:#D9FF4A;--ac-d:#6E8A00;--ac-rgb:194,237,5}
+/* destaques claros (dourado e limão) pedem texto escuro nos botões e abas */
+body[data-theme="gold"] .btn-primary,body[data-theme="lima"] .btn-primary,
+body[data-theme="gold"] .tab.on,body[data-theme="lima"] .tab.on{color:#0a0a0c}
 body[data-theme="gold"]{--ac:var(--gold-hot);--ac-l:#FFE08A;--ac-d:var(--gold-deep);--ac-rgb:245,196,81}
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -127,7 +130,7 @@ main{position:relative;z-index:1;padding-top:var(--top)}
 @keyframes sheen{to{background-position:-220% center}}
 .home-sub{max-width:640px;font-size:clamp(1rem,1.5vw,1.2rem);color:var(--gray-light)}
 
-.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.prod-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
 .prod-tile{--tc:245,22,39;position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:400px;padding:22px;border-radius:26px;overflow:hidden;isolation:isolate;border:1px solid rgba(var(--tc),.35);background:linear-gradient(170deg,rgba(var(--tc),.16),rgba(10,10,12,.92) 55%);box-shadow:0 22px 60px rgba(0,0,0,.5);transition:transform .45s var(--spring),box-shadow .4s var(--ease),border-color .4s;opacity:0;animation:tileIn .7s var(--ease) forwards;animation-delay:calc(var(--d) * .09s + .1s)}
 @keyframes tileIn{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
 .prod-tile:hover{transform:translateY(-8px);box-shadow:0 34px 80px rgba(0,0,0,.6),0 0 46px rgba(var(--tc),.3);border-color:rgba(var(--tc),.7)}
@@ -148,8 +151,15 @@ main{position:relative;z-index:1;padding-top:var(--top)}
 .pt-go{margin-top:18px;display:flex;align-items:center;justify-content:space-between;font-family:var(--font-head);text-transform:uppercase;letter-spacing:1px;font-weight:700;font-size:1rem;color:#fff;padding:13px 18px;border-radius:16px;background:linear-gradient(100deg,rgba(var(--tc),.95),rgba(var(--tc),.55));box-shadow:0 0 22px rgba(var(--tc),.35)}
 .pt-go svg{transition:transform .3s var(--ease)}
 .prod-tile:hover .pt-go svg{transform:translateX(5px)}
-.t-tep{--tc:0,116,242}
-.t-tep .pt-bg img{opacity:.5;object-position:center 20%}
+/* 5 cartões: 3 em cima, 2 embaixo */
+.prod-tile{grid-column:span 2}
+.prod-tile:nth-child(n+4){grid-column:span 3;min-height:330px}
+.t-premium{--tc:232,201,160}
+.t-premium .pt-bg img{object-position:center 20%}
+.t-bigpocus{--tc:194,237,5}
+.t-premium .pt-go,.t-bigpocus .pt-go{color:#0a0a0c}
+.t-premium .pt-chip,.t-bigpocus .pt-chip{color:#fff}
+.pt-logo.bp{height:46px;margin:-6px 0}
 .t-atualiza{--tc:232,48,63}
 .pt-ribbon{position:absolute;top:18px;right:-44px;transform:rotate(38deg);width:180px;text-align:center;padding:7px 0;font-family:var(--font-head);text-transform:uppercase;font-weight:800;letter-spacing:1px;font-size:.78rem;color:#1a1205;background:linear-gradient(100deg,#FFE08A,#F5C451);box-shadow:0 6px 18px rgba(245,196,81,.5);z-index:3}
 .pt-price{display:inline-flex;align-items:baseline;gap:6px;margin-bottom:12px;padding:8px 12px;border-radius:12px;background:rgba(0,0,0,.55);border:1px dashed rgba(245,196,81,.6)}
@@ -591,6 +601,43 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 .rv-mosaic img{border-radius:18px;aspect-ratio:4/5;object-fit:cover;width:100%;cursor:zoom-in;border:1px solid rgba(255,255,255,.1)}
 .rv-mosaic img:first-child{grid-row:span 2;aspect-ratio:auto;height:100%}
 
+/* ===== TEME Premium ===== */
+@media(min-width:1101px){.feat-grid.four{grid-template-columns:repeat(4,1fr)}}
+.feat.bonus{border-color:rgba(245,196,81,.55);background:linear-gradient(135deg,rgba(245,196,81,.16),rgba(255,255,255,.02))}
+.diploma-row{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,44px);align-items:center;padding:clamp(22px,3.4vw,36px);margin-bottom:10px}
+.diploma-row h3{font-size:clamp(1.5rem,2.8vw,2.1rem);margin-bottom:10px}
+.diploma-row p{color:var(--gray-light);margin-bottom:18px}
+.diploma{width:250px;padding:24px 22px;border-radius:14px;background:linear-gradient(160deg,#18181c,#0c0c0f);border:1px solid rgba(232,201,160,.5);box-shadow:0 26px 60px rgba(0,0,0,.6),0 0 40px rgba(232,201,160,.15);transform:rotate(-4deg);display:flex;flex-direction:column;gap:4px}
+.dp-seal{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle,#E8C9A0,#b48a52);display:flex;align-items:center;justify-content:center;margin-bottom:10px;color:#1a0f06;box-shadow:0 0 22px rgba(232,201,160,.45)}
+.dp-seal svg{width:24px;height:24px}
+.dp-t{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1.5px;font-size:.7rem;color:var(--gold)}
+.dp-h{font-family:var(--font-head);text-transform:uppercase;font-size:1.6rem;color:#fff;line-height:1}
+.dp-line{height:1px;background:linear-gradient(90deg,rgba(232,201,160,.6),transparent);margin:10px 0 6px}
+.dp-sm{font-size:.68rem;color:var(--gray-mid);letter-spacing:.4px}
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.phase{padding:24px;display:flex;flex-direction:column;gap:10px}
+.ph-n{font-family:var(--font-head);font-weight:900;font-size:3rem;line-height:.85;color:rgba(var(--ac-rgb),.9)}
+.ph-tag{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1.5px;font-size:.8rem;font-weight:700;color:var(--ac-l)}
+.phase h3{font-size:1.45rem}
+.phase p{color:var(--gray-light);font-size:.94rem}
+.phase .chips span{font-size:.78rem;padding:6px 11px}
+.meets{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.meet{display:flex;align-items:center;gap:16px;padding:18px 20px}
+.mt-n{width:52px;height:52px;border-radius:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:900;font-size:1.7rem;color:#1a1205;background:linear-gradient(135deg,#FFE08A,#C8922F);box-shadow:0 0 20px rgba(245,196,81,.35)}
+.meet h4{font-size:1.2rem;line-height:1.05}
+.meet div span{font-size:.86rem;color:var(--gray-light)}
+
+/* ===== The Big Pocus ===== */
+.day{padding:22px}
+.day-h{display:flex;flex-direction:column;gap:2px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(var(--ac-rgb),.3)}
+.day-h b{font-family:var(--font-head);text-transform:uppercase;font-size:2rem;line-height:1;color:var(--ac)}
+.day-h span{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1px;color:#fff;font-size:1.05rem}
+.day ul{display:grid;gap:6px}
+.day li{display:grid;grid-template-columns:118px 1fr;gap:12px;align-items:center;padding:11px 14px;border-radius:12px;background:rgba(var(--ac-rgb),.07);border:1px solid rgba(var(--ac-rgb),.22);font-size:.95rem;color:#fff}
+.day li time{font-family:var(--font-head);letter-spacing:.5px;color:var(--ac-l);font-weight:700}
+.day li.pause{background:transparent;border-color:rgba(255,255,255,.06);color:var(--gray-mid);padding:6px 14px;font-size:.84rem}
+.day li.pause time{color:var(--gray-mid);font-weight:500}
+
 /* ===== Lightbox ===== */
 .lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;padding:20px}
 .lightbox.on{display:flex;animation:fadeIn .3s}
@@ -723,13 +770,16 @@ body[data-route="premio"] .admin-gear{display:flex}
 /* ===== Responsivo ===== */
 @media(max-width:1100px){
   .prod-grid{grid-template-columns:1fr 1fr}
-  .prod-tile{min-height:340px}
+  .prod-tile,.prod-tile:nth-child(n+4){grid-column:span 1;min-height:340px}
+  .prod-tile:last-child{grid-column:1/-1}
   .months{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:900px){
   .p-hero{grid-template-columns:1fr}
   .p-media{aspect-ratio:16/10;order:-1}
-  .feat-grid,.plans,.news-grid,.steps{grid-template-columns:1fr 1fr}
+  .feat-grid,.plans,.news-grid,.steps,.meets{grid-template-columns:1fr 1fr}
+  .phases{grid-template-columns:1fr}
+  .diploma-row{grid-template-columns:1fr;justify-items:center;text-align:center}
   .article,.two{grid-template-columns:1fr}
   .portal-body{grid-template-columns:1fr}
   .portal-side{flex-direction:row;overflow-x:auto;padding:10px;border-right:0;border-bottom:1px solid rgba(255,255,255,.06);scrollbar-width:none}
@@ -749,7 +799,8 @@ body[data-route="premio"] .admin-gear{display:flex}
   .tb-btn .lbl{display:none}
   .tb-btn.prize .lbl{display:inline}
   .prod-grid{grid-template-columns:1fr 1fr;gap:10px}
-  .prod-tile{min-height:250px;padding:14px;border-radius:20px}
+  .prod-tile,.prod-tile:nth-child(n+4){min-height:250px;padding:14px;border-radius:20px}
+  .pt-logo.bp{height:32px;margin:-4px 0}
   .pt-logo{height:20px}
   .pt-chip{display:none}
   .pt-name{font-size:2.2rem}
@@ -766,7 +817,8 @@ body[data-route="premio"] .admin-gear{display:flex}
   .prize-cta{grid-template-columns:auto 1fr;padding:18px}
   .prize-cta .btn{grid-column:1/-1}
   .p-stats{grid-template-columns:1fr 1fr}
-  .feat-grid,.plans,.news-grid,.steps{grid-template-columns:1fr}
+  .feat-grid,.plans,.news-grid,.steps,.meets{grid-template-columns:1fr}
+  .day li{grid-template-columns:96px 1fr;font-size:.88rem}
   .months{grid-template-columns:1fr 1fr}
   .tabs{border-radius:18px}
   .tab{padding:11px 14px;font-size:.9rem}
@@ -892,19 +944,31 @@ body[data-route="premio"] .admin-gear{display:flex}
           </div>
         </a>
 
-        <a class="prod-tile t-tep" href="#tep" style="--d:1">
-          <div class="pt-bg"><img src="img/tep-professoras.jpg" alt="" /></div>
-          <div class="pt-top"><img class="pt-logo" src="img/logo-pedtalks.png" alt="Ped Talks" /><span class="pt-chip">Turma 2027</span></div>
+        <a class="prod-tile t-premium" href="#premium" style="--d:1">
+          <div class="pt-bg"><img src="img/premium.jpg" alt="" /></div>
+          <div class="pt-top"><img class="pt-logo" src="img/logo-emergency.png" alt="Emergency Talks" /><span class="pt-chip">Turma 01 · 2027</span></div>
           <div>
-            <span class="pt-eyebrow">Preparatório</span>
-            <h2 class="pt-name"><em>TEP</em></h2>
-            <p class="pt-desc">Título de Especialista em Pediatria</p>
-            <ul class="pt-tags"><li>Portal</li><li>Aula experimental</li><li>Questões</li><li>Flashcards</li></ul>
+            <span class="pt-eyebrow">Preparação + Pós-graduação</span>
+            <h2 class="pt-name">TEME <em>Premium</em></h2>
+            <p class="pt-desc">Pós-graduação em Medicina de Emergência enquanto você se prepara para o título</p>
+            <ul class="pt-tags"><li>Pós-graduação</li><li>6 imersões em SP</li><li>Revisões</li></ul>
             <span class="pt-go">Explorar <svg class="i"><use href="#i-arrow"/></svg></span>
           </div>
         </a>
 
-        <a class="prod-tile t-atualiza" href="#atualiza" style="--d:2">
+        <a class="prod-tile t-revisoes" href="#revisoes" style="--d:2">
+          <div class="pt-bg"><img src="img/pratica-2.jpg" alt="" /></div>
+          <div class="pt-top"><img class="pt-logo" src="img/logo-emergency.png" alt="Emergency Talks" /><span class="pt-chip">Presencial</span></div>
+          <div>
+            <span class="pt-eyebrow">Revisões</span>
+            <h2 class="pt-name"><em>TEME</em></h2>
+            <p class="pt-desc">Revisão Prática e Revisão Teórica para a prova de título</p>
+            <ul class="pt-tags"><li>Vídeo</li><li>Fotos</li><li>Como funciona</li></ul>
+            <span class="pt-go">Explorar <svg class="i"><use href="#i-arrow"/></svg></span>
+          </div>
+        </a>
+
+        <a class="prod-tile t-atualiza" href="#atualiza" style="--d:3">
           <span class="pt-ribbon">Black Friday</span>
           <div class="pt-top">
             <span class="at-icon-wrap"><img class="at-icon" src="img/atualiza-icone.svg" alt="" /><span class="at-word">atualiza<b>talks</b></span></span>
@@ -918,14 +982,14 @@ body[data-route="premio"] .admin-gear{display:flex}
           </div>
         </a>
 
-        <a class="prod-tile t-revisoes" href="#revisoes" style="--d:3">
-          <div class="pt-bg"><img src="img/pratica-2.jpg" alt="" /></div>
-          <div class="pt-top"><img class="pt-logo" src="img/logo-emergency.png" alt="Emergency Talks" /><span class="pt-chip">Presencial</span></div>
+        <a class="prod-tile t-bigpocus" href="#bigpocus" style="--d:4">
+          <div class="pt-bg"><img src="img/bp-pratica.jpg" alt="" /></div>
+          <div class="pt-top"><img class="pt-logo bp" src="img/bp-logo.png" alt="The Big Pocus" /><span class="pt-chip">Edição 2027</span></div>
           <div>
-            <span class="pt-eyebrow">Revisões</span>
-            <h2 class="pt-name"><em>TEME</em></h2>
-            <p class="pt-desc">Revisão Prática e Revisão Teórica para a prova de título</p>
-            <ul class="pt-tags"><li>Vídeo</li><li>Fotos</li><li>Como funciona</li></ul>
+            <span class="pt-eyebrow">Curso presencial · São Paulo</span>
+            <h2 class="pt-name">The Big <em>Pocus</em></h2>
+            <p class="pt-desc">05 e 06 de março de 2027 · ultrassom à beira-leito na emergência</p>
+            <ul class="pt-tags"><li>Hands-on</li><li>Duelo de imagens</li><li>2 dias</li></ul>
             <span class="pt-go">Explorar <svg class="i"><use href="#i-arrow"/></svg></span>
           </div>
         </a>
@@ -949,8 +1013,8 @@ body[data-route="premio"] .admin-gear{display:flex}
 
       <div class="marquee" aria-hidden="true">
         <div class="marquee-track">
-          <span>Professores titulados</span><span>Portal do aluno</span><span>Banco de questões comentadas</span><span>Flashcards</span><span>Simulados</span><span>Revisão Prática hands-on</span><span>Artigo da semana</span><span>Encontros ao vivo</span>
-          <span>Professores titulados</span><span>Portal do aluno</span><span>Banco de questões comentadas</span><span>Flashcards</span><span>Simulados</span><span>Revisão Prática hands-on</span><span>Artigo da semana</span><span>Encontros ao vivo</span>
+          <span>Professores titulados</span><span>Portal do aluno</span><span>Banco de questões comentadas</span><span>Flashcards</span><span>Simulados</span><span>Revisão Prática hands-on</span><span>Artigo da semana</span><span>Pós-graduação</span><span>POCUS hands-on</span>
+          <span>Professores titulados</span><span>Portal do aluno</span><span>Banco de questões comentadas</span><span>Flashcards</span><span>Simulados</span><span>Revisão Prática hands-on</span><span>Artigo da semana</span><span>Pós-graduação</span><span>POCUS hands-on</span>
         </div>
       </div>
 
@@ -966,9 +1030,10 @@ body[data-route="premio"] .admin-gear{display:flex}
 
   <!-- ============ PRODUTOS (montados pelo js/app.js) ============ -->
   <section class="screen" id="s-teme"></section>
-  <section class="screen" id="s-tep"></section>
+  <section class="screen" id="s-premium"></section>
   <section class="screen" id="s-atualiza"></section>
   <section class="screen" id="s-revisoes"></section>
+  <section class="screen" id="s-bigpocus"></section>
 
   <!-- ============ ROLETA ============ -->
   <section class="screen" id="s-premio">
