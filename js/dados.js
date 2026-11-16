@@ -12,7 +12,17 @@ var WHATS = {
   bigpocus: '5585998302705',
   atualiza: '5585998302705',
   revisoes: '5585998302705',
-  premio:   '5585998302705'    // resgate dos prêmios da roleta
+  premio:   '5585998302705',   // resgate dos prêmios da roleta
+  cadastro: '5585998302705'    // faixa "Cadastre-se aqui e ganhe um curso + ecobag"
+};
+
+/* Faixa do topo "Cadastre-se aqui e ganhe um curso + ecobag".
+   link: se preencher com o endereço de um formulário (ex.: RD Station, Google Forms),
+         a faixa abre esse formulário em vez do cadastro pelo WhatsApp.
+   foto: caminho da foto real da ecobag (ex.: 'img/ecobag.png'); vazio = desenho. */
+var CADASTRO = {
+  link: '',
+  foto: ''
 };
 
 /* Vídeos (Vimeo). Para trocar, cole o número do vídeo e o hash (?h=...) */

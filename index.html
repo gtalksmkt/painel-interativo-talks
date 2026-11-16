@@ -31,7 +31,7 @@
 
   --font-head:'Barlow Condensed',-apple-system,BlinkMacSystemFont,sans-serif;
   --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
-  --maxw:1240px;--radius:22px;--top:68px;
+  --maxw:1240px;--radius:22px;--hdr:68px;--promo:46px;--top:calc(var(--hdr) + var(--promo));
   --ease:cubic-bezier(.22,.61,.36,1);
   --spring:cubic-bezier(.34,1.56,.64,1);
 }
@@ -100,7 +100,7 @@ h1,h2,h3,h4{font-family:var(--font-head);text-transform:uppercase;color:var(--wh
 @keyframes ecgmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ===== Topo ===== */
-.topbar{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--top);display:flex;align-items:center;background:rgba(4,4,5,.55);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border-bottom:1px solid rgba(var(--ac-rgb),.18);transition:border-color .6s}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--hdr);display:flex;align-items:center;background:rgba(4,4,5,.55);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border-bottom:1px solid rgba(var(--ac-rgb),.18);transition:border-color .6s}
 .topbar .container{display:flex;align-items:center;justify-content:space-between;gap:14px}
 .brand{display:flex;align-items:center;gap:14px;min-width:0}
 .brand-logo{height:34px;width:auto;flex-shrink:0}
@@ -637,6 +637,52 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 .day li.pause{background:transparent;border-color:rgba(255,255,255,.06);color:var(--gray-mid);padding:6px 14px;font-size:.84rem}
 .day li.pause time{color:var(--gray-mid);font-weight:500}
 
+/* ===== Faixa de cadastro + ecobag ===== */
+.promo{position:fixed;top:var(--hdr);left:0;right:0;z-index:59;height:var(--promo);width:100%;display:flex;align-items:center;justify-content:center;gap:14px;padding:0 16px;overflow:hidden;color:#fff;background:linear-gradient(90deg,#8a0b16,#F51627 30%,#F51627 70%,#8a0b16);box-shadow:0 8px 24px rgba(0,0,0,.4);font-family:var(--font-head);text-transform:uppercase;letter-spacing:1px;font-weight:800;font-size:1.08rem;white-space:nowrap}
+.promo::after{content:"";position:absolute;top:0;bottom:0;left:-30%;width:25%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:promoShine 4.5s ease-in-out infinite}
+@keyframes promoShine{0%,55%{left:-30%}100%{left:130%}}
+.promo:hover .promo-go{transform:translateX(3px)}
+.promo-tx b{font-weight:900}
+.promo-tx em{font-style:normal;color:#FFE08A;text-shadow:0 0 14px rgba(255,224,138,.5)}
+.promo-bag{width:34px;height:40px;flex-shrink:0;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));animation:bagSwing 3s ease-in-out infinite;transform-origin:50% 0}
+@keyframes bagSwing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.promo-go{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:#fff;color:#A90F1B;font-size:.82rem;letter-spacing:.8px;transition:transform .25s var(--ease)}
+.ecobag{width:100%;height:100%;display:block;overflow:visible}
+.cad-card{position:relative;width:100%;max-width:520px;max-height:calc(100svh - 36px);overflow-y:auto;padding:clamp(22px,4vw,32px);border-radius:28px;background:linear-gradient(170deg,#1c0a0c,#0c0b0d 55%);border:1.5px solid rgba(245,22,39,.5);box-shadow:0 0 60px rgba(245,22,39,.2),0 40px 100px rgba(0,0,0,.8);animation:winIn .55s var(--spring)}
+.cad-x{position:absolute;top:14px;right:14px;width:42px;height:42px}
+.cad-head{display:flex;align-items:center;gap:18px;margin-bottom:20px;padding-right:36px}
+.cad-bag{width:96px;height:112px;flex-shrink:0;padding:6px;border-radius:22px;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.22),rgba(245,22,39,.12) 60%,transparent 75%)}
+.cad-kicker{font-family:var(--font-head);text-transform:uppercase;letter-spacing:2.5px;font-size:.78rem;font-weight:700;color:var(--gold-hot)}
+.cad-head h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:900;line-height:.98;margin:4px 0 8px}
+.cad-head h2 em{font-style:normal;color:var(--red-light)}
+.cad-head p{font-size:.92rem;color:var(--gray-light)}
+#cadForm{display:grid;gap:12px}
+#cadForm label{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:600;color:var(--gray-light);letter-spacing:.3px}
+#cadForm input,#cadForm select{font:inherit;font-size:1rem;font-weight:500;color:#fff;padding:14px 16px;border-radius:14px;background:#16161b;border:1px solid rgba(255,255,255,.15);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none}
+#cadForm select{background-image:linear-gradient(45deg,transparent 50%,#C5C6CC 50%),linear-gradient(135deg,#C5C6CC 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat}
+#cadForm select option{background:#16161b}
+#cadForm input:focus,#cadForm select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(245,22,39,.25)}
+#cadForm .invalid{border-color:var(--bad)}
+#cadForm .btn{width:100%;margin-top:4px;color:#fff;background:linear-gradient(100deg,#FF2436,#A90F1B);box-shadow:0 0 22px rgba(245,22,39,.45)}
+.cad-err{min-height:1.1em;font-size:.85rem;color:var(--bad)}
+.cad-note{font-size:.74rem;color:var(--gray-mid);text-align:center}
+.cad-ok{display:grid;gap:12px;text-align:center;justify-items:center}
+.cad-ok .btn{width:100%}
+.cad-check{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(46,212,122,.15);border:2px solid var(--ok);color:var(--ok)}
+.cad-check svg{width:32px;height:32px}
+.cad-ok h3{font-size:1.8rem}
+.cad-ok p{color:var(--gray-light);font-size:.95rem}
+.cad-qr{width:200px;padding:10px;background:#fff;border-radius:16px}
+.cad-qr img,.cad-qr canvas{width:100%!important;height:auto!important}
+@media(max-width:640px){
+  .promo{font-size:.8rem;letter-spacing:.5px;gap:8px;padding:0 10px}
+  .promo-go{display:none}
+  .promo-bag{width:26px;height:32px}
+  .cad-head{flex-direction:column;align-items:flex-start;gap:10px}
+  .cad-bag{width:72px;height:84px}
+}
+@media(max-width:350px){.promo{font-size:.72rem;letter-spacing:.2px}}
+
 /* ===== Fotos e vídeos ===== */
 .vids{display:grid;gap:16px}
 .vids:has(> :nth-child(2)){grid-template-columns:1fr 1fr}
@@ -801,7 +847,7 @@ body[data-route="premio"] .admin-gear{display:flex}
   .rv-stats{grid-template-columns:1fr 1fr}
 }
 @media(max-width:640px){
-  :root{--top:60px}
+  :root{--hdr:60px;--promo:42px}
   .brand{gap:10px}
   .brand-logo{height:28px}
   .brand-tag{font-size:.5rem;letter-spacing:1.6px;padding-left:10px}
@@ -929,6 +975,13 @@ body[data-route="premio"] .admin-gear{display:flex}
     </nav>
   </div>
 </header>
+
+<!-- Faixa de cadastro (abaixo do topo, em todas as telas) -->
+<button class="promo" id="promo" type="button" aria-haspopup="dialog">
+  <span class="promo-bag" data-ecobag aria-hidden="true"></span>
+  <span class="promo-tx"><b>Cadastre-se aqui</b> e ganhe <em>um curso + ecobag</em></span>
+  <span class="promo-go">Quero ganhar <svg class="i"><use href="#i-arrow"/></svg></span>
+</button>
 
 <main id="app">
 
@@ -1129,6 +1182,46 @@ body[data-route="premio"] .admin-gear{display:flex}
   </div>
 </div>
 
+<!-- Cadastro: ganhe um curso + ecobag -->
+<div class="modal" id="cadModal" role="dialog" aria-modal="true" aria-labelledby="cadTitle">
+  <div class="cad-card">
+    <button class="round-btn cad-x" id="cadClose" type="button" aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="cad-head">
+      <span class="cad-bag" data-ecobag aria-hidden="true"></span>
+      <div>
+        <span class="cad-kicker">Presente do estande</span>
+        <h2 id="cadTitle">Cadastre-se e ganhe <em>um curso + ecobag</em></h2>
+        <p>Preencha seus dados e retire sua ecobag da Emergency Talks aqui no estande.</p>
+      </div>
+    </div>
+    <form id="cadForm" novalidate>
+      <label>Nome completo<input name="nome" required autocomplete="name" /></label>
+      <label>WhatsApp<input name="whats" required inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" /></label>
+      <label>E-mail<input name="email" type="email" required autocomplete="email" /></label>
+      <label>Você é
+        <select name="perfil" required>
+          <option value="">Selecione</option>
+          <option>Médico(a) com título de especialista</option>
+          <option>Médico(a) sem título de especialista</option>
+          <option>Residente</option>
+          <option>Estudante de Medicina</option>
+        </select>
+      </label>
+      <p class="cad-err" id="cadErr" role="alert"></p>
+      <button class="btn btn-primary" type="submit"><svg class="i"><use href="#i-gift"/></svg> Quero meu curso + ecobag</button>
+      <p class="cad-note">Seu cadastro é enviado para a nossa central pelo WhatsApp.</p>
+    </form>
+    <div class="cad-ok" id="cadOk" hidden>
+      <span class="cad-check"><svg class="i"><use href="#i-check"/></svg></span>
+      <h3>Falta só um passo!</h3>
+      <p id="cadOkTx"></p>
+      <div class="cad-qr" id="cadQr" hidden></div>
+      <a class="btn btn-whats" id="cadWhats" target="_blank" rel="noopener"><svg class="i"><use href="#i-whats"/></svg> Enviar meu cadastro</a>
+      <button class="btn btn-glass" id="cadDone" type="button">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Configurações da roleta (equipe) -->
 <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="admTitle">
   <div class="admin-card">
@@ -1176,9 +1269,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261116b"></script>
-<script src="js/app.js?v=20261116b"></script>
-<script src="js/roleta.js?v=20261116b"></script>
+<script src="js/dados.js?v=20261116c"></script>
+<script src="js/app.js?v=20261116c"></script>
+<script src="js/roleta.js?v=20261116c"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>

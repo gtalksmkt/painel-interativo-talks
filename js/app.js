@@ -7,6 +7,8 @@
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  /* altura do topo fixo (barra da marca + faixa de cadastro) */
+  function alturaTopo() { return ($('#topbar') ? $('#topbar').offsetHeight : 0) + ($('#promo') ? $('#promo').offsetHeight : 0); }
   function ic(id, cls) { return '<svg class="i' + (cls ? ' ' + cls : '') + '"><use href="#i-' + id + '"/></svg>'; }
   function wa(key, msg) { return 'https://wa.me/' + WHATS[key] + '?text=' + encodeURIComponent(msg); }
   var LETRAS = 'ABCDE';
@@ -130,7 +132,7 @@
       if (rolar !== false) {
         /* a âncora fica no fluxo normal (a barra de abas é sticky e mente a posição) */
         var tw = $('.tabs-anchor', root);
-        var y = tw.getBoundingClientRect().top + scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 68) - 10;
+        var y = tw.getBoundingClientRect().top + scrollY - alturaTopo() - 10;
         if (scrollY > y + 4) scrollTo({ top: y, behavior: reduz ? 'auto' : 'smooth' });
       }
       if (!shown[k] && onShow && onShow[k]) { shown[k] = 1; onShow[k](); }
@@ -777,7 +779,7 @@
       tela._abrir(aba, false);
       /* link direto para uma aba (ex.: #revisoes/midia): já desce até ela */
       var an = $('.tabs-anchor', tela);
-      if (an) setTimeout(function () { scrollTo({ top: an.getBoundingClientRect().top + scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 68) - 10, behavior: reduz ? 'auto' : 'smooth' }); }, 60);
+      if (an) setTimeout(function () { scrollTo({ top: an.getBoundingClientRect().top + scrollY - alturaTopo() - 10, behavior: reduz ? 'auto' : 'smooth' }); }, 60);
     }
     var car = tela && $('[data-car]', tela); if (car && car._tick) car._tick();
     document.dispatchEvent(new CustomEvent('rota', { detail: r }));
@@ -821,6 +823,78 @@
     ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(function (ev) { addEventListener(ev, mexeu, { passive: true }); });
     document.addEventListener('estande', mexeu);
     mexeu();
+  })();
+
+  /* ==================================================================
+     CADASTRO: ganhe um curso + ecobag
+     ================================================================== */
+  /* ecobag preta com a logo da Emergency Talks (desenho; troque por foto em CADASTRO.foto) */
+  var nBag = 0;
+  function ecobagSvg() {
+    var id = 'bag' + (++nBag);
+    return '<svg class="ecobag" viewBox="0 0 120 140"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2c2c33"/><stop offset=".55" stop-color="#141418"/><stop offset="1" stop-color="#060607"/></linearGradient></defs>' +
+      '<path d="M36 44C36 6 84 6 84 44" fill="none" stroke="#0d0d10" stroke-width="8" stroke-linecap="round"/>' +
+      '<path d="M36 44C36 6 84 6 84 44" fill="none" stroke="#3b3b44" stroke-width="2" stroke-linecap="round"/>' +
+      '<path d="M12 40h96l7 92a5 5 0 0 1-5 5.4H10A5 5 0 0 1 5 132z" fill="url(#' + id + ')" stroke="#000" stroke-width="1.5"/>' +
+      '<path d="M14 49h92" stroke="#3a3a42" stroke-width="1.2" stroke-dasharray="3 3"/>' +
+      '<path d="M18 44l-2 88" stroke="rgba(255,255,255,.07)" stroke-width="6"/>' +
+      '<image href="img/logo-emergency.png" x="27" y="78" width="66" height="24"/></svg>';
+  }
+  function pintarEcobags() {
+    $$('[data-ecobag]').forEach(function (el) {
+      el.innerHTML = CADASTRO.foto ? '<img src="' + CADASTRO.foto + '" alt="" style="width:100%;height:100%;object-fit:contain" />' : ecobagSvg();
+    });
+  }
+  pintarEcobags();
+
+  (function () {
+    var modal = $('#cadModal'), form = $('#cadForm'), ok = $('#cadOk');
+    function abrir() {
+      if (CADASTRO.link) { window.open(CADASTRO.link, '_blank', 'noopener'); return; }
+      form.hidden = false; ok.hidden = true; $('#cadErr').textContent = '';
+      modal.classList.add('on');
+      setTimeout(function () { form.nome.focus(); }, 80);
+    }
+    function fechar() { modal.classList.remove('on'); }
+    $('#promo').addEventListener('click', abrir);
+    $('#cadClose').addEventListener('click', fechar);
+    $('#cadDone').addEventListener('click', function () { form.reset(); fechar(); });
+    modal.addEventListener('click', function (e) { if (e.target === modal) fechar(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fechar(); });
+    /* máscara simples de telefone */
+    form.whats.addEventListener('input', function () {
+      var d = this.value.replace(/\D/g, '').slice(0, 11);
+      this.value = d.length > 6 ? '(' + d.slice(0, 2) + ') ' + d.slice(2, d.length - 4) + '-' + d.slice(-4) : d.length > 2 ? '(' + d.slice(0, 2) + ') ' + d.slice(2) : d;
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = form, erro = '';
+      $$('input,select', f).forEach(function (x) { x.classList.remove('invalid'); });
+      function marca(x, msg) { x.classList.add('invalid'); if (!erro) { erro = msg; x.focus(); } }
+      if (f.nome.value.trim().split(/\s+/).length < 2) marca(f.nome, 'Escreva seu nome completo.');
+      if (f.whats.value.replace(/\D/g, '').length < 10) marca(f.whats, 'Confira o número do WhatsApp com DDD.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.value.trim())) marca(f.email, 'Confira o e-mail.');
+      if (!f.perfil.value) marca(f.perfil, 'Selecione o seu perfil.');
+      $('#cadErr').textContent = erro;
+      if (erro) return;
+      var msg = 'Olá! Fiz meu cadastro no Painel Interativo Talks e quero ganhar o curso + ecobag.\n\n' +
+        '*Nome:* ' + f.nome.value.trim() + '\n*WhatsApp:* ' + f.whats.value + '\n*E-mail:* ' + f.email.value.trim() + '\n*Perfil:* ' + f.perfil.value;
+      var link = wa('cadastro', msg);
+      $('#cadWhats').href = link;
+      var qr = $('#cadQr'); qr.innerHTML = ''; qr.hidden = true;
+      if (Estande.ativo() && window.QRCode) {
+        /* no tablet do estande, o envio sai do celular da pessoa */
+        $('#cadOkTx').innerHTML = 'Aponte a câmera do <b>seu celular</b> para o código e envie a mensagem no WhatsApp. Depois, retire sua ecobag com a nossa equipe.';
+        qr.hidden = false;
+        try { new QRCode(qr, { text: link, width: 220, height: 220, colorDark: '#040405', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.L }); } catch (err) { qr.hidden = true; }
+        $('#cadWhats').hidden = true;
+      } else {
+        $('#cadOkTx').innerHTML = 'Toque em <b>Enviar meu cadastro</b> e mande a mensagem no WhatsApp. Depois, mostre a conversa para a nossa equipe e retire sua ecobag.';
+        $('#cadWhats').hidden = false;
+      }
+      form.hidden = true; ok.hidden = false;
+      Confetti.burst(innerWidth / 2, innerHeight * .35, 80);
+    });
   })();
 
   /* QR code para abrir no celular (aparece em telas grandes e no modo estande) */
