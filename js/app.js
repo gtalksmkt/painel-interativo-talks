@@ -755,7 +755,7 @@
   /* ==================================================================
      ROTEADOR
      ================================================================== */
-  var TEMAS = { inicio: 'red', teme: 'red', premium: 'gold', atualiza: 'red', revisoes: 'red', bigpocus: 'lima', premio: 'gold' };
+  var TEMAS = { inicio: 'red', teme: 'red', premium: 'gold', atualiza: 'red', revisoes: 'red', bigpocus: 'roxo', premio: 'gold' };
   var montado = {}, rotaAtual = null;
   var montar = { teme: function () { renderPrep('teme'); }, premium: renderPremium, atualiza: renderAtualiza, revisoes: renderRevisoes, bigpocus: renderBigPocus };
 
