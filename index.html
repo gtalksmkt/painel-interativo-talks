@@ -638,6 +638,17 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 .day li.pause{background:transparent;border-color:rgba(255,255,255,.06);color:var(--gray-mid);padding:6px 14px;font-size:.84rem}
 .day li.pause time{color:var(--gray-mid);font-weight:500}
 
+/* ===== Fotos e vídeos ===== */
+.vids{display:grid;gap:16px}
+.vids:has(> :nth-child(2)){grid-template-columns:1fr 1fr}
+.car-single .car-arrow,.car-single .car-thumbs,.car-single .car-count,.car-single .car-bar{display:none}
+.media-links{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-top:22px;opacity:0;animation:tileIn .7s var(--ease) .45s forwards}
+.media-links>span{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1.5px;font-size:.9rem;color:var(--gray-light);margin-right:4px}
+.media-links a{display:inline-flex;align-items:center;gap:9px;padding:12px 18px;border-radius:999px;font-family:var(--font-head);text-transform:uppercase;letter-spacing:.6px;font-weight:700;font-size:.95rem;color:#fff;background:var(--glass-bg);border:1px solid var(--glass-border);transition:transform .25s var(--ease),border-color .25s}
+.media-links a:hover{transform:translateY(-2px);border-color:rgba(245,196,81,.6)}
+.media-links a svg{color:var(--gold-hot)}
+@media(max-width:640px){.vids:has(> :nth-child(2)){grid-template-columns:1fr}.media-links>span{width:100%;text-align:center;margin:0}}
+
 /* ===== Lightbox ===== */
 .lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;padding:20px}
 .lightbox.on{display:flex;animation:fadeIn .3s}
@@ -993,6 +1004,12 @@ body[data-route="premio"] .admin-gear{display:flex}
             <span class="pt-go">Explorar <svg class="i"><use href="#i-arrow"/></svg></span>
           </div>
         </a>
+      </div>
+
+      <div class="media-links">
+        <span>Veja como são nossos eventos:</span>
+        <a href="#revisoes/midia"><svg class="i"><use href="#i-image"/></svg> Fotos e vídeos das Revisões</a>
+        <a href="#bigpocus/midia"><svg class="i"><use href="#i-image"/></svg> Fotos e vídeos do The Big Pocus</a>
       </div>
 
       <a class="prize-cta" href="#premio">

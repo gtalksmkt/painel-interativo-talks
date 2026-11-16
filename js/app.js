@@ -108,6 +108,7 @@
     fotos: { l: 'Fotos', i: 'image' },
     pratica: { l: 'Revisão Prática', i: 'target' },
     teorica: { l: 'Revisão Teórica', i: 'book' },
+    midia: { l: 'Fotos e vídeos', i: 'image' },
     pgeral: { l: 'Visão geral', i: 'award' },
     jornada: { l: 'Jornada', i: 'layers' },
     presencial: { l: 'Encontros em SP', i: 'cal' },
@@ -463,6 +464,8 @@
       '</div><button class="car-arrow l" aria-label="Foto anterior">' + ic('chev-l') + '</button><button class="car-arrow r" aria-label="Próxima foto">' + ic('chev-r') + '</button><span class="car-count"><b>1</b>/' + fotos.length + '</span></div>' +
       '<div class="car-thumbs">' + fotos.map(function (f, k) { return '<button class="' + (k ? '' : 'on') + '" data-k="' + k + '" aria-label="Ver foto ' + (k + 1) + '"><img src="' + f.f + '" alt="" loading="lazy" /></button>'; }).join('') + '</div>';
     var slides = $$('.car-slide', box), thumbs = $$('.car-thumbs button', box), bar = $('.car-bar i', box);
+    /* uma foto só: sem setas, miniaturas nem troca automática */
+    if (fotos.length < 2) { box.classList.add('car-single'); pausado = true; }
     function go(n) {
       i = (n + fotos.length) % fotos.length;
       slides.forEach(function (s, k) { s.classList.toggle('on', k === i); });
@@ -608,20 +611,30 @@
           return '<li class="' + (pausa ? 'pause' : '') + '"><time>' + g[0] + '</time><span>' + g[1] + '</span></li>';
         }).join('') + '</ul></div>';
       }).join('') + '</div>';
-    painel.bpvideo = '<div class="sec-head"><span class="eyebrow">Assista</span><h2>' + VIDEOS.bigpocus.titulo + '</h2></div>' + videoHtml('bigpocus');
+    painel.midia = midiaHtml('Veja como é o The Big Pocus', 'Vídeo e fotos do curso presencial. Toque numa foto para ampliar.', G.videos);
 
-    var abas = ['curso', 'programacao', 'bpvideo'];
+    var abas = ['midia', 'curso', 'programacao'];
     el.innerHTML = '<div class="container">' + voltar() +
       heroHtml({ eyebrow: 'Emergency Talks · Curso presencial · Edição 2027', titulo: 'The Big <span class="accent">Pocus</span>',
         lead: G.lead, stats: G.stats,
-        cta: btnWhats('bigpocus', G.whatsMsg, 'Quero me inscrever', 'btn-primary') + '<button class="btn btn-glass" data-goto="programacao">' + ic('cal') + ' Ver programação</button>',
+        cta: btnMidia() + btnWhats('bigpocus', G.whatsMsg, 'Quero me inscrever', 'btn-primary') + '<button class="btn btn-glass" data-goto="programacao">' + ic('cal') + ' Ver programação</button>',
         nota: 'Apoio institucional: ABRAMEDE.',
         foto: 'img/bp-pratica.jpg', logo: 'img/bp-logo.png', fotoCap: G.quando }) +
       tabsHtml(abas) +
       abas.map(function (k) { return '<div class="panel" data-panel="' + k + '">' + painel[k] + '</div>'; }).join('') +
       '</div>';
     ligarVideos(el);
-    wireTabs(el, {});
+    var car = $('[data-car]', el);
+    Carousel(car, G.fotos);
+    wireTabs(el, { _midia: function () { car._tick(); }, midia: function () { car._tick(); } });
+  }
+
+  /* aba "Fotos e vídeos" (Revisões e The Big Pocus) */
+  function btnMidia() { return '<button class="btn btn-gold" data-goto="midia">' + ic('image') + ' Ver fotos e vídeos</button>'; }
+  function midiaHtml(titulo, sub, videos) {
+    return '<div class="sec-head"><span class="eyebrow">Fotos e vídeos</span><h2>' + titulo + '</h2><p>' + sub + '</p></div>' +
+      '<div class="block"><h3>' + (videos.length > 1 ? 'Vídeos' : 'Vídeo') + '</h3><div class="vids">' + videos.map(videoHtml).join('') + '</div></div>' +
+      '<div class="block"><h3>Fotos</h3><div data-car></div></div>';
   }
 
   /* ==================================================================
@@ -709,8 +722,7 @@
   function renderRevisoes() {
     var R = REVISOES, el = $('#s-revisoes'), pr = R.pratica, te = R.teorica;
     var painel = {};
-    painel.video = '<div class="sec-head"><span class="eyebrow">Assista</span><h2>' + VIDEOS.revisoes.titulo + '</h2><p>Veja como são as revisões da Emergency Talks para a prova de título.</p></div>' + videoHtml('revisoes');
-    painel.fotos = '<div class="sec-head"><span class="eyebrow">Galeria</span><h2>Por dentro das revisões</h2><p>Deslize as fotos ou toque em uma para ampliar.</p></div><div data-car></div>';
+    painel.midia = midiaHtml('Veja como são as revisões', 'Vídeos e fotos das nossas turmas presenciais. Toque numa foto para ampliar.', R.videos);
     painel.pratica = '<div class="sec-head"><span class="eyebrow">2ª fase · prova prática</span><h2>Treine como se estivesse diante da banca</h2><p>Simulação presencial no formato real da prova prática da ABRAMEDE, com professores titulados avaliando cada estação.</p></div>' +
       '<div class="rv-stats">' + pr.stats.map(function (s) { return '<div class="p-stat"><b>' + s.n + '</b><span>' + s.t + '</span></div>'; }).join('') + '</div>' +
       '<div class="block"><h3>A dinâmica em 3 movimentos</h3><div class="steps">' + pr.passos.map(function (p, n) { return '<div class="step glass"><span class="sn">0' + (n + 1) + '</span><h4>' + p.t + '</h4><p>' + p.p + '</p></div>'; }).join('') + '</div></div>' +
@@ -724,12 +736,12 @@
         '<div class="glass" style="padding:24px"><h3 style="font-size:1.5rem;margin-bottom:8px">Edição 2027</h3><p style="color:var(--gray-light);margin-bottom:18px">Datas, local e formato da próxima turma serão divulgados em breve. Deixe seu contato com a nossa central para ser avisado(a) primeiro.</p>' +
         btnWhats('revisoes', R.whatsMsg, 'Quero ser avisado(a)') + '</div></div>';
 
-    var abas = ['video', 'fotos', 'pratica', 'teorica'];
+    var abas = ['midia', 'pratica', 'teorica'];
     el.innerHTML = '<div class="container">' + voltar() +
       heroHtml({ eyebrow: 'Emergency Talks · Presencial', titulo: 'Revisões <span class="accent">TEME</span>',
         lead: 'As revisões para as duas fases da prova de título em Medicina de Emergência: a <b>Revisão Teórica</b> para a 1ª fase e a <b>Revisão Prática</b>, com simulação realista e debriefing, para a 2ª.',
         stats: [{ n: '+30', t: 'cenários realistas' }, { n: '6', t: 'estações no modelo da prova' }, { n: '2', t: 'workshops: Via Aérea e POCUS' }, { n: '100%', t: 'professores titulados' }],
-        cta: btnWhats('revisoes', R.whatsMsg, 'Quero saber das turmas', 'btn-primary') + '<button class="btn btn-glass" data-goto="fotos">' + ic('image') + ' Ver fotos</button>',
+        cta: btnMidia() + btnWhats('revisoes', R.whatsMsg, 'Quero saber das turmas', 'btn-glass'),
         foto: 'img/pratica-2.jpg', logo: 'img/logo-emergency.png', fotoCap: 'Revisão Prática TEME' }) +
       tabsHtml(abas) +
       abas.map(function (k) { return '<div class="panel" data-panel="' + k + '">' + painel[k] + '</div>'; }).join('') +
@@ -739,7 +751,7 @@
     var car = $('[data-car]', el);
     Carousel(car, R.fotos);
     $$('[data-lb]', el).forEach(function (im) { im.addEventListener('click', function () { lbOpen(R.fotos, R.fotos.map(function (f) { return f.f; }).indexOf(im.getAttribute('src'))); }); });
-    wireTabs(el, { _fotos: function () { car._tick(); }, fotos: function () { car._tick(); } });
+    wireTabs(el, { _midia: function () { car._tick(); }, midia: function () { car._tick(); } });
   }
 
   /* ==================================================================
@@ -763,7 +775,12 @@
     if (rotaAtual !== r) scrollTo(0, 0);
     rotaAtual = r;
     var tela = $('#s-' + r);
-    if (aba && tela._abrir) tela._abrir(aba, false);
+    if (aba && tela._abrir) {
+      tela._abrir(aba, false);
+      /* link direto para uma aba (ex.: #revisoes/midia): já desce até ela */
+      var an = $('.tabs-anchor', tela);
+      if (an) setTimeout(function () { scrollTo({ top: an.getBoundingClientRect().top + scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 68) - 10, behavior: reduz ? 'auto' : 'smooth' }); }, 60);
+    }
     var car = tela && $('[data-car]', tela); if (car && car._tick) car._tick();
     document.dispatchEvent(new CustomEvent('rota', { detail: r }));
   }

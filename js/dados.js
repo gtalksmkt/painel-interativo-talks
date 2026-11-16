@@ -235,6 +235,11 @@ var PREMIUM = {
 var BIGPOCUS = {
   whatsMsg: 'Olá! Conheci o The Big Pocus 2027 no Painel Interativo Talks e quero me inscrever.',
   quando: 'São Paulo/SP · 05 e 06 de março de 2027',
+  /* aba "Fotos e vídeos": por enquanto só temos 1 foto e 1 vídeo do curso */
+  videos: ['bigpocus'],
+  fotos: [
+    { f: 'img/bp-pratica.jpg', t: 'Hands-on de ultrassom à beira-leito', s: 'The Big Pocus' }
+  ],
   lead: 'O curso presencial de <b>ultrassom à beira-leito (POCUS)</b> da Emergency Talks: a ferramenta que vai transformar sua tomada de decisão. Dois dias de hands-on em <b>São Paulo, 05 e 06 de março de 2027</b>.',
   stats: [
     { n: '2', t: 'dias de imersão presencial' },
@@ -345,6 +350,8 @@ var ATUALIZA = {
    ------------------------------------------------------------------ */
 var REVISOES = {
   whatsMsg: 'Olá! Conheci as Revisões TEME no Painel Interativo Talks e quero saber das próximas turmas.',
+  /* vídeos da aba "Fotos e vídeos" (nomes da lista VIDEOS lá em cima) */
+  videos: ['revisoes'],
   fotos: [
     { f: 'img/pratica-1.jpg', t: 'Via aérea no manequim', s: 'Revisão Prática TEME' },
     { f: 'img/galeria-1.jpg', t: 'Treino com professor ao lado', s: 'Workshop de via aérea' },
