@@ -611,25 +611,23 @@
           return '<li class="' + (pausa ? 'pause' : '') + '"><time>' + g[0] + '</time><span>' + g[1] + '</span></li>';
         }).join('') + '</ul></div>';
       }).join('') + '</div>';
-    painel.midia = midiaHtml('Veja como é o The Big Pocus', 'Vídeo e fotos do curso presencial. Toque numa foto para ampliar.', G.videos);
+    /* só vídeo por enquanto: sem galeria de fotos */
+    painel.video = '<div class="sec-head"><span class="eyebrow">Assista</span><h2>Veja como é o The Big Pocus</h2></div><div class="vids">' + G.videos.map(videoHtml).join('') + '</div>';
 
-    var abas = ['midia', 'curso', 'programacao'];
+    var abas = ['video', 'curso', 'programacao'];
     el.innerHTML = '<div class="container">' + voltar() +
       heroHtml({ eyebrow: 'Emergency Talks · Curso presencial · Edição 2027', titulo: 'The Big <span class="accent">Pocus</span>',
         lead: G.lead, stats: G.stats,
-        cta: btnMidia() + btnWhats('bigpocus', G.whatsMsg, 'Quero me inscrever', 'btn-primary') + '<button class="btn btn-glass" data-goto="programacao">' + ic('cal') + ' Ver programação</button>',
-        nota: 'Apoio institucional: ABRAMEDE.',
+        cta: '<button class="btn btn-gold" data-goto="video">' + ic('play') + ' Ver vídeo</button>' + btnWhats('bigpocus', G.whatsMsg, 'Quero me inscrever', 'btn-primary') + '<button class="btn btn-glass" data-goto="programacao">' + ic('cal') + ' Ver programação</button>',
         foto: 'img/bp-pratica.jpg', logo: 'img/bp-logo.png', fotoCap: G.quando }) +
       tabsHtml(abas) +
       abas.map(function (k) { return '<div class="panel" data-panel="' + k + '">' + painel[k] + '</div>'; }).join('') +
       '</div>';
     ligarVideos(el);
-    var car = $('[data-car]', el);
-    Carousel(car, G.fotos);
-    wireTabs(el, { _midia: function () { car._tick(); }, midia: function () { car._tick(); } });
+    wireTabs(el, {});
   }
 
-  /* aba "Fotos e vídeos" (Revisões e The Big Pocus) */
+  /* aba "Fotos e vídeos" (Revisões) */
   function btnMidia() { return '<button class="btn btn-gold" data-goto="midia">' + ic('image') + ' Ver fotos e vídeos</button>'; }
   function midiaHtml(titulo, sub, videos) {
     return '<div class="sec-head"><span class="eyebrow">Fotos e vídeos</span><h2>' + titulo + '</h2><p>' + sub + '</p></div>' +
