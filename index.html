@@ -100,12 +100,9 @@ h1,h2,h3,h4{font-family:var(--font-head);text-transform:uppercase;color:var(--wh
 /* ===== Topo ===== */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:60;height:var(--top);display:flex;align-items:center;background:rgba(4,4,5,.55);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border-bottom:1px solid rgba(var(--ac-rgb),.18);transition:border-color .6s}
 .topbar .container{display:flex;align-items:center;justify-content:space-between;gap:14px}
-.brand{display:flex;align-items:center;gap:11px;min-width:0}
-.brand-ic{width:38px;height:38px;border-radius:11px;background:linear-gradient(180deg,rgba(var(--ac-rgb),.95),rgba(var(--ac-rgb),.55));display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(var(--ac-rgb),.4);flex-shrink:0}
-.brand-ic svg{width:24px;height:24px;color:#fff}
-.brand-tx{font-family:var(--font-head);text-transform:uppercase;font-weight:800;letter-spacing:1.4px;font-size:1.3rem;color:var(--white);line-height:1}
-.brand-tx b{color:var(--ac)}
-.brand-tx small{display:block;font-family:var(--font-body);font-size:.55rem;letter-spacing:2.6px;color:var(--gray-mid);font-weight:600;margin-top:3px}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand-logo{height:34px;width:auto;flex-shrink:0}
+.brand-tag{font-family:var(--font-body);text-transform:uppercase;font-size:.56rem;letter-spacing:2.4px;line-height:1.35;color:var(--gray-mid);font-weight:600;padding-left:14px;border-left:1px solid rgba(255,255,255,.18);white-space:nowrap}
 .top-actions{display:flex;align-items:center;gap:8px}
 .tb-btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:999px;font-family:var(--font-head);text-transform:uppercase;letter-spacing:.8px;font-weight:700;font-size:.92rem;color:var(--gray-light);border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);transition:all .25s}
 .tb-btn:hover{color:#fff;border-color:rgba(255,255,255,.3)}
@@ -745,9 +742,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 }
 @media(max-width:640px){
   :root{--top:60px}
-  .brand-tx{font-size:1.1rem}
-  .brand-tx small{letter-spacing:1.8px}
-  .brand-ic{width:34px;height:34px}
+  .brand{gap:10px}
+  .brand-logo{height:28px}
+  .brand-tag{font-size:.5rem;letter-spacing:1.6px;padding-left:10px}
   .tb-btn{height:38px;padding:0 12px;font-size:.82rem}
   .tb-btn .lbl{display:none}
   .tb-btn.prize .lbl{display:inline}
@@ -790,9 +787,9 @@ body[data-route="premio"] .admin-gear{display:flex}
   .aula-stage{min-height:520px}
 }
 @media(max-width:380px){
-  .brand-tx,.tb-btn{white-space:nowrap}
-  .brand-tx{font-size:1rem}
-  .brand-tx small{display:none}
+  .tb-btn{white-space:nowrap}
+  .brand-logo{height:26px}
+  .brand-tag{display:none}
   .tb-btn{padding:0 10px;gap:6px;font-size:.76rem}
 }
 @media(prefers-reduced-motion:reduce){
@@ -861,8 +858,8 @@ body[data-route="premio"] .admin-gear{display:flex}
 <header class="topbar" id="topbar">
   <div class="container">
     <a class="brand" href="#inicio" aria-label="Painel Interativo Talks: início">
-      <span class="brand-ic"><svg class="i"><use href="#i-ecg"/></svg></span>
-      <span class="brand-tx">Grupo <b>Talks</b><small>Painel Interativo</small></span>
+      <img class="brand-logo" src="img/logo-grupo-talks.webp" alt="Grupo Talks" width="119" height="34" />
+      <span class="brand-tag">Painel<br>Interativo</span>
     </a>
     <nav class="top-actions">
       <a class="tb-btn home-btn" href="#inicio"><svg class="i"><use href="#i-home"/></svg><span class="lbl">Início</span></a>
