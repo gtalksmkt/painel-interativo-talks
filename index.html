@@ -684,15 +684,29 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 @media(max-width:350px){.promo{font-size:.72rem;letter-spacing:.2px}}
 
 /* ===== Fotos e vídeos ===== */
-.vids{display:grid;gap:16px}
-.vids:has(> :nth-child(2)){grid-template-columns:1fr 1fr}
+.vids{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.vids>*{flex:1 1 420px;min-width:0}
+.vids>.vert{flex:0 1 340px}
+.vfile{margin:0;border-radius:22px;overflow:hidden;background:#000;border:1px solid rgba(var(--ac-rgb),.3);box-shadow:0 26px 60px rgba(0,0,0,.5)}
+.vfile video{display:block;width:100%;aspect-ratio:16/9;background:#000;object-fit:contain}
+.vfile.vert video{aspect-ratio:9/16;max-height:72vh}
+.vfile figcaption{display:flex;align-items:center;gap:8px;padding:11px 14px;font-family:var(--font-head);text-transform:uppercase;letter-spacing:.8px;font-weight:700;font-size:.95rem;color:#fff;background:linear-gradient(90deg,rgba(var(--ac-rgb),.18),transparent)}
+.vfile figcaption svg{color:var(--ac-l);width:16px;height:16px}
+.clips-sub{color:var(--gray-light);font-size:.92rem;margin:-6px 0 14px}
+.clips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;align-items:start}
+.clip{position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#111;border:1px solid rgba(255,255,255,.1);transition:transform .25s var(--ease),border-color .25s}
+.clip:hover{transform:translateY(-3px);border-color:rgba(var(--ac-rgb),.6)}
+.clip video{width:100%;height:100%;object-fit:cover;display:block}
+.clip.land{aspect-ratio:16/9;grid-column:span 2}
+.clip span{position:absolute;right:8px;bottom:8px;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff}
+.clip span svg{width:15px;height:15px}
 .car-single .car-arrow,.car-single .car-thumbs,.car-single .car-count,.car-single .car-bar{display:none}
 .media-links{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-top:22px;opacity:0;animation:tileIn .7s var(--ease) .45s forwards}
 .media-links>span{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1.5px;font-size:.9rem;color:var(--gray-light);margin-right:4px}
 .media-links a{display:inline-flex;align-items:center;gap:9px;padding:12px 18px;border-radius:999px;font-family:var(--font-head);text-transform:uppercase;letter-spacing:.6px;font-weight:700;font-size:.95rem;color:#fff;background:var(--glass-bg);border:1px solid var(--glass-border);transition:transform .25s var(--ease),border-color .25s}
 .media-links a:hover{transform:translateY(-2px);border-color:rgba(245,196,81,.6)}
 .media-links a svg{color:var(--gold-hot)}
-@media(max-width:640px){.vids:has(> :nth-child(2)){grid-template-columns:1fr}.media-links>span{width:100%;text-align:center;margin:0}}
+@media(max-width:640px){.vids>.vert{flex-basis:100%}.clips{grid-template-columns:1fr 1fr}.media-links>span{width:100%;text-align:center;margin:0}}
 
 /* ===== Lightbox ===== */
 .lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;padding:20px}
@@ -1060,7 +1074,7 @@ body[data-route="premio"] .admin-gear{display:flex}
       <div class="media-links">
         <span>Veja como são nossos eventos:</span>
         <a href="#revisoes/midia"><svg class="i"><use href="#i-image"/></svg> Fotos e vídeos das Revisões</a>
-        <a href="#bigpocus/video"><svg class="i"><use href="#i-play"/></svg> Vídeo do The Big Pocus</a>
+        <a href="#bigpocus/midia"><svg class="i"><use href="#i-image"/></svg> Fotos e vídeos do The Big Pocus</a>
       </div>
 
       <a class="prize-cta" href="#premio">
@@ -1279,9 +1293,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261118a"></script>
-<script src="js/app.js?v=20261118a"></script>
-<script src="js/roleta.js?v=20261118a"></script>
+<script src="js/dados.js?v=20261118c"></script>
+<script src="js/app.js?v=20261118c"></script>
+<script src="js/roleta.js?v=20261118c"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>

@@ -169,6 +169,8 @@
   }
   function videoHtml(key) {
     var v = VIDEOS[key];
+    /* vídeo hospedado no próprio painel (pasta media/) */
+    if (v.arq) return '<figure class="vfile' + (v.vertical ? ' vert' : '') + '"><video src="' + v.arq + '#t=0.1" controls playsinline preload="metadata"></video><figcaption>' + ic('play') + v.titulo + '</figcaption></figure>';
     return '<div class="video-frame" data-video="' + key + '"><div class="video-poster" role="button" tabindex="0" aria-label="Assistir: ' + v.titulo + '">' +
       '<img src="' + v.poster + '" alt="" loading="lazy" /><span class="play-btn">' + ic('play') + '</span><b>' + v.titulo + '</b><small>Toque para assistir</small></div></div>';
   }
@@ -187,10 +189,39 @@
   }
   /* pausa vídeos ao sair da tela (recarrega o pôster) */
   function pararVideos(root) {
+    $$('video', root).forEach(function (v) { try { v.pause(); } catch (e) {} });
     $$('[data-video]', root).forEach(function (fr) {
       if ($('iframe', fr)) { var k = fr.getAttribute('data-video'); var tmp = document.createElement('div'); tmp.innerHTML = videoHtml(k); fr.replaceWith(tmp.firstChild); }
     });
     ligarVideos(root);
+  }
+  /* clipes de bastidores: tocam sem som em loop só enquanto aparecem na tela; toque = tela cheia */
+  function clipesHtml(lista) {
+    return '<div class="clips">' + lista.map(function (src) {
+      return '<button class="clip" type="button" aria-label="Ver clipe em tela cheia"><video src="' + src + '" muted loop playsinline preload="none"></video><span>' + ic('expand') + '</span></button>';
+    }).join('') + '</div>';
+  }
+  var clipObs = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { var v = e.target; if (e.isIntersecting && !reduz) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause(); });
+  }, { threshold: .35 }) : null;
+  function ligarClipes(root) {
+    $$('.clip video', root).forEach(function (v) {
+      if (clipObs) clipObs.observe(v);
+      /* clipes gravados deitados ganham moldura deitada */
+      v.addEventListener('loadedmetadata', function () { if (v.videoWidth > v.videoHeight) v.parentNode.classList.add('land'); });
+    });
+    $$('.clip', root).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = $('video', b);
+        v.muted = false; v.controls = true; v.currentTime = 0;
+        var fs = v.requestFullscreen || v.webkitRequestFullscreen || v.webkitEnterFullscreen;
+        if (fs) { try { fs.call(v); } catch (e) {} }
+        v.play();
+      });
+    });
+    document.addEventListener('fullscreenchange', function () {
+      if (!document.fullscreenElement) $$('.clip video', root).forEach(function (v) { v.muted = true; v.controls = false; });
+    });
   }
   function ringHtml(pct, label, val) {
     var C = 2 * Math.PI * 52;
@@ -528,8 +559,9 @@
         return '<div class="prof"><div class="ph"><img src="' + p.f + '" alt="' + p.n + '" loading="lazy" /></div><b>' + p.n + '</b><span>' + (p.s || P.profsSub) + '</span></div>';
       }).join('') + '</div></div>';
 
-    painel.portal = portalHtml(P);
-    painel.aula = aulaHtml(P.aula, P);
+    painel.portal = (P.portalVideo ? '<div class="block"><h3>Veja o portal de verdade</h3><div class="vids">' + videoHtml(P.portalVideo) + '</div></div>' : '') + portalHtml(P);
+    painel.aula = (P.aulaVideos ? '<div class="sec-head"><span class="eyebrow">Aula experimental</span><h2>Assista a um trecho das aulas</h2><p>Cortes reais das aulas do Preparatório TEME, com professores titulados.</p></div><div class="vids block">' + P.aulaVideos.map(videoHtml).join('') + '</div>' +
+      '<div class="sec-head"><span class="eyebrow">Mini-aula interativa</span><h2>Agora experimente você</h2></div>' : '') + aulaHtml(P.aula, P);
     painel.questoes = '<div class="sec-head"><span class="eyebrow">Banco de questões</span><h2>Teste seus conhecimentos</h2><p>5 questões no estilo da prova. Marque uma alternativa e veja o comentário do professor na hora.</p></div><div class="quiz" data-quiz></div>';
     painel.flashcards = '<div class="sec-head"><span class="eyebrow">Flashcards</span><h2>Memorização ativa</h2><p>Leia a pergunta, pense na resposta e toque no cartão para conferir.</p></div><div class="fc" data-fc></div>';
 
@@ -556,7 +588,8 @@
   function renderPremium() {
     var M = PREMIUM, el = $('#s-premium');
     var painel = {};
-    painel.pgeral = '<div class="sec-head"><span class="eyebrow">Por que o Premium</span><h2>Uma jornada, dois resultados</h2><p>' + M.porque + '</p></div>' +
+    painel.pgeral = (M.videos ? '<div class="sec-head"><span class="eyebrow">Assista</span><h2>Conheça o TEME Premium</h2></div><div class="vids block">' + M.videos.map(videoHtml).join('') + '</div>' : '') +
+      '<div class="sec-head"><span class="eyebrow">Por que o Premium</span><h2>Uma jornada, dois resultados</h2><p>' + M.porque + '</p></div>' +
       '<div class="two block">' + M.resultados.map(function (r) {
         return '<div class="feat glass"><div class="ic">' + ic(r.ic) + '</div><h3>' + r.t + '</h3><p>' + r.p + '</p></div>';
       }).join('') + '</div>' +
@@ -613,23 +646,26 @@
           return '<li class="' + (pausa ? 'pause' : '') + '"><time>' + g[0] + '</time><span>' + g[1] + '</span></li>';
         }).join('') + '</ul></div>';
       }).join('') + '</div>';
-    /* só vídeo por enquanto: sem galeria de fotos */
-    painel.video = '<div class="sec-head"><span class="eyebrow">Assista</span><h2>Veja como é o The Big Pocus</h2></div><div class="vids">' + G.videos.map(videoHtml).join('') + '</div>';
+    painel.midia = midiaHtml('Veja como é o The Big Pocus', 'Vídeos, fotos e bastidores da última edição. Toque numa foto para ampliar.', G.videos) +
+      (G.clipes && G.clipes.length ? '<div class="block"><h3>Bastidores</h3><p class="clips-sub">Momentos gravados no curso. Toque num clipe para ver em tela cheia, com som.</p>' + clipesHtml(G.clipes) + '</div>' : '');
 
-    var abas = ['video', 'curso', 'programacao'];
+    var abas = ['midia', 'curso', 'programacao'];
     el.innerHTML = '<div class="container">' + voltar() +
       heroHtml({ eyebrow: 'Emergency Talks · Curso presencial · Edição 2027', titulo: 'The Big <span class="accent">Pocus</span>',
         lead: G.lead, stats: G.stats,
-        cta: '<button class="btn btn-gold" data-goto="video">' + ic('play') + ' Ver vídeo</button>' + btnWhats('bigpocus', G.whatsMsg, 'Quero me inscrever', 'btn-primary') + '<button class="btn btn-glass" data-goto="programacao">' + ic('cal') + ' Ver programação</button>',
-        foto: 'img/bp-pratica.jpg', logo: 'img/bp-logo.png', fotoCap: G.quando }) +
+        cta: btnMidia() + btnWhats('bigpocus', G.whatsMsg, 'Quero me inscrever', 'btn-primary') + '<button class="btn btn-glass" data-goto="programacao">' + ic('cal') + ' Ver programação</button>',
+        foto: G.foto || 'img/bp-pratica.jpg', logo: 'img/bp-logo.png', fotoCap: G.quando }) +
       tabsHtml(abas) +
       abas.map(function (k) { return '<div class="panel" data-panel="' + k + '">' + painel[k] + '</div>'; }).join('') +
       '</div>';
     ligarVideos(el);
-    wireTabs(el, {});
+    ligarClipes(el);
+    var car = $('[data-car]', el);
+    Carousel(car, G.fotos);
+    wireTabs(el, { _midia: function () { car._tick(); }, midia: function () { car._tick(); } });
   }
 
-  /* aba "Fotos e vídeos" (Revisões) */
+  /* aba "Fotos e vídeos" (Revisões e The Big Pocus) */
   function btnMidia() { return '<button class="btn btn-gold" data-goto="midia">' + ic('image') + ' Ver fotos e vídeos</button>'; }
   function midiaHtml(titulo, sub, videos) {
     return '<div class="sec-head"><span class="eyebrow">Fotos e vídeos</span><h2>' + titulo + '</h2><p>' + sub + '</p></div>' +
@@ -726,12 +762,15 @@
     painel.pratica = '<div class="sec-head"><span class="eyebrow">2ª fase · prova prática</span><h2>Treine como se estivesse diante da banca</h2><p>Simulação presencial no formato real da prova prática da ABRAMEDE, com professores titulados avaliando cada estação.</p></div>' +
       '<div class="rv-stats">' + pr.stats.map(function (s) { return '<div class="p-stat"><b>' + s.n + '</b><span>' + s.t + '</span></div>'; }).join('') + '</div>' +
       '<div class="block"><h3>A dinâmica em 3 movimentos</h3><div class="steps">' + pr.passos.map(function (p, n) { return '<div class="step glass"><span class="sn">0' + (n + 1) + '</span><h4>' + p.t + '</h4><p>' + p.p + '</p></div>'; }).join('') + '</div></div>' +
+      (pr.video ? '<div class="block"><h3>Veja um debriefing de verdade</h3><div class="vids">' + videoHtml(pr.video) + '</div></div>' : '') +
       '<div class="two block"><div><h3 style="font-size:1.5rem;margin-bottom:14px">O que está incluso</h3><ul class="check-list">' + pr.inclui.map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') + '</ul></div>' +
         '<div><h3 style="font-size:1.5rem;margin-bottom:14px">O que o debriefing aponta</h3><div class="chips" style="margin-bottom:18px">' + pr.debrief.map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>' +
         '<div class="rv-mosaic"><img src="img/pratica-4.jpg" alt="Treino na Revisão Prática" loading="lazy" data-lb="8" /><img src="img/pratica-5.jpg" alt="Debriefing" loading="lazy" data-lb="8" /><img src="img/pratica-1.jpg" alt="Via aérea" loading="lazy" data-lb="0" /></div></div></div>' +
       '<p class="p-note">' + pr.nota + '</p>';
     painel.teorica = '<div class="sec-head"><span class="eyebrow">1ª fase · prova teórica</span><h2>Revise o que cai na teórica</h2><p>' + te.texto + '</p></div>' +
       '<div class="rv-stats" style="grid-template-columns:repeat(3,1fr)">' + te.stats.map(function (s) { return '<div class="p-stat"><b>' + s.n + '</b><span>' + s.t + '</span></div>'; }).join('') + '</div>' +
+      (te.video ? '<div class="block"><h3>Como foi a Revisão Teórica 2026</h3><div class="vids">' + videoHtml(te.video) + '</div></div>' : '') +
+      (te.clipes && te.clipes.length ? '<div class="block"><h3>Bastidores</h3><p class="clips-sub">Momentos da última edição. Toque num clipe para ver em tela cheia, com som.</p>' + clipesHtml(te.clipes) + '</div>' : '') +
       '<div class="two block"><ul class="check-list">' + te.inclui.map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') + '</ul>' +
         '<div class="glass" style="padding:24px"><h3 style="font-size:1.5rem;margin-bottom:8px">Edição 2027</h3><p style="color:var(--gray-light);margin-bottom:18px">Datas, local e formato da próxima turma serão divulgados em breve. Deixe seu contato com a nossa central para ser avisado(a) primeiro.</p>' +
         btnWhats('revisoes', R.whatsMsg, 'Quero ser avisado(a)') + '</div></div>';
@@ -748,6 +787,7 @@
       '</div>';
 
     ligarVideos(el);
+    ligarClipes(el);
     var car = $('[data-car]', el);
     Carousel(car, R.fotos);
     $$('[data-lb]', el).forEach(function (im) { im.addEventListener('click', function () { lbOpen(R.fotos, R.fotos.map(function (f) { return f.f; }).indexOf(im.getAttribute('src'))); }); });

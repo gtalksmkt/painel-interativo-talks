@@ -25,12 +25,24 @@ var CADASTRO = {
   foto: ''
 };
 
-/* Vídeos (Vimeo). Para trocar, cole o número do vídeo e o hash (?h=...) */
+/* Vídeos.
+   - Vimeo: id + h (hash do link).
+   - Arquivo do painel (pasta media/): arq; vertical: true para vídeo em pé (reels). */
 var VIDEOS = {
-  teme:     { id: '1214813044', h: '7917f77f1b', titulo: 'Conheça o TEME 2027', poster: 'img/galeria-2.jpg' },
-  revisoes: { id: '1193338774', h: '03bbdbfa56', titulo: 'A revisão que vale o título', poster: 'img/pratica-3.jpg' },
-  bigpocus: { id: '1143521837', h: '41570b18ba', titulo: 'Sinta 1% da energia que está por vir', poster: 'img/bp-pratica.jpg' }
+  teme:          { id: '1214813044', h: '7917f77f1b', titulo: 'Conheça o TEME 2027', poster: 'img/galeria-2.jpg' },
+  teme_khalil:   { arq: 'media/teme-aula-khalil.mp4', titulo: 'Aula experimental · Dr. Khalil Feitosa' },
+  teme_nicole:   { arq: 'media/teme-aula-nicole.mp4', titulo: 'Aula experimental · Dra. Nicole Pinheiro' },
+  teme_portal:   { arq: 'media/teme-portal.mp4', titulo: 'Por dentro do portal do aluno' },
+  premium_video: { arq: 'media/premium-video.mp4', titulo: 'TEME Premium 2027', vertical: true },
+  premium_khalil:{ arq: 'media/premium-khalil.mp4', titulo: 'Dr. Khalil apresenta o Premium', vertical: true },
+  revisoes:      { arq: 'media/revisoes.mp4', titulo: 'Revisões TEME em São Paulo', vertical: true },
+  debriefing:    { arq: 'media/revisoes-debriefing.mp4', titulo: 'Debriefing na Revisão Prática', vertical: true },
+  teorica:       { arq: 'media/teorica-reels.mp4', titulo: 'Revisão Teórica 2026', vertical: true },
+  bigpocus:      { arq: 'media/bigpocus-video.mp4', titulo: 'The Big Pocus', vertical: true },
+  bigpocus_reels:{ arq: 'media/bigpocus-reels.mp4', titulo: 'Por dentro do The Big Pocus', vertical: true }
 };
+/* lista de arquivos numerados: lista('media/x-', 3, '.mp4') = x-01, x-02, x-03 */
+function lista(pre, n, ext) { var r = []; for (var i = 1; i <= n; i++) r.push(pre + (i < 10 ? '0' : '') + i + ext); return r; }
 
 /* Lotes de preço: o painel mostra sozinho o lote do dia (horário de Brasília).
    Mesmos valores da landing do TEME 2027. */
@@ -67,6 +79,8 @@ var PRODUTOS = {
     whatsMsg: 'Olá! Conheci o Preparatório TEME 2027 no Painel Interativo Talks e quero saber mais.',
     abas: ['geral', 'portal', 'aula', 'questoes', 'flashcards'],
     video: 'teme',
+    aulaVideos: ['teme_khalil', 'teme_nicole'],
+    portalVideo: 'teme_portal',
 
     feats: [
       { ic: 'award',  t: 'Professores titulados', p: 'Você aprende com quem já enfrentou e passou exatamente pela prova que você vai fazer.' },
@@ -195,6 +209,7 @@ var PRODUTOS = {
    Produto high ticket: sem preço no painel, todo CTA vai para a central.
    ------------------------------------------------------------------ */
 var PREMIUM = {
+  videos: ['premium_video', 'premium_khalil'],
   whatsMsg: 'Olá! Conheci o TEME Premium no Painel Interativo Talks e quero saber mais sobre a Turma 01.',
   lead: 'A jornada que te possibilita concluir uma <b>pós-graduação em Medicina de Emergência</b> enquanto se prepara para o <b>Título de Especialista (TEME)</b>. Um caminho, duas conquistas: o certificado e o título.',
   stats: [
@@ -245,8 +260,11 @@ var PREMIUM = {
 var BIGPOCUS = {
   whatsMsg: 'Olá! Conheci o The Big Pocus 2027 no Painel Interativo Talks e quero me inscrever.',
   quando: 'São Paulo/SP · 05 e 06 de março de 2027',
-  /* aba "Vídeo" */
-  videos: ['bigpocus'],
+  /* aba "Fotos e vídeos" */
+  videos: ['bigpocus', 'bigpocus_reels'],
+  foto: 'img/bp-foto-12.jpg',
+  fotos: lista('img/bp-foto-', 28, '.jpg').map(function (f) { return { f: f, t: 'The Big Pocus', s: 'Última edição' }; }),
+  clipes: lista('media/bigpocus-clipe-', 22, '.mp4'),
   lead: 'O curso presencial de <b>ultrassom à beira-leito (POCUS)</b> da Emergency Talks: a ferramenta que vai transformar sua tomada de decisão. Dois dias de hands-on em <b>São Paulo, 05 e 06 de março de 2027</b>.',
   stats: [
     { n: '2', t: 'dias de imersão presencial' },
@@ -376,6 +394,7 @@ var REVISOES = {
     { f: 'img/galeria-9.jpg', t: 'Momentos da turma', s: 'Encontros Talks' }
   ],
   pratica: {
+    video: 'debriefing',
     stats: [
       { n: '4', t: 'dias de imersão presencial' },
       { n: '+30', t: 'cenários realistas' },
@@ -399,6 +418,8 @@ var REVISOES = {
     ]
   },
   teorica: {
+    video: 'teorica',
+    clipes: lista('media/teorica-clipe-', 9, '.mp4'),
     texto: 'A revisão da 1ª fase: um dia de aulas intensivas alinhadas ao edital da ABRAMEDE para consolidar o conteúdo antes da prova teórica.',
     inclui: [
       'Aulas intensivas com professores titulados',
