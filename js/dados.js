@@ -410,5 +410,5 @@ var ADMIN_PIN = '2027';
    url = endereço do App da Web do Apps Script (termina em /exec). Código em planilha-roleta.gs.
    Vazio = os giros ficam guardados no aparelho e são enviados quando o endereço for preenchido. */
 var PLANILHA = {
-  url: ''
+  url: 'https://script.google.com/macros/s/AKfycbwcRpotMd7Dvg9n9JONIyn4glBXW5sHUq-oLctMT2ohZnpyc3PRp6tySwYKf2pCANIuFQ/exec'
 };
