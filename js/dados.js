@@ -412,3 +412,14 @@ var ADMIN_PIN = '2027';
 var PLANILHA = {
   url: 'https://script.google.com/macros/s/AKfycbwcRpotMd7Dvg9n9JONIyn4glBXW5sHUq-oLctMT2ohZnpyc3PRp6tySwYKf2pCANIuFQ/exec'
 };
+
+/* Opções de "O que você comprou?" na janela da roleta (vão para a coluna Compra da planilha) */
+var COMPRAS = [
+  'Preparatório TEME 2027 · Intensivo',
+  'Preparatório TEME 2027 · MasterClass',
+  'TEME Premium 2027',
+  'Atualiza Talks',
+  'Revisões TEME',
+  'The Big Pocus 2027',
+  'Outro curso do Grupo Talks'
+];

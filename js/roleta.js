@@ -261,7 +261,7 @@
   /* quem vai girar: nome e WhatsApp do formulário */
   var pessoa = null;
   function terminou(f) {
-    var P = PREMIOS[f.k], res = { k: f.k, ts: Date.now(), nome: pessoa ? pessoa.nome : '', whats: pessoa ? pessoa.whats : '' };
+    var P = PREMIOS[f.k], res = { k: f.k, ts: Date.now(), nome: pessoa ? pessoa.nome : '', whats: pessoa ? pessoa.whats : '', compra: pessoa ? pessoa.compra : '' };
     destacar(f); luz(P.max ? 'max' : 'ganhou'); Som.vitoria(P.max);
     var hist = ler(K_HIST, []); hist.unshift(res); gravar(K_HIST, hist.slice(0, 2000));
     Planilha.enviar(res);
@@ -282,7 +282,7 @@
     ocupado: false,
     enviar: function (res) {
       var fila = ler(K_FILA, []);
-      fila.push({ data: new Date(res.ts).toISOString(), nome: res.nome, whatsapp: res.whats, premio: PREMIOS[res.k].nome, aparelho: Estande.ativo() ? 'estande' : 'celular' });
+      fila.push({ data: new Date(res.ts).toISOString(), nome: res.nome, whatsapp: res.whats, compra: res.compra || '', premio: PREMIOS[res.k].nome, aparelho: Estande.ativo() ? 'estande' : 'celular' });
       gravar(K_FILA, fila); this.esvaziar();
     },
     esvaziar: function () {
@@ -306,7 +306,9 @@
     var P = PREMIOS[res.k], card = $('#winCard');
     card.classList.toggle('jackpot', !!P.max);
     card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
-    $('#winKicker').textContent = res.nome ? 'Parabéns, ' + res.nome.split(' ')[0] + '!' : 'Parabéns!';
+    $('#winKicker').textContent = res.nome ? 'Olá, ' + res.nome.split(' ')[0] + '!' : 'Parabéns!';
+    var wc = $('#winCompra'); wc.hidden = !res.compra;
+    if (res.compra) { wc.innerHTML = 'Você adquiriu <b></b>'; $('b', wc).textContent = res.compra; }
     $('#winIco').innerHTML = icone(P);
     $('#winPrize').textContent = P.nome;
     $('#winModal').classList.add('on');
@@ -332,10 +334,11 @@
 
   /* formulário antes do giro: nome + WhatsApp */
   var lib = $('#libModal'), libForm = $('#libForm');
+  COMPRAS.forEach(function (n) { var o = document.createElement('option'); o.textContent = n; libForm.compra.appendChild(o); });
   function soNumeros(s) { return String(s || '').replace(/\D/g, ''); }
   function abrirLiberar() {
     libForm.reset(); $('#libErr').textContent = '';
-    $$('input', libForm).forEach(function (x) { x.classList.remove('invalid'); });
+    $$('input,select', libForm).forEach(function (x) { x.classList.remove('invalid'); });
     lib.classList.add('on'); setTimeout(function () { libForm.nome.focus(); }, 60);
   }
   function fecharLiberar() { lib.classList.remove('on'); }
@@ -345,16 +348,17 @@
   });
   libForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    var nome = libForm.nome.value.trim().replace(/\s+/g, ' '), whats = libForm.whats.value, erro = '';
-    $$('input', libForm).forEach(function (x) { x.classList.remove('invalid'); });
+    var nome = libForm.nome.value.trim().replace(/\s+/g, ' '), whats = libForm.whats.value, compra = libForm.compra.value, erro = '';
+    $$('input,select', libForm).forEach(function (x) { x.classList.remove('invalid'); });
     if (nome.split(' ').length < 2) { erro = 'Escreva seu nome completo.'; libForm.nome.classList.add('invalid'); libForm.nome.focus(); }
     else if (soNumeros(whats).length < 10) { erro = 'Confira o WhatsApp com DDD.'; libForm.whats.classList.add('invalid'); libForm.whats.focus(); }
+    else if (!compra) { erro = 'Selecione o curso que você comprou.'; libForm.compra.classList.add('invalid'); libForm.compra.focus(); }
     else if (ler(K_HIST, []).some(function (h) { return h.whats && soNumeros(h.whats) === soNumeros(whats); })) {
       erro = 'Este WhatsApp já girou a roleta.'; libForm.whats.classList.add('invalid');
     }
     $('#libErr').textContent = erro;
     if (erro) return;
-    pessoa = { nome: nome, whats: whats };
+    pessoa = { nome: nome, whats: whats, compra: compra };
     liberado = true; fecharLiberar(); destacar(null); atualizarEstado();
     toast('Pronto, ' + nome.split(' ')[0] + '! Agora é só girar.');
     spinBtn.scrollIntoView({ block: 'center', behavior: reduz ? 'auto' : 'smooth' });
@@ -377,13 +381,13 @@
 
   /* mini roleta da página inicial */
   function miniRoda() {
-    var g = $('#miniWheel'); if (!g) return;
+    var alvos = $$('#miniWheel, [data-mini-wheel]'); if (!alvos.length) return;
     var h = '';
     fatias.forEach(function (f) {
       var a0 = rad(f.a0 - 90), a1 = rad(f.a1 - 90), r = 46, large = f.a1 - f.a0 > 180 ? 1 : 0;
       h += '<path d="M0 0L' + (Math.cos(a0) * r).toFixed(2) + ' ' + (Math.sin(a0) * r).toFixed(2) + 'A' + r + ' ' + r + ' 0 ' + large + ' 1 ' + (Math.cos(a1) * r).toFixed(2) + ' ' + (Math.sin(a1) * r).toFixed(2) + 'Z" fill="' + PREMIOS[f.k].cor[0] + '" stroke="#F5C451" stroke-width=".8"/>';
     });
-    g.innerHTML = h;
+    alvos.forEach(function (g) { g.innerHTML = h; });
   }
 
   function refazer() { layout(); desenhar(); legenda(); miniRoda(); atualizarEstado(); }

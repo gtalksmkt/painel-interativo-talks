@@ -659,14 +659,25 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 .cad-head h2{font-size:clamp(1.6rem,4.6vw,2.2rem);font-weight:900;line-height:.98;margin:4px 0 8px}
 .cad-head h2 em{font-style:normal;color:var(--red-light)}
 .cad-head p{font-size:.92rem;color:var(--gray-light)}
-#cadForm{display:grid;gap:12px}
-#cadForm label{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:600;color:var(--gray-light);letter-spacing:.3px}
-#cadForm input,#cadForm select{font:inherit;font-size:1rem;font-weight:500;color:#fff;padding:14px 16px;border-radius:14px;background:#16161b;border:1px solid rgba(255,255,255,.15);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none}
-#cadForm select{background-image:linear-gradient(45deg,transparent 50%,#C5C6CC 50%),linear-gradient(135deg,#C5C6CC 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat}
-#cadForm select option{background:#16161b}
-#cadForm input:focus,#cadForm select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(245,22,39,.25)}
-#cadForm .invalid{border-color:var(--bad)}
+.cad-card form{display:grid;gap:12px}
+.cad-card form label{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:600;color:var(--gray-light);letter-spacing:.3px}
+.cad-card form input,.cad-card form select{font:inherit;font-size:1rem;font-weight:500;color:#fff;padding:14px 16px;border-radius:14px;background:#16161b;border:1px solid rgba(255,255,255,.15);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none}
+.cad-card form select{background-image:linear-gradient(45deg,transparent 50%,#C5C6CC 50%),linear-gradient(135deg,#C5C6CC 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat}
+.cad-card form select option{background:#16161b}
+.cad-card form input:focus,.cad-card form select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(245,22,39,.25)}
+.cad-card form .invalid{border-color:var(--bad)}
 #cadForm .btn{width:100%;margin-top:4px;color:#fff;background:linear-gradient(100deg,#FF2436,#A90F1B);box-shadow:0 0 22px rgba(245,22,39,.45)}
+.lib-card{border-color:rgba(245,196,81,.6);background:linear-gradient(170deg,#1d1509,#0c0b0d 60%);box-shadow:0 0 70px rgba(245,196,81,.22),0 40px 100px rgba(0,0,0,.8);text-align:center}
+.lib-card .cad-head{flex-direction:column;align-items:center;gap:12px;padding:0 10px;margin-bottom:22px}
+.lib-wheel{width:96px;height:96px;filter:drop-shadow(0 0 22px rgba(245,196,81,.5))}
+.lib-wheel svg{width:100%;height:100%;animation:spin 8s linear infinite}
+.lib-card .cad-head h2 em{color:var(--gold-hot)}
+.lib-card form{text-align:left}
+.lib-card form input:focus,.lib-card form select:focus{border-color:var(--gold-hot);box-shadow:0 0 0 3px rgba(245,196,81,.25)}
+.lib-card form .btn{width:100%;margin-top:6px;font-size:1.15rem;padding:17px}
+.lib-note{font-size:.74rem;color:var(--gray-mid);text-align:center}
+.win-compra{font-size:1rem;color:var(--white-warm);margin:2px 0 14px}
+.win-compra b{color:#fff}
 .cad-err{min-height:1.1em;font-size:.85rem;color:var(--bad)}
 .cad-note{font-size:.74rem;color:var(--gray-mid);text-align:center}
 .cad-ok{display:grid;gap:12px;text-align:center;justify-items:center}
@@ -1177,7 +1188,8 @@ body[data-route="premio"] .admin-gear{display:flex}
     <span class="win-kicker" id="winKicker">Parabéns!</span>
     <div class="win-ico" id="winIco"></div>
     <span class="jp-banner">Prêmio máximo</span>
-    <p class="win-label">Você ganhou</p>
+    <p class="win-compra" id="winCompra"></p>
+    <p class="win-label">e ganhou na roleta</p>
     <h2 class="win-prize" id="winPrize"></h2>
     <p class="win-how">Mostre esta tela para a nossa equipe para retirar o seu prêmio.</p>
     <div class="win-actions">
@@ -1226,22 +1238,29 @@ body[data-route="premio"] .admin-gear{display:flex}
   </div>
 </div>
 
-<!-- Antes de girar: nome e WhatsApp de quem comprou -->
+<!-- Antes de girar: nome, WhatsApp e o que a pessoa comprou -->
 <div class="modal" id="libModal" role="dialog" aria-modal="true" aria-labelledby="libTitle">
   <div class="cad-card lib-card">
     <button class="round-btn cad-x" id="libCancel" type="button" aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
     <div class="cad-head">
+      <span class="lib-wheel" aria-hidden="true"><svg viewBox="-50 -50 100 100"><g data-mini-wheel></g><circle r="46" fill="none" stroke="#F5C451" stroke-width="4"/><circle r="9" fill="#0a0a0c" stroke="#F5C451" stroke-width="2.5"/></svg></span>
       <div>
         <span class="cad-kicker">Comprou com a gente?</span>
         <h2 id="libTitle">Falta pouco para <em>girar a roleta</em></h2>
-        <p>Coloque seu nome e WhatsApp para liberar o seu giro.</p>
+        <p>Preencha seus dados para liberar o seu giro. Todo giro dá prêmio.</p>
       </div>
     </div>
     <form id="libForm" novalidate>
-      <label>Nome completo<input name="nome" required autocomplete="name" /></label>
+      <label>Nome completo<input name="nome" required autocomplete="name" placeholder="Seu nome e sobrenome" /></label>
       <label>WhatsApp<input name="whats" required inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" /></label>
+      <label>O que você comprou?
+        <select name="compra" required>
+          <option value="">Selecione o curso</option>
+        </select>
+      </label>
       <p class="cad-err" id="libErr" role="alert"></p>
       <button class="btn btn-gold" type="submit"><svg class="i"><use href="#i-refresh"/></svg> Liberar meu giro</button>
+      <p class="lib-note">Use o mesmo WhatsApp da sua compra.</p>
     </form>
   </div>
 </div>
@@ -1292,9 +1311,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261119c"></script>
-<script src="js/app.js?v=20261119c"></script>
-<script src="js/roleta.js?v=20261119c"></script>
+<script src="js/dados.js?v=20261119d"></script>
+<script src="js/app.js?v=20261119d"></script>
+<script src="js/roleta.js?v=20261119d"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>
