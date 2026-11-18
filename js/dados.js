@@ -25,23 +25,26 @@ var CADASTRO = {
   foto: ''
 };
 
-/* Vídeos.
-   - Vimeo: id + h (hash do link).
-   - Arquivo do painel (pasta media/): arq; vertical: true para vídeo em pé (reels). */
+/* VÍDEOS DO VIMEO
+   Para colocar um vídeo, cole o link do Vimeo entre as aspas de "vimeo".
+   Vale o link comum (https://vimeo.com/123456789 ou https://vimeo.com/123456789/abc123)
+   ou o do player (https://player.vimeo.com/video/123456789?h=abc123).
+   Enquanto estiver vazio, o painel mostra o espaço "Vídeo em breve".
+   vertical: true = vídeo em pé (reels, 9:16). */
 var VIDEOS = {
-  teme:          { id: '1214813044', h: '7917f77f1b', titulo: 'Conheça o TEME 2027', poster: 'img/galeria-2.jpg' },
-  teme_khalil:   { arq: 'media/teme-aula-khalil.mp4', titulo: 'Aula experimental · Dr. Khalil Feitosa' },
-  teme_nicole:   { arq: 'media/teme-aula-nicole.mp4', titulo: 'Aula experimental · Dra. Nicole Pinheiro' },
-  teme_portal:   { arq: 'media/teme-portal.mp4', titulo: 'Por dentro do portal do aluno' },
-  premium_video: { arq: 'media/premium-video.mp4', titulo: 'TEME Premium 2027', vertical: true },
-  premium_khalil:{ arq: 'media/premium-khalil.mp4', titulo: 'Dr. Khalil apresenta o Premium', vertical: true },
-  revisoes:      { arq: 'media/revisoes.mp4', titulo: 'Revisões TEME em São Paulo', vertical: true },
-  debriefing:    { arq: 'media/revisoes-debriefing.mp4', titulo: 'Debriefing na Revisão Prática', vertical: true },
-  teorica:       { arq: 'media/teorica-reels.mp4', titulo: 'Revisão Teórica 2026', vertical: true },
-  bigpocus:      { arq: 'media/bigpocus-video.mp4', titulo: 'The Big Pocus', vertical: true },
-  bigpocus_reels:{ arq: 'media/bigpocus-reels.mp4', titulo: 'Por dentro do The Big Pocus', vertical: true }
+  teme:           { vimeo: 'https://vimeo.com/1214813044/7917f77f1b', titulo: 'Conheça o TEME 2027', poster: 'img/galeria-2.jpg' },
+  teme_portal:    { vimeo: '', titulo: 'Por dentro do portal do aluno' },
+  teme_khalil:    { vimeo: '', titulo: 'Aula experimental · Dr. Khalil Feitosa' },
+  teme_nicole:    { vimeo: '', titulo: 'Aula experimental · Dra. Nicole Pinheiro' },
+  premium_video:  { vimeo: '', titulo: 'TEME Premium 2027', vertical: true },
+  premium_khalil: { vimeo: '', titulo: 'Dr. Khalil apresenta o Premium', vertical: true },
+  revisoes:       { vimeo: '', titulo: 'Revisões TEME em São Paulo', vertical: true },
+  debriefing:     { vimeo: '', titulo: 'Debriefing na Revisão Prática', vertical: true },
+  teorica:        { vimeo: '', titulo: 'Revisão Teórica 2026', vertical: true },
+  bigpocus:       { vimeo: '', titulo: 'The Big Pocus', vertical: true },
+  bigpocus_reels: { vimeo: '', titulo: 'Por dentro do The Big Pocus', vertical: true }
 };
-/* lista de arquivos numerados: lista('media/x-', 3, '.mp4') = x-01, x-02, x-03 */
+/* lista de arquivos numerados: lista('img/x-', 3, '.jpg') = x-01, x-02, x-03 */
 function lista(pre, n, ext) { var r = []; for (var i = 1; i <= n; i++) r.push(pre + (i < 10 ? '0' : '') + i + ext); return r; }
 
 /* Lotes de preço: o painel mostra sozinho o lote do dia (horário de Brasília).
@@ -102,58 +105,6 @@ var PRODUTOS = {
       { n: 'Dra. Thaís Leão',     f: 'img/prof-thais.png' }
     ],
     profsSub: 'Medicina de Emergência · titulado(a)',
-
-    /* Portal do aluno (demonstração com dados ilustrativos) */
-    portal: {
-      url: 'Portal do aluno · Preparatório TEME 2027',
-      marca: 'TEME 2027',
-      ola: 'Olá, doutor(a)!',
-      progresso: 38,
-      cards: [
-        { n: '38%', t: 'do curso concluído', hl: true },
-        { n: '412', t: 'questões resolvidas' },
-        { n: '74%', t: 'de acerto geral' },
-        { n: '1.260', t: 'flashcards revisados' }
-      ],
-      continuar: { t: 'Sepse e choque séptico', s: 'Eixo Choque e sepse · você parou em 18:20', pct: 44, img: 'img/galeria-5.jpg' },
-      aulas: [
-        { t: 'Via aérea: sequência rápida de intubação', s: 'Eixo Via aérea · aula + material de apoio', st: 'done', meta: 'Concluída' },
-        { t: 'Sepse e choque séptico', s: 'Eixo Choque e sepse · aula + flashcards', st: 'now', meta: '44%' },
-        { t: 'Síndromes coronarianas agudas', s: 'Eixo Cardiovascular · aula + questões', st: 'new', meta: 'Nova' },
-        { t: 'Trauma: atendimento inicial', s: 'Eixo Trauma · aula + questões', st: 'new', meta: 'Nova' },
-        { t: 'Intoxicações exógenas', s: 'Eixo Toxicologia', st: 'lock', meta: 'Em breve' }
-      ],
-      eixos: [
-        { t: 'Via aérea', s: 'Intubação, via aérea difícil, ventilação' },
-        { t: 'Ressuscitação', s: 'PCR, cuidados pós-parada' },
-        { t: 'Choque e sepse', s: 'Reconhecimento, volume, vasopressores' },
-        { t: 'Cardiovascular', s: 'SCA, arritmias, emergência hipertensiva' },
-        { t: 'Trauma', s: 'XABCDE, choque hemorrágico, TCE' },
-        { t: 'Neurológicas', s: 'AVC, crise convulsiva, rebaixamento' },
-        { t: 'Respiratórias', s: 'Asma, DPOC, TEP, insuficiência respiratória' },
-        { t: 'Toxicologia', s: 'Síndromes tóxicas e antídotos' },
-        { t: 'Metabólicas', s: 'Distúrbios hidroeletrolíticos e ácido-base' },
-        { t: 'Pediatria na emergência', s: 'Particularidades do atendimento pediátrico' },
-        { t: 'Procedimentos e POCUS', s: 'Ultrassom à beira-leito e procedimentos' }
-      ],
-      simulados: [
-        { t: 'Simulado 1 · online', s: 'Formato da prova, com cronômetro', st: 'done', meta: 'Nota 71%' },
-        { t: 'Simulado 2 · online', s: 'Liberado após o eixo Cardiovascular', st: 'now', meta: 'Disponível' },
-        { t: 'Simulado 3 · presencial', s: 'Ambiente de prova, com correção', st: 'lock', meta: 'Em breve' },
-        { t: 'Simulado 4 · online', s: 'Reta final', st: 'lock', meta: 'Em breve' }
-      ],
-      decks: [
-        { t: 'Ressuscitação', s: 'cards para hoje: 18' },
-        { t: 'Choque e sepse', s: 'cards para hoje: 12' },
-        { t: 'Toxicologia', s: 'cards para hoje: 9' },
-        { t: 'Via aérea', s: 'cards para hoje: 15' }
-      ],
-      desempenho: [
-        { t: 'Via aérea', v: 82 }, { t: 'Ressuscitação', v: 78 }, { t: 'Choque e sepse', v: 76 },
-        { t: 'Cardiovascular', v: 71 }, { t: 'Trauma', v: 64 }, { t: 'Toxicologia', v: 55 }
-      ],
-      acerto: 74
-    },
 
     /* Aula experimental (passo a passo) */
     aula: {
@@ -264,7 +215,6 @@ var BIGPOCUS = {
   videos: ['bigpocus', 'bigpocus_reels'],
   foto: 'img/bp-foto-12.jpg',
   fotos: lista('img/bp-foto-', 28, '.jpg').map(function (f) { return { f: f, t: 'The Big Pocus', s: 'Última edição' }; }),
-  clipes: lista('media/bigpocus-clipe-', 22, '.mp4'),
   lead: 'O curso presencial de <b>ultrassom à beira-leito (POCUS)</b> da Emergency Talks: a ferramenta que vai transformar sua tomada de decisão. Dois dias de hands-on em <b>São Paulo, 05 e 06 de março de 2027</b>.',
   stats: [
     { n: '2', t: 'dias de imersão presencial' },
@@ -313,6 +263,7 @@ var ATUALIZA = {
     tag: 'Black Friday',
     preco: '9', centavos: ',90',
     sub: 'no primeiro mês',
+    depois: 'Depois, R$ 299,90/mês · residentes: R$ 199,90/mês',
     itens: [
       'Artigo comentado toda segunda-feira',
       'Comentário em áudio e flashcards de cada artigo',
@@ -320,7 +271,7 @@ var ATUALIZA = {
       'Teste mensal com gabarito',
       'Para médicos com ou sem título'
     ],
-    nota: 'Valor promocional de Black Friday para o primeiro mês. Confirme as condições dos meses seguintes com a nossa central.'
+    nota: 'Valor promocional de Black Friday válido para o primeiro mês da assinatura.'
   },
   inicio: '2027-01-16T09:00:00-03:00',
   novidades: [
@@ -419,7 +370,6 @@ var REVISOES = {
   },
   teorica: {
     video: 'teorica',
-    clipes: lista('media/teorica-clipe-', 9, '.mp4'),
     texto: 'A revisão da 1ª fase: um dia de aulas intensivas alinhadas ao edital da ABRAMEDE para consolidar o conteúdo antes da prova teórica.',
     inclui: [
       'Aulas intensivas com professores titulados',

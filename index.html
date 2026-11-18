@@ -123,6 +123,8 @@ main{position:relative;z-index:1;padding-top:var(--top)}
 .back:hover{color:#fff;border-color:rgba(var(--ac-rgb),.5)}
 
 /* ===== HOME ===== */
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.home-start{padding-top:clamp(18px,3vh,30px)}
 .home-hero{text-align:center;padding:clamp(30px,6vh,64px) 0 clamp(26px,4vh,40px);display:flex;flex-direction:column;align-items:center}
 .home-title{font-weight:900;font-size:clamp(2.9rem,9vw,6.2rem);line-height:.92;margin:22px 0 18px;text-wrap:balance;background:linear-gradient(100deg,#fff 18%,#c7ccd6 42%,#fff 64%,#fff 100%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sheen 7s linear infinite}
 .home-title .accent{-webkit-text-fill-color:var(--red);color:var(--red)}
@@ -497,7 +499,8 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 .bf-price small{font-size:1.6rem;font-weight:700;margin-top:10px;color:var(--gold-hot)}
 .bf-price b{font-size:clamp(5rem,12vw,7.6rem);font-weight:900;text-shadow:0 0 50px rgba(245,196,81,.35)}
 .bf-price em{font-style:normal;font-size:2.4rem;font-weight:800;margin-top:10px}
-.bf-sub{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1.5px;font-size:1.1rem;color:var(--gold-hot);font-weight:700;margin-bottom:16px}
+.bf-sub{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1.5px;font-size:1.1rem;color:var(--gold-hot);font-weight:700;margin-bottom:4px}
+.bf-depois{font-size:.8rem;font-weight:600;color:var(--gray-mid);margin-bottom:16px}
 .bf ul{display:grid;gap:8px;text-align:left;max-width:360px;margin:0 auto 20px}
 .bf li{display:flex;gap:10px;font-size:.93rem;color:var(--white-warm)}
 .bf li svg{color:var(--gold-hot);margin-top:3px}
@@ -687,26 +690,20 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 .vids{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
 .vids>*{flex:1 1 420px;min-width:0}
 .vids>.vert{flex:0 1 340px}
-.vfile{margin:0;border-radius:22px;overflow:hidden;background:#000;border:1px solid rgba(var(--ac-rgb),.3);box-shadow:0 26px 60px rgba(0,0,0,.5)}
-.vfile video{display:block;width:100%;aspect-ratio:16/9;background:#000;object-fit:contain}
-.vfile.vert video{aspect-ratio:9/16;max-height:72vh}
-.vfile figcaption{display:flex;align-items:center;gap:8px;padding:11px 14px;font-family:var(--font-head);text-transform:uppercase;letter-spacing:.8px;font-weight:700;font-size:.95rem;color:#fff;background:linear-gradient(90deg,rgba(var(--ac-rgb),.18),transparent)}
-.vfile figcaption svg{color:var(--ac-l);width:16px;height:16px}
-.clips-sub{color:var(--gray-light);font-size:.92rem;margin:-6px 0 14px}
-.clips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;align-items:start}
-.clip{position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#111;border:1px solid rgba(255,255,255,.1);transition:transform .25s var(--ease),border-color .25s}
-.clip:hover{transform:translateY(-3px);border-color:rgba(var(--ac-rgb),.6)}
-.clip video{width:100%;height:100%;object-fit:cover;display:block}
-.clip.land{aspect-ratio:16/9;grid-column:span 2}
-.clip span{position:absolute;right:8px;bottom:8px;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff}
-.clip span svg{width:15px;height:15px}
-.car-single .car-arrow,.car-single .car-thumbs,.car-single .car-count,.car-single .car-bar{display:none}
+.video-frame.vert{aspect-ratio:9/16;max-height:78vh}
+.vids>.video-frame.vert{flex:0 1 340px}
+.video-poster{background:radial-gradient(circle at 50% 40%,rgba(var(--ac-rgb),.32),#0a0a0c 70%)}
+.vslot{display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.03) 0 12px,transparent 12px 24px),#0c0c0f;border:1.5px dashed rgba(var(--ac-rgb),.45);box-shadow:none}
+.vslot-in{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:20px;color:var(--gray-light)}
+.vslot-in svg{width:40px;height:40px;color:var(--ac-l)}
+.vslot-in b{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1px;font-size:1.25rem;color:#fff}
+.vslot-in small{font-size:.86rem}
 .media-links{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-top:22px;opacity:0;animation:tileIn .7s var(--ease) .45s forwards}
 .media-links>span{font-family:var(--font-head);text-transform:uppercase;letter-spacing:1.5px;font-size:.9rem;color:var(--gray-light);margin-right:4px}
 .media-links a{display:inline-flex;align-items:center;gap:9px;padding:12px 18px;border-radius:999px;font-family:var(--font-head);text-transform:uppercase;letter-spacing:.6px;font-weight:700;font-size:.95rem;color:#fff;background:var(--glass-bg);border:1px solid var(--glass-border);transition:transform .25s var(--ease),border-color .25s}
 .media-links a:hover{transform:translateY(-2px);border-color:rgba(245,196,81,.6)}
 .media-links a svg{color:var(--gold-hot)}
-@media(max-width:640px){.vids>.vert{flex-basis:100%}.clips{grid-template-columns:1fr 1fr}.media-links>span{width:100%;text-align:center;margin:0}}
+@media(max-width:640px){.vids>.video-frame.vert{flex-basis:100%}.media-links>span{width:100%;text-align:center;margin:0}}
 
 /* ===== Lightbox ===== */
 .lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;padding:20px}
@@ -1001,13 +998,8 @@ body[data-route="premio"] .admin-gear{display:flex}
   <!-- ============ INÍCIO ============ -->
   <section class="screen" id="s-inicio">
     <div class="container">
-      <div class="home-hero">
-        <span class="kicker"><i></i> Grupo Talks · Educação médica</span>
-        <h1 class="home-title">Painel Interativo <span class="accent">Talks</span></h1>
-        <p class="home-sub">Toque em um produto e veja por dentro: o portal, uma aula experimental, questões e flashcards. Fechou uma compra com a gente? Gire a roleta e ganhe seu prêmio.</p>
-      </div>
-
-      <div class="prod-grid">
+      <h1 class="sr-only">Painel Interativo Talks</h1>
+      <div class="prod-grid home-start">
         <a class="prod-tile t-teme" href="#teme" style="--d:0">
           <div class="pt-bg"><img src="img/galeria-1.jpg" alt="" loading="eager" /></div>
           <div class="pt-top"><img class="pt-logo" src="img/logo-emergency.png" alt="Emergency Talks" /><span class="pt-chip">Turma 2027</span></div>
@@ -1033,6 +1025,7 @@ body[data-route="premio"] .admin-gear{display:flex}
         </a>
 
         <a class="prod-tile t-atualiza" href="#atualiza" style="--d:2">
+          <div class="pt-bg"><img src="img/atualiza-corredor.webp" alt="" /></div>
           <span class="pt-ribbon">Black Friday</span>
           <div class="pt-top">
             <span class="at-icon-wrap"><img class="at-icon" src="img/atualiza-icone.svg" alt="" /><span class="at-word">atualiza<b>talks</b></span></span>
@@ -1293,9 +1286,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261118c"></script>
-<script src="js/app.js?v=20261118c"></script>
-<script src="js/roleta.js?v=20261118c"></script>
+<script src="js/dados.js?v=20261119a"></script>
+<script src="js/app.js?v=20261119a"></script>
+<script src="js/roleta.js?v=20261119a"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>

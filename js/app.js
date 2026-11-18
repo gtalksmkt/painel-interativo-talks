@@ -167,12 +167,19 @@
   function btnWhats(key, msg, txt, cls) {
     return '<a class="btn ' + (cls || 'btn-whats') + '" href="' + wa(key, msg) + '" target="_blank" rel="noopener">' + ic('whats') + ' ' + (txt || 'Falar no WhatsApp') + '</a>';
   }
+  /* lê o link do Vimeo (vimeo.com/ID, vimeo.com/ID/HASH ou player.vimeo.com/video/ID?h=HASH) */
+  function vimeo(v) {
+    var m = String(v.vimeo || '').match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([0-9a-f]+))?/i);
+    if (!m) return null;
+    var h = m[2] || (String(v.vimeo).match(/[?&]h=([0-9a-f]+)/i) || [])[1] || '';
+    return { id: m[1], h: h };
+  }
   function videoHtml(key) {
-    var v = VIDEOS[key];
-    /* vídeo hospedado no próprio painel (pasta media/) */
-    if (v.arq) return '<figure class="vfile' + (v.vertical ? ' vert' : '') + '"><video src="' + v.arq + '#t=0.1" controls playsinline preload="metadata"></video><figcaption>' + ic('play') + v.titulo + '</figcaption></figure>';
-    return '<div class="video-frame" data-video="' + key + '"><div class="video-poster" role="button" tabindex="0" aria-label="Assistir: ' + v.titulo + '">' +
-      '<img src="' + v.poster + '" alt="" loading="lazy" /><span class="play-btn">' + ic('play') + '</span><b>' + v.titulo + '</b><small>Toque para assistir</small></div></div>';
+    var v = VIDEOS[key], vm = vimeo(v), cls = 'video-frame' + (v.vertical ? ' vert' : '');
+    /* sem link ainda: espaço reservado */
+    if (!vm) return '<div class="' + cls + ' vslot"><div class="vslot-in">' + ic('video') + '<b>Vídeo em breve</b><small>' + v.titulo + '</small></div></div>';
+    return '<div class="' + cls + '" data-video="' + key + '"><div class="video-poster" role="button" tabindex="0" aria-label="Assistir: ' + v.titulo + '">' +
+      (v.poster ? '<img src="' + v.poster + '" alt="" loading="lazy" />' : '') + '<span class="play-btn">' + ic('play') + '</span><b>' + v.titulo + '</b><small>Toque para assistir</small></div></div>';
   }
   function ligarVideos(root) {
     $$('[data-video]', root).forEach(function (fr) {
@@ -180,48 +187,19 @@
       if (!p || p._ligado) return;
       p._ligado = true;
       function play() {
-        var v = VIDEOS[fr.getAttribute('data-video')];
-        fr.innerHTML = '<iframe src="https://player.vimeo.com/video/' + v.id + '?h=' + v.h + '&autoplay=1&title=0&byline=0&portrait=0&dnt=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="' + v.titulo + '"></iframe>';
+        var v = VIDEOS[fr.getAttribute('data-video')], vm = vimeo(v);
+        fr.innerHTML = '<iframe src="https://player.vimeo.com/video/' + vm.id + '?' + (vm.h ? 'h=' + vm.h + '&' : '') + 'autoplay=1&title=0&byline=0&portrait=0&dnt=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="' + v.titulo + '"></iframe>';
       }
       p.addEventListener('click', play);
       p.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(); } });
     });
   }
-  /* pausa vídeos ao sair da tela (recarrega o pôster) */
+  /* para os vídeos ao sair da tela (volta o pôster) */
   function pararVideos(root) {
-    $$('video', root).forEach(function (v) { try { v.pause(); } catch (e) {} });
     $$('[data-video]', root).forEach(function (fr) {
       if ($('iframe', fr)) { var k = fr.getAttribute('data-video'); var tmp = document.createElement('div'); tmp.innerHTML = videoHtml(k); fr.replaceWith(tmp.firstChild); }
     });
     ligarVideos(root);
-  }
-  /* clipes de bastidores: tocam sem som em loop só enquanto aparecem na tela; toque = tela cheia */
-  function clipesHtml(lista) {
-    return '<div class="clips">' + lista.map(function (src) {
-      return '<button class="clip" type="button" aria-label="Ver clipe em tela cheia"><video src="' + src + '" muted loop playsinline preload="none"></video><span>' + ic('expand') + '</span></button>';
-    }).join('') + '</div>';
-  }
-  var clipObs = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
-    es.forEach(function (e) { var v = e.target; if (e.isIntersecting && !reduz) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause(); });
-  }, { threshold: .35 }) : null;
-  function ligarClipes(root) {
-    $$('.clip video', root).forEach(function (v) {
-      if (clipObs) clipObs.observe(v);
-      /* clipes gravados deitados ganham moldura deitada */
-      v.addEventListener('loadedmetadata', function () { if (v.videoWidth > v.videoHeight) v.parentNode.classList.add('land'); });
-    });
-    $$('.clip', root).forEach(function (b) {
-      b.addEventListener('click', function () {
-        var v = $('video', b);
-        v.muted = false; v.controls = true; v.currentTime = 0;
-        var fs = v.requestFullscreen || v.webkitRequestFullscreen || v.webkitEnterFullscreen;
-        if (fs) { try { fs.call(v); } catch (e) {} }
-        v.play();
-      });
-    });
-    document.addEventListener('fullscreenchange', function () {
-      if (!document.fullscreenElement) $$('.clip video', root).forEach(function (v) { v.muted = true; v.controls = false; });
-    });
   }
   function ringHtml(pct, label, val) {
     var C = 2 * Math.PI * 52;
@@ -232,73 +210,6 @@
       var C = parseFloat(c.getAttribute('stroke-dasharray'));
       c.style.strokeDashoffset = C;
       requestAnimationFrame(function () { requestAnimationFrame(function () { c.style.strokeDashoffset = C * (1 - c.getAttribute('data-pct') / 100); }); });
-    });
-  }
-
-  /* ==================================================================
-     PORTAL (demonstração)
-     ================================================================== */
-  function portalHtml(P) {
-    var pt = P.portal;
-    function row(a, btn) {
-      var icone = { done: 'check', now: 'play', 'new': 'star', lock: 'lock' }[a.st];
-      var tag = btn ? 'button' : 'div';
-      return '<' + tag + ' class="pm-row"' + (btn ? ' data-goto="' + btn + '"' : '') + '><span class="st ' + a.st + '">' + ic(icone) + '</span><div class="tx"><b>' + a.t + '</b><small>' + a.s + '</small></div><span class="meta' + (a.st === 'now' ? ' ac' : '') + '">' + a.meta + '</span></' + tag + '>';
-    }
-    var side = [['inicio', 'home', 'Início'], ['aulas', 'video', 'Aulas'], ['eixos', 'layers', 'Eixos temáticos'], ['simulados', 'clip', 'Simulados'], ['questoes', 'q', 'Banco de questões'], ['flash', 'cards', 'Flashcards'], ['desemp', 'chart', 'Desempenho']];
-    return '<div class="sec-head"><span class="eyebrow">Portal do aluno</span><h2>Tudo num só lugar</h2><p>Clique no menu do portal para navegar. É assim que o aluno estuda no dia a dia.</p></div>' +
-      '<div class="portal" data-portal>' +
-        '<div class="portal-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">' + pt.url + '</span></div>' +
-        '<div class="portal-body">' +
-          '<nav class="portal-side"><div class="ps-brand"><i>' + ic('ecg') + '</i>' + pt.marca + '</div>' +
-            side.map(function (s, n) { return '<button class="ps-item' + (n ? '' : ' on') + '" data-pv="' + s[0] + '">' + ic(s[1]) + s[2] + '</button>'; }).join('') +
-          '</nav>' +
-          '<div class="portal-main">' +
-            /* início */
-            '<div class="pm-view on" data-view="inicio">' +
-              '<div class="pm-h"><h4>' + pt.ola + '</h4><span>Seu progresso no curso</span></div>' +
-              '<div class="pm-cards">' + pt.cards.map(function (c) { return '<div class="pm-card' + (c.hl ? ' hl' : '') + '"><b>' + c.n + '</b><span>' + c.t + '</span></div>'; }).join('') + '</div>' +
-              '<div class="pm-continue" data-goto="aula"><div class="pm-thumb"><img src="' + pt.continuar.img + '" alt="" loading="lazy" />' + ic('play') + '</div><div style="flex:1;min-width:0"><small>Continue de onde parou</small><b>' + pt.continuar.t + '</b><small>' + pt.continuar.s + '</small><div class="pbar"><i style="width:' + pt.continuar.pct + '%"></i></div></div></div>' +
-              '<div class="pm-list">' + pt.aulas.slice(2, 4).map(function (a) { return row(a); }).join('') + '</div>' +
-            '</div>' +
-            /* aulas */
-            '<div class="pm-view" data-view="aulas"><div class="pm-h"><h4>Aulas</h4><span>Toque em uma aula para ver a aula experimental</span></div><div class="pm-list">' +
-              pt.aulas.map(function (a) { return row(a, a.st === 'lock' ? null : 'aula'); }).join('') + '</div></div>' +
-            /* eixos */
-            '<div class="pm-view" data-view="eixos"><div class="pm-h"><h4>Eixos temáticos</h4><span>As aulas organizadas por tema</span></div><div class="pm-chips">' +
-              pt.eixos.map(function (e) { return '<div class="pm-chip"><b>' + e.t + '</b><small>' + e.s + '</small></div>'; }).join('') + '</div></div>' +
-            /* simulados */
-            '<div class="pm-view" data-view="simulados"><div class="pm-h"><h4>Simulados</h4><span>No formato da prova, com cronômetro</span></div><div class="pm-list">' +
-              pt.simulados.map(function (a) { return row(a); }).join('') + '</div></div>' +
-            /* questões */
-            '<div class="pm-view" data-view="questoes"><div class="pm-h"><h4>Banco de questões</h4><span>Monte sua lista e treine</span></div>' +
-              '<div class="qcfg"><label>Tema<span class="fake-sel">Todos os eixos ' + ic('chev-r') + '</span></label><label>Quantidade<span class="fake-sel">5 questões ' + ic('chev-r') + '</span></label><label>Modo<span class="fake-sel">Estudo, com comentário ' + ic('chev-r') + '</span></label></div>' +
-              '<button class="btn btn-primary" data-goto="questoes">' + ic('play') + ' Começar agora</button></div>' +
-            /* flashcards */
-            '<div class="pm-view" data-view="flash"><div class="pm-h"><h4>Flashcards</h4><span>Revisão espaçada: o portal sabe o que revisar hoje</span></div><div class="pm-chips">' +
-              pt.decks.map(function (d) { return '<div class="pm-chip"><b>' + d.t + '</b><small>' + d.s + '</small></div>'; }).join('') + '</div>' +
-              '<div class="pm-cta-row"><button class="btn btn-primary" data-goto="flashcards">' + ic('cards') + ' Revisar agora</button></div></div>' +
-            /* desempenho */
-            '<div class="pm-view" data-view="desemp"><div class="pm-h"><h4>Desempenho</h4><span>Seu acerto por tema</span></div>' +
-              '<div class="pm-ring-row">' + ringHtml(pt.acerto, 'de acerto') + '<p style="flex:1;min-width:200px;color:var(--gray-light);font-size:.92rem">O painel mostra onde você está forte e o que precisa revisar antes da prova. Os temas em <b style="color:var(--gold-hot)">amarelo</b> pedem atenção.</p></div>' +
-              '<div class="pm-bars">' + pt.desempenho.map(function (d) { return '<div class="pm-bar"><span>' + d.t + '</span><div class="bt"><i data-w="' + d.v + '"' + (d.v < 65 ? ' class="lo"' : '') + '></i></div><b>' + d.v + '%</b></div>'; }).join('') + '</div></div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      '<p class="demo-tag">' + ic('image') + ' Demonstração ilustrativa do portal, com dados fictícios.</p>';
-  }
-  function ligarPortal(root) {
-    var pr = $('[data-portal]', root); if (!pr) return;
-    pr.addEventListener('click', function (e) {
-      var b = e.target.closest('.ps-item'); if (!b) return;
-      var v = b.getAttribute('data-pv');
-      $$('.ps-item', pr).forEach(function (x) { x.classList.toggle('on', x === b); });
-      $$('.pm-view', pr).forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-view') === v); });
-      if (v === 'desemp') {
-        var bars = $$('.bt i', pr); bars.forEach(function (i) { i.style.width = 0; });
-        requestAnimationFrame(function () { requestAnimationFrame(function () { bars.forEach(function (i) { i.style.width = i.getAttribute('data-w') + '%'; }); }); });
-        animarRings(pr);
-      }
     });
   }
 
@@ -559,7 +470,7 @@
         return '<div class="prof"><div class="ph"><img src="' + p.f + '" alt="' + p.n + '" loading="lazy" /></div><b>' + p.n + '</b><span>' + (p.s || P.profsSub) + '</span></div>';
       }).join('') + '</div></div>';
 
-    painel.portal = (P.portalVideo ? '<div class="block"><h3>Veja o portal de verdade</h3><div class="vids">' + videoHtml(P.portalVideo) + '</div></div>' : '') + portalHtml(P);
+    painel.portal = '<div class="sec-head"><span class="eyebrow">Portal do aluno</span><h2>Por dentro do portal</h2><p>Veja como o aluno estuda no dia a dia: aulas, questões, flashcards, simulados e desempenho num só lugar.</p></div><div class="vids">' + videoHtml(P.portalVideo) + '</div>';
     painel.aula = (P.aulaVideos ? '<div class="sec-head"><span class="eyebrow">Aula experimental</span><h2>Assista a um trecho das aulas</h2><p>Cortes reais das aulas do Preparatório TEME, com professores titulados.</p></div><div class="vids block">' + P.aulaVideos.map(videoHtml).join('') + '</div>' +
       '<div class="sec-head"><span class="eyebrow">Mini-aula interativa</span><h2>Agora experimente você</h2></div>' : '') + aulaHtml(P.aula, P);
     painel.questoes = '<div class="sec-head"><span class="eyebrow">Banco de questões</span><h2>Teste seus conhecimentos</h2><p>5 questões no estilo da prova. Marque uma alternativa e veja o comentário do professor na hora.</p></div><div class="quiz" data-quiz></div>';
@@ -574,7 +485,6 @@
 
     el._aula = P.aula;
     ligarVideos(el);
-    ligarPortal(el);
     ligarAula(el);
     var fim = 'No TEME 2027 você tem um banco completo de questões comentadas para treinar por tema, com o seu desempenho registrado no portal.';
     Quiz($('[data-quiz]', el), P.questoes, { fim: fim, proxima: 'flashcards', whatsKey: P.whatsKey, whatsMsg: P.whatsMsg });
@@ -646,8 +556,7 @@
           return '<li class="' + (pausa ? 'pause' : '') + '"><time>' + g[0] + '</time><span>' + g[1] + '</span></li>';
         }).join('') + '</ul></div>';
       }).join('') + '</div>';
-    painel.midia = midiaHtml('Veja como é o The Big Pocus', 'Vídeos, fotos e bastidores da última edição. Toque numa foto para ampliar.', G.videos) +
-      (G.clipes && G.clipes.length ? '<div class="block"><h3>Bastidores</h3><p class="clips-sub">Momentos gravados no curso. Toque num clipe para ver em tela cheia, com som.</p>' + clipesHtml(G.clipes) + '</div>' : '');
+    painel.midia = midiaHtml('Veja como é o The Big Pocus', 'Vídeos e fotos da última edição. Toque numa foto para ampliar.', G.videos);
 
     var abas = ['midia', 'curso', 'programacao'];
     el.innerHTML = '<div class="container">' + voltar() +
@@ -659,7 +568,6 @@
       abas.map(function (k) { return '<div class="panel" data-panel="' + k + '">' + painel[k] + '</div>'; }).join('') +
       '</div>';
     ligarVideos(el);
-    ligarClipes(el);
     var car = $('[data-car]', el);
     Carousel(car, G.fotos);
     wireTabs(el, { _midia: function () { car._tick(); }, midia: function () { car._tick(); } });
@@ -681,7 +589,7 @@
     var ofertaCard = '<div class="bf"><span class="bf-tag">' + ic('tag') + ' ' + of.tag + '</span>' +
       '<p class="bf-from">Assine o Atualiza Talks por</p>' +
       '<div class="bf-price"><small>R$</small><b>' + of.preco + '</b><em>' + of.centavos + '</em></div>' +
-      '<p class="bf-sub">' + of.sub + '</p>' +
+      '<p class="bf-sub">' + of.sub + '</p>' + (of.depois ? '<p class="bf-depois">' + of.depois + '</p>' : '') +
       '<ul>' + of.itens.map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') + '</ul>' +
       btnWhats('atualiza', A.whatsMsg, 'Quero por R$ 9,90', 'btn-gold') +
       '<p class="bf-note">' + of.nota + '</p></div>';
@@ -770,7 +678,6 @@
     painel.teorica = '<div class="sec-head"><span class="eyebrow">1ª fase · prova teórica</span><h2>Revise o que cai na teórica</h2><p>' + te.texto + '</p></div>' +
       '<div class="rv-stats" style="grid-template-columns:repeat(3,1fr)">' + te.stats.map(function (s) { return '<div class="p-stat"><b>' + s.n + '</b><span>' + s.t + '</span></div>'; }).join('') + '</div>' +
       (te.video ? '<div class="block"><h3>Como foi a Revisão Teórica 2026</h3><div class="vids">' + videoHtml(te.video) + '</div></div>' : '') +
-      (te.clipes && te.clipes.length ? '<div class="block"><h3>Bastidores</h3><p class="clips-sub">Momentos da última edição. Toque num clipe para ver em tela cheia, com som.</p>' + clipesHtml(te.clipes) + '</div>' : '') +
       '<div class="two block"><ul class="check-list">' + te.inclui.map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') + '</ul>' +
         '<div class="glass" style="padding:24px"><h3 style="font-size:1.5rem;margin-bottom:8px">Edição 2027</h3><p style="color:var(--gray-light);margin-bottom:18px">Datas, local e formato da próxima turma serão divulgados em breve. Deixe seu contato com a nossa central para ser avisado(a) primeiro.</p>' +
         btnWhats('revisoes', R.whatsMsg, 'Quero ser avisado(a)') + '</div></div>';
@@ -787,7 +694,6 @@
       '</div>';
 
     ligarVideos(el);
-    ligarClipes(el);
     var car = $('[data-car]', el);
     Carousel(car, R.fotos);
     $$('[data-lb]', el).forEach(function (im) { im.addEventListener('click', function () { lbOpen(R.fotos, R.fotos.map(function (f) { return f.f; }).indexOf(im.getAttribute('src'))); }); });
