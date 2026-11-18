@@ -13,8 +13,7 @@
   function gravar(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   var reduz = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var K_CFG = 'pit:roleta-cfg', K_RES = 'pit:premio', K_HIST = 'pit:historico', K_SOM = 'pit:som';
-  var PFX = { m1: '1M', m2: '2M', m3: '3M', m6: '6M', copo: 'CP', caneta: 'CN' };
+  var K_CFG = 'pit:roleta-cfg', K_HIST = 'pit:historico', K_SOM = 'pit:som';
 
   var canvas = $('#wheelCanvas'), hl = $('#wheelHL'), ctx = canvas.getContext('2d'), hctx = hl.getContext('2d');
   var stage = $('#wheelStage'), rim = $('#wheelRim'), pointer = $('#pointer');
@@ -259,15 +258,14 @@
     requestAnimationFrame(quadro);
   }
 
-  function codigo(k) {
-    var A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = '';
-    for (var i = 0; i < 4; i++) s += A[Math.floor(Math.random() * A.length)];
-    return 'TK-' + PFX[k] + '-' + s;
-  }
+  /* quem vai girar: nome e WhatsApp do formulário */
+  var pessoa = null;
   function terminou(f) {
-    var P = PREMIOS[f.k], res = { k: f.k, code: codigo(f.k), ts: Date.now() };
+    var P = PREMIOS[f.k], res = { k: f.k, ts: Date.now(), nome: pessoa ? pessoa.nome : '', whats: pessoa ? pessoa.whats : '' };
     destacar(f); luz(P.max ? 'max' : 'ganhou'); Som.vitoria(P.max);
     var hist = ler(K_HIST, []); hist.unshift(res); gravar(K_HIST, hist.slice(0, 2000));
+    Planilha.enviar(res);
+    pessoa = null;
     setTimeout(function () {
       girando = false; document.body.classList.remove('spinning');
       abrirPremio(res, true);
@@ -276,44 +274,41 @@
     }, 900);
   }
 
-  /* ---------------- cartão do prêmio ---------------- */
-  function icone(P) {
+  /* ---------------- planilha (Google Apps Script) ----------------
+     Cada giro entra numa fila no aparelho e é enviado para PLANILHA.url.
+     Sem internet, a fila espera e tenta de novo; nada se perde ao recarregar. */
+  var K_FILA = 'pit:fila-planilha';
+  var Planilha = {
+    ocupado: false,
+    enviar: function (res) {
+      var fila = ler(K_FILA, []);
+      fila.push({ data: new Date(res.ts).toISOString(), nome: res.nome, whatsapp: res.whats, premio: PREMIOS[res.k].nome, aparelho: Estande.ativo() ? 'estande' : 'celular' });
+      gravar(K_FILA, fila); this.esvaziar();
+    },
+    esvaziar: function () {
+      var self = this, fila = ler(K_FILA, []);
+      if (!PLANILHA.url || self.ocupado || !fila.length) return;
+      self.ocupado = true;
+      fetch(PLANILHA.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(fila[0]) })
+        .then(function () { var f = ler(K_FILA, []); f.shift(); gravar(K_FILA, f); self.ocupado = false; self.esvaziar(); })
+        .catch(function () { self.ocupado = false; setTimeout(function () { self.esvaziar(); }, 30000); });
+    }
+  };
+  addEventListener('online', function () { Planilha.esvaziar(); });
+  Planilha.esvaziar();
+
+  /* ---------------- cartão do prêmio ---------------- */  function icone(P) {
     if (P.ico === 'copo') return '<svg viewBox="0 0 72 72"><path d="M20 23h32l-4.2 39.4A4 4 0 0 1 43.8 66H28.2a4 4 0 0 1-4-3.6z" fill="#F6F6F7" stroke="#F5C451" stroke-width="2.5"/><rect x="16" y="16" width="40" height="8" rx="3" fill="#F51627" stroke="#F5C451" stroke-width="1.5"/><path d="M40 16l6-11h7" stroke="#F5C451" stroke-width="3" fill="none" stroke-linecap="round"/><text x="36" y="48" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="11" fill="#0a0a0c">TALKS</text></svg>';
     if (P.ico === 'caneta') return '<svg viewBox="0 0 72 72"><g transform="rotate(40 36 36)"><rect x="30" y="4" width="12" height="48" rx="5" fill="#1c1c22" stroke="#F5C451" stroke-width="2"/><rect x="30" y="4" width="12" height="11" rx="4" fill="#F51627"/><rect x="41" y="9" width="3.5" height="24" rx="1.7" fill="#F5C451"/><path d="M30.5 52h11L36 68z" fill="#F5C451"/><circle cx="36" cy="66" r="1.5" fill="#1c1c22"/></g></svg>';
     return '<svg viewBox="0 0 72 72"><rect x="8" y="13" width="56" height="52" rx="9" fill="#141418" stroke="#F5C451" stroke-width="3"/><path d="M8 22a9 9 0 0 1 9-9h38a9 9 0 0 1 9 9v6H8z" fill="#F51627"/><line x1="22" y1="6" x2="22" y2="19" stroke="#F5C451" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="6" x2="50" y2="19" stroke="#F5C451" stroke-width="4" stroke-linecap="round"/><text x="36" y="56" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="28" fill="#fff">' + P.n + '</text><text x="36" y="25.5" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="800" font-size="7" letter-spacing="1" fill="#fff">' + (P.n === '1' ? 'MÊS' : 'MESES') + '</text></svg>';
   }
-  var winQr = document.createElement('div');
-  winQr.className = 'win-qr'; winQr.hidden = true;
-  $('.win-actions').before(winQr);
-
   function abrirPremio(res, novo) {
-    var P = PREMIOS[res.k], card = $('#winCard'), btn = $('#winWhats');
+    var P = PREMIOS[res.k], card = $('#winCard');
     card.classList.toggle('jackpot', !!P.max);
     card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
+    $('#winKicker').textContent = res.nome ? 'Parabéns, ' + res.nome.split(' ')[0] + '!' : 'Parabéns!';
     $('#winIco').innerHTML = icone(P);
     $('#winPrize').textContent = P.nome;
-    $('#winCode').textContent = res.code;
-    var d = new Date(res.ts);
-    $('#winTime').textContent = d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    winQr.hidden = true; winQr.innerHTML = '';
-    if (P.tipo === 'assinatura') {
-      var link = 'https://wa.me/' + WHATS.premio + '?text=' + encodeURIComponent('Olá! Ganhei *' + P.nome + '* na roleta do Painel Interativo Talks. Meu código é ' + res.code + '. Quero ativar meu prêmio!');
-      btn.href = link; btn.target = '_blank'; btn.className = 'btn btn-whats'; btn.hidden = false;
-      $('#winWhatsTx').textContent = 'Resgatar no WhatsApp';
-      if (Estande.ativo() && window.QRCode) {
-        /* no estande, o resgate é feito pelo celular do participante */
-        $('#winHow').innerHTML = 'Aponte a câmera do <b>seu celular</b> para o código abaixo e envie a mensagem no WhatsApp. Nossa equipe ativa seus meses de Atualiza Talks.';
-        winQr.hidden = false;
-        try { new QRCode(winQr, { text: link, width: 220, height: 220, colorDark: '#040405', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.L }); } catch (e) { winQr.hidden = true; }
-        btn.hidden = true;
-      } else {
-        $('#winHow').innerHTML = 'Toque em <b>Resgatar no WhatsApp</b> e envie a mensagem com o seu código. Nossa equipe ativa seus meses de Atualiza Talks.';
-      }
-    } else {
-      $('#winHow').innerHTML = 'Mostre esta tela para a equipe do estande Talks e retire seu <b>' + P.nome.toLowerCase().replace(' talks', '') + '</b>.';
-      btn.href = '#atualiza'; btn.removeAttribute('target'); btn.className = 'btn btn-primary'; btn.hidden = false;
-      $('#winWhatsTx').textContent = 'Conhecer o Atualiza Talks · R$ 9,90';
-    }
     $('#winModal').classList.add('on');
     if (novo) {
       if (P.max) { var fl = $('#flash'); fl.classList.remove('go'); void fl.offsetWidth; fl.classList.add('go'); }
@@ -322,34 +317,50 @@
   }
   function fecharPremio() { $('#winModal').classList.remove('on'); }
   $('#winClose').addEventListener('click', fecharPremio);
-  $('#winWhats').addEventListener('click', function () { if (this.getAttribute('href') === '#atualiza') fecharPremio(); });
   $('#winModal').addEventListener('click', function (e) { if (e.target.id === 'winModal' && !girando) fecharPremio(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fecharPremio(); fecharAdmin(); fecharLiberar(); } });
 
-  /* ---------------- estado da tela (já girou / estande) ---------------- */
+  /* ---------------- estado da tela ---------------- */
   function atualizarEstado() {
     $('#already').hidden = true;
     if (!girando) {
       spinBtn.disabled = !fatias.length;
-      spinBtn.innerHTML = liberado ? '<svg class="i"><use href="#i-refresh"/></svg> Girar a roleta' : '<svg class="i"><use href="#i-lock"/></svg> Liberar giro (equipe)';
+      spinBtn.innerHTML = '<svg class="i"><use href="#i-refresh"/></svg> Girar a roleta';
     }
-    $('#spinNote').innerHTML = !fatias.length ? 'Roleta pausada pela equipe.' : liberado ? 'Giro liberado · <b>todo giro dá prêmio</b>' : 'Exclusiva para quem <b>fechou uma compra</b> com a gente · a equipe libera o giro';
+    $('#spinNote').innerHTML = !fatias.length ? 'Roleta pausada pela equipe.' : liberado && pessoa ? 'Giro liberado para <b>' + pessoa.nome.split(' ')[0] + '</b> · todo giro dá prêmio' : 'Comprou com a gente? Coloque nome e WhatsApp e gire · <b>todo giro dá prêmio</b>';
   }
 
-  /* janela do PIN para liberar o giro */
-  var lib = $('#libModal');
-  function abrirLiberar() { lib.classList.add('on'); $('#libErr').textContent = ''; $('#libPin').value = ''; setTimeout(function () { $('#libPin').focus(); }, 50); }
-  function fecharLiberar() { lib.classList.remove('on'); }
-  function confirmarLiberar() {
-    if ($('#libPin').value === (typeof GIRO_PIN !== 'undefined' ? GIRO_PIN : ADMIN_PIN)) {
-      liberado = true; fecharLiberar(); destacar(null); atualizarEstado(); toast('Giro liberado! Boa sorte!');
-    } else { $('#libErr').textContent = 'PIN incorreto.'; $('#libPin').select(); }
+  /* formulário antes do giro: nome + WhatsApp */
+  var lib = $('#libModal'), libForm = $('#libForm');
+  function soNumeros(s) { return String(s || '').replace(/\D/g, ''); }
+  function abrirLiberar() {
+    libForm.reset(); $('#libErr').textContent = '';
+    $$('input', libForm).forEach(function (x) { x.classList.remove('invalid'); });
+    lib.classList.add('on'); setTimeout(function () { libForm.nome.focus(); }, 60);
   }
-  $('#libOk').addEventListener('click', confirmarLiberar);
-  $('#libPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') confirmarLiberar(); });
+  function fecharLiberar() { lib.classList.remove('on'); }
+  libForm.whats.addEventListener('input', function () {
+    var d = soNumeros(this.value).slice(0, 11);
+    this.value = d.length > 6 ? '(' + d.slice(0, 2) + ') ' + d.slice(2, d.length - 4) + '-' + d.slice(-4) : d.length > 2 ? '(' + d.slice(0, 2) + ') ' + d.slice(2) : d;
+  });
+  libForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var nome = libForm.nome.value.trim().replace(/\s+/g, ' '), whats = libForm.whats.value, erro = '';
+    $$('input', libForm).forEach(function (x) { x.classList.remove('invalid'); });
+    if (nome.split(' ').length < 2) { erro = 'Escreva seu nome completo.'; libForm.nome.classList.add('invalid'); libForm.nome.focus(); }
+    else if (soNumeros(whats).length < 10) { erro = 'Confira o WhatsApp com DDD.'; libForm.whats.classList.add('invalid'); libForm.whats.focus(); }
+    else if (ler(K_HIST, []).some(function (h) { return h.whats && soNumeros(h.whats) === soNumeros(whats); })) {
+      erro = 'Este WhatsApp já girou a roleta.'; libForm.whats.classList.add('invalid');
+    }
+    $('#libErr').textContent = erro;
+    if (erro) return;
+    pessoa = { nome: nome, whats: whats };
+    liberado = true; fecharLiberar(); destacar(null); atualizarEstado();
+    toast('Pronto, ' + nome.split(' ')[0] + '! Agora é só girar.');
+    spinBtn.scrollIntoView({ block: 'center', behavior: reduz ? 'auto' : 'smooth' });
+  });
   $('#libCancel').addEventListener('click', fecharLiberar);
-  lib.addEventListener('click', function (e) { if (e.target === lib) fecharLiberar(); });
-  spinBtn.addEventListener('click', girar);
+  lib.addEventListener('click', function (e) { if (e.target === lib) fecharLiberar(); });  spinBtn.addEventListener('click', girar);
   hubBtn.addEventListener('click', girar);
   $('#nextPlayer').addEventListener('click', function () {
     fecharPremio(); destacar(null); luz('calmo'); scrollTo({ top: 0, behavior: 'smooth' }); toast('Pronto para o próximo participante!');
@@ -406,7 +417,7 @@
     var hist = ler(K_HIST, []), tot = {};
     hist.forEach(function (h) { tot[h.k] = (tot[h.k] || 0) + 1; });
     $('#admTotals').innerHTML = '<span><b>' + hist.length + '</b> giros</span>' + Object.keys(PREMIOS).map(function (k) { return tot[k] ? '<span>' + PREMIOS[k].nome + ': <b>' + tot[k] + '</b></span>' : ''; }).join('');
-    $('#admHist').innerHTML = hist.slice(0, 60).map(function (h) { var d = new Date(h.ts); return '<div><span>' + d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + '</span><span>' + (PREMIOS[h.k] ? PREMIOS[h.k].nome : h.k) + '</span><b>' + h.code + '</b></div>'; }).join('') || '<div>Nenhum giro ainda.</div>';
+    $('#admHist').innerHTML = hist.slice(0, 60).map(function (h) { var d = new Date(h.ts); return '<div><span>' + d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + '</span><span>' + (h.nome || '—') + '</span><b>' + (PREMIOS[h.k] ? PREMIOS[h.k].nome : h.k) + '</b></div>'; }).join('') || '<div>Nenhum giro ainda.</div>';
   }
   $('#adminBtn').addEventListener('click', abrirAdmin);
   $('#admEnter').addEventListener('click', entrar);
@@ -429,8 +440,8 @@
     gravar(K_HIST, []); pintarAdmin(); toast('Histórico zerado');
   });
   $('#admCsv').addEventListener('click', function () {
-    var linhas = [['data', 'hora', 'premio', 'codigo']];
-    ler(K_HIST, []).forEach(function (h) { var d = new Date(h.ts); linhas.push([d.toLocaleDateString('pt-BR'), d.toLocaleTimeString('pt-BR'), PREMIOS[h.k] ? PREMIOS[h.k].nome : h.k, h.code]); });
+    var linhas = [['data', 'hora', 'nome', 'whatsapp', 'premio']];
+    ler(K_HIST, []).forEach(function (h) { var d = new Date(h.ts); linhas.push([d.toLocaleDateString('pt-BR'), d.toLocaleTimeString('pt-BR'), h.nome || '', h.whats || '', PREMIOS[h.k] ? PREMIOS[h.k].nome : h.k]); });
     var csv = '﻿' + linhas.map(function (l) { return l.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';'); }).join('\n');
     var a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));

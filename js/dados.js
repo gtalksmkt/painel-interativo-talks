@@ -404,5 +404,11 @@ var FATIAS = ['m1', 'caneta', 'm2', 'copo', 'm3', 'm1', 'caneta', 'copo', 'm1', 
 /* PIN da área da equipe (engrenagem no canto da tela da roleta) */
 var ADMIN_PIN = '2027';
 
-/* PIN que a equipe digita para liberar um giro depois que a pessoa fecha a compra */
-var GIRO_PIN = '2027';
+/* PLANILHA DOS GIROS (Google Planilhas)
+   Cada giro manda nome, WhatsApp e prêmio para esta planilha:
+   https://docs.google.com/spreadsheets/d/1vfZLrC3t-si_9z26AvncPUrpkHN7xCYwWsilURh2foM
+   url = endereço do App da Web do Apps Script (termina em /exec). Código em planilha-roleta.gs.
+   Vazio = os giros ficam guardados no aparelho e são enviados quando o endereço for preenchido. */
+var PLANILHA = {
+  url: ''
+};

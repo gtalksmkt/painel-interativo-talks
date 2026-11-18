@@ -1064,12 +1064,6 @@ body[data-route="premio"] .admin-gear{display:flex}
         </a>
       </div>
 
-      <div class="media-links">
-        <span>Veja como são nossos eventos:</span>
-        <a href="#revisoes/midia"><svg class="i"><use href="#i-image"/></svg> Fotos e vídeos das Revisões</a>
-        <a href="#bigpocus/midia"><svg class="i"><use href="#i-image"/></svg> Fotos e vídeos do The Big Pocus</a>
-      </div>
-
       <a class="prize-cta" href="#premio">
         <div class="pc-wheel" aria-hidden="true">
           <svg viewBox="-50 -50 100 100">
@@ -1079,13 +1073,18 @@ body[data-route="premio"] .admin-gear{display:flex}
           </svg>
         </div>
         <div class="pc-text">
-          <span class="pc-eyebrow">Exclusivo para quem fecha com a gente</span>
-          <b>Ganhe seu Prêmio!</b>
-
-          <span>Fechou uma compra com a gente aqui no estande? Gire a roleta e leve até <strong>6 meses de Atualiza Talks</strong>. Todo giro dá prêmio.</span>
+          <span class="pc-eyebrow">Comprou com a gente?</span>
+          <b>Gire a roleta!</b>
+          <span>Depois da sua compra, coloque seu nome e WhatsApp e gire a roleta. Todo giro dá prêmio: até <strong>6 meses de Atualiza Talks</strong>.</span>
         </div>
-        <span class="btn btn-gold btn-lg"><svg class="i"><use href="#i-gift"/></svg> Ver os prêmios</span>
+        <span class="btn btn-gold btn-lg"><svg class="i"><use href="#i-gift"/></svg> Girar a roleta</span>
       </a>
+
+      <div class="media-links">
+        <span>Veja como são nossos eventos:</span>
+        <a href="#revisoes/midia"><svg class="i"><use href="#i-image"/></svg> Fotos e vídeos das Revisões</a>
+        <a href="#bigpocus/midia"><svg class="i"><use href="#i-image"/></svg> Fotos e vídeos do The Big Pocus</a>
+      </div>
 
       <div class="marquee" aria-hidden="true">
         <div class="marquee-track">
@@ -1121,7 +1120,7 @@ body[data-route="premio"] .admin-gear{display:flex}
       <div class="premio-head">
         <span class="kicker" style="--ac-rgb:245,196,81"><i></i> Todo giro dá prêmio</span>
         <h1 class="premio-title">Ganhe seu <span class="gold-txt">Prêmio!</span></h1>
-        <p>Exclusiva para quem <b>fecha uma compra com a gente</b> aqui no estande. Feche a sua, a nossa equipe libera o giro e você descobre o que leva. O prêmio máximo é de <b>6 meses de Atualiza Talks</b>.</p>
+        <p>Comprou com a gente? Coloque seu nome e WhatsApp, gire a roleta e descubra o que você leva. O prêmio máximo é de <b>6 meses de Atualiza Talks</b>.</p>
       </div>
 
       <div id="wheelArea">
@@ -1175,16 +1174,14 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="modal" id="winModal" role="dialog" aria-modal="true" aria-labelledby="winPrize">
   <div class="win-card" id="winCard">
     <div class="win-rays"></div>
-    <span class="win-kicker">Parabéns!</span>
+    <span class="win-kicker" id="winKicker">Parabéns!</span>
     <div class="win-ico" id="winIco"></div>
     <span class="jp-banner">Prêmio máximo</span>
     <p class="win-label">Você ganhou</p>
     <h2 class="win-prize" id="winPrize"></h2>
-    <div class="win-code"><span>Código do prêmio</span><b id="winCode"></b><small id="winTime"></small></div>
-    <p class="win-how" id="winHow"></p>
+    <p class="win-how">Mostre esta tela para a nossa equipe para retirar o seu prêmio.</p>
     <div class="win-actions">
-      <a class="btn btn-whats" id="winWhats" target="_blank" rel="noopener"><svg class="i"><use href="#i-whats"/></svg> <span id="winWhatsTx">Resgatar no WhatsApp</span></a>
-      <button class="btn btn-glass" id="winClose">Fechar</button>
+      <button class="btn btn-gold" id="winClose">Fechar</button>
     </div>
   </div>
 </div>
@@ -1229,18 +1226,27 @@ body[data-route="premio"] .admin-gear{display:flex}
   </div>
 </div>
 
-<!-- Liberar giro (equipe, depois da compra) -->
+<!-- Antes de girar: nome e WhatsApp de quem comprou -->
 <div class="modal" id="libModal" role="dialog" aria-modal="true" aria-labelledby="libTitle">
-  <div class="admin-card lib-card">
-    <h3 id="libTitle">Liberar giro</h3>
-    <p class="sub">A roleta é exclusiva para quem fechou uma compra. A equipe Talks digita o PIN para liberar <b>um giro</b>.</p>
-    <div class="pin-row"><input id="libPin" type="password" inputmode="numeric" maxlength="8" placeholder="PIN da equipe" autocomplete="off" /><button class="btn btn-gold" id="libOk" type="button">Liberar</button></div>
-    <p class="adm-err" id="libErr"></p>
-    <div class="adm-btns"><button class="btn btn-glass btn-sm" id="libCancel" type="button">Cancelar</button></div>
+  <div class="cad-card lib-card">
+    <button class="round-btn cad-x" id="libCancel" type="button" aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
+    <div class="cad-head">
+      <div>
+        <span class="cad-kicker">Comprou com a gente?</span>
+        <h2 id="libTitle">Falta pouco para <em>girar a roleta</em></h2>
+        <p>Coloque seu nome e WhatsApp para liberar o seu giro.</p>
+      </div>
+    </div>
+    <form id="libForm" novalidate>
+      <label>Nome completo<input name="nome" required autocomplete="name" /></label>
+      <label>WhatsApp<input name="whats" required inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" /></label>
+      <p class="cad-err" id="libErr" role="alert"></p>
+      <button class="btn btn-gold" type="submit"><svg class="i"><use href="#i-refresh"/></svg> Liberar meu giro</button>
+    </form>
   </div>
 </div>
-
-<!-- Configurações da roleta (equipe) --><div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="admTitle">
+<!-- Configurações da roleta (equipe) -->
+<div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="admTitle">
   <div class="admin-card">
     <h3 id="admTitle">Configurações da roleta</h3>
     <p class="sub">Área da equipe Talks. As mudanças valem só para este aparelho.</p>
@@ -1286,9 +1292,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261119a"></script>
-<script src="js/app.js?v=20261119a"></script>
-<script src="js/roleta.js?v=20261119a"></script>
+<script src="js/dados.js?v=20261119b"></script>
+<script src="js/app.js?v=20261119b"></script>
+<script src="js/roleta.js?v=20261119b"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>
