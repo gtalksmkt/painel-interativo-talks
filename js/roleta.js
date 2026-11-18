@@ -216,11 +216,14 @@
   function aplicar(a) { var t = 'rotate(' + a + 'deg)'; canvas.style.transform = t; hl.style.transform = t; }
   function fatiaEm(ang) { var p = ((-ang % 360) + 360) % 360; for (var i = 0; i < fatias.length; i++) if (p >= fatias[i].a0 && p < fatias[i].a1) return i; return fatias.length - 1; }
   function chutar() { pointer.classList.remove('kick'); void pointer.offsetWidth; pointer.classList.add('kick'); }
-  function podeGirar() { return Estande.ativo() || !ler(K_RES, null); }
+  /* a roleta é só para quem fechou uma compra: a equipe libera um giro por vez com o PIN */
+  var liberado = false;
+  function podeGirar() { return liberado; }
 
   function girar() {
     if (girando || !fatias.length || $('#winModal').classList.contains('on')) return;
-    if (!podeGirar()) { mostrarJaGirou(); return; }
+    if (!podeGirar()) { abrirLiberar(); return; }
+    liberado = false;
     Som.init();
     girando = true; document.body.classList.add('spinning');
     spinBtn.disabled = true; spinBtn.innerHTML = '<svg class="i"><use href="#i-refresh"/></svg> Girando...';
@@ -265,7 +268,6 @@
     var P = PREMIOS[f.k], res = { k: f.k, code: codigo(f.k), ts: Date.now() };
     destacar(f); luz(P.max ? 'max' : 'ganhou'); Som.vitoria(P.max);
     var hist = ler(K_HIST, []); hist.unshift(res); gravar(K_HIST, hist.slice(0, 2000));
-    if (!Estande.ativo()) gravar(K_RES, res);
     setTimeout(function () {
       girando = false; document.body.classList.remove('spinning');
       abrirPremio(res, true);
@@ -322,21 +324,31 @@
   $('#winClose').addEventListener('click', fecharPremio);
   $('#winWhats').addEventListener('click', function () { if (this.getAttribute('href') === '#atualiza') fecharPremio(); });
   $('#winModal').addEventListener('click', function (e) { if (e.target.id === 'winModal' && !girando) fecharPremio(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fecharPremio(); fecharAdmin(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fecharPremio(); fecharAdmin(); fecharLiberar(); } });
 
   /* ---------------- estado da tela (já girou / estande) ---------------- */
-  function mostrarJaGirou() { var r = ler(K_RES, null); if (r && PREMIOS[r.k]) abrirPremio(r, false); }
   function atualizarEstado() {
-    var r = ler(K_RES, null), bloqueado = !Estande.ativo() && r && PREMIOS[r.k];
-    $('#already').hidden = !bloqueado;
-    if (bloqueado) $('#alreadyTx').textContent = 'Seu prêmio: ' + PREMIOS[r.k].nome + ' · código ' + r.code;
+    $('#already').hidden = true;
     if (!girando) {
-      spinBtn.disabled = !!bloqueado || !fatias.length;
-      spinBtn.innerHTML = '<svg class="i"><use href="#i-refresh"/></svg> ' + (bloqueado ? 'Você já girou' : 'Girar a roleta');
+      spinBtn.disabled = !fatias.length;
+      spinBtn.innerHTML = liberado ? '<svg class="i"><use href="#i-refresh"/></svg> Girar a roleta' : '<svg class="i"><use href="#i-lock"/></svg> Liberar giro (equipe)';
     }
-    $('#spinNote').innerHTML = !fatias.length ? 'Roleta pausada pela equipe.' : Estande.ativo() ? 'Modo estande · <b>todo giro dá prêmio</b>' : '1 giro por participante · <b>todo giro dá prêmio</b>';
+    $('#spinNote').innerHTML = !fatias.length ? 'Roleta pausada pela equipe.' : liberado ? 'Giro liberado · <b>todo giro dá prêmio</b>' : 'Exclusiva para quem <b>fechou uma compra</b> com a gente · a equipe libera o giro';
   }
-  $('#alreadyBtn').addEventListener('click', mostrarJaGirou);
+
+  /* janela do PIN para liberar o giro */
+  var lib = $('#libModal');
+  function abrirLiberar() { lib.classList.add('on'); $('#libErr').textContent = ''; $('#libPin').value = ''; setTimeout(function () { $('#libPin').focus(); }, 50); }
+  function fecharLiberar() { lib.classList.remove('on'); }
+  function confirmarLiberar() {
+    if ($('#libPin').value === (typeof GIRO_PIN !== 'undefined' ? GIRO_PIN : ADMIN_PIN)) {
+      liberado = true; fecharLiberar(); destacar(null); atualizarEstado(); toast('Giro liberado! Boa sorte!');
+    } else { $('#libErr').textContent = 'PIN incorreto.'; $('#libPin').select(); }
+  }
+  $('#libOk').addEventListener('click', confirmarLiberar);
+  $('#libPin').addEventListener('keydown', function (e) { if (e.key === 'Enter') confirmarLiberar(); });
+  $('#libCancel').addEventListener('click', fecharLiberar);
+  lib.addEventListener('click', function (e) { if (e.target === lib) fecharLiberar(); });
   spinBtn.addEventListener('click', girar);
   hubBtn.addEventListener('click', girar);
   $('#nextPlayer').addEventListener('click', function () {
@@ -411,7 +423,7 @@
     gravar(K_CFG, cfg); refazer();
     $$('#admPrizes [data-k]').forEach(function (r) { $('.pct', r).textContent = chance(r.getAttribute('data-k')).toFixed(1).replace('.', ',') + '%'; });
   });
-  $('#admUnlock').addEventListener('click', function () { try { localStorage.removeItem(K_RES); } catch (e) {} atualizarEstado(); toast('Giro liberado neste aparelho'); });
+  $('#admUnlock').addEventListener('click', function () { liberado = true; atualizarEstado(); toast('Giro liberado'); });
   $('#admClear').addEventListener('click', function () {
     if (!confirm('Apagar o histórico de prêmios deste aparelho?')) return;
     gravar(K_HIST, []); pintarAdmin(); toast('Histórico zerado');

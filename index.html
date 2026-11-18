@@ -971,7 +971,6 @@ body[data-route="premio"] .admin-gear{display:flex}
     </a>
     <nav class="top-actions">
       <a class="tb-btn home-btn" href="#inicio"><svg class="i"><use href="#i-home"/></svg><span class="lbl">Início</span></a>
-      <a class="tb-btn prize" href="#premio"><svg class="i"><use href="#i-gift"/></svg><span class="lbl">Ganhe seu Prêmio</span></a>
     </nav>
   </div>
 </header>
@@ -991,7 +990,7 @@ body[data-route="premio"] .admin-gear{display:flex}
       <div class="home-hero">
         <span class="kicker"><i></i> Grupo Talks · Educação médica</span>
         <h1 class="home-title">Painel Interativo <span class="accent">Talks</span></h1>
-        <p class="home-sub">Toque em um produto e veja por dentro: o portal, uma aula experimental, questões e flashcards. No final, gire a roleta e ganhe seu prêmio.</p>
+        <p class="home-sub">Toque em um produto e veja por dentro: o portal, uma aula experimental, questões e flashcards. Fechou uma compra com a gente? Gire a roleta e ganhe seu prêmio.</p>
       </div>
 
       <div class="prod-grid">
@@ -1019,19 +1018,7 @@ body[data-route="premio"] .admin-gear{display:flex}
           </div>
         </a>
 
-        <a class="prod-tile t-revisoes" href="#revisoes" style="--d:2">
-          <div class="pt-bg"><img src="img/pratica-2.jpg" alt="" /></div>
-          <div class="pt-top"><img class="pt-logo" src="img/logo-emergency.png" alt="Emergency Talks" /><span class="pt-chip">Presencial</span></div>
-          <div>
-            <span class="pt-eyebrow">Revisões</span>
-            <h2 class="pt-name"><em>TEME</em></h2>
-            <p class="pt-desc">Revisão Prática e Revisão Teórica para a prova de título</p>
-            <ul class="pt-tags"><li>Vídeo</li><li>Fotos</li><li>Como funciona</li></ul>
-            <span class="pt-go">Explorar <svg class="i"><use href="#i-arrow"/></svg></span>
-          </div>
-        </a>
-
-        <a class="prod-tile t-atualiza" href="#atualiza" style="--d:3">
+        <a class="prod-tile t-atualiza" href="#atualiza" style="--d:2">
           <span class="pt-ribbon">Black Friday</span>
           <div class="pt-top">
             <span class="at-icon-wrap"><img class="at-icon" src="img/atualiza-icone.svg" alt="" /><span class="at-word">atualiza<b>talks</b></span></span>
@@ -1041,6 +1028,18 @@ body[data-route="premio"] .admin-gear{display:flex}
             <h2 class="pt-name">Atualiza <em>Talks</em></h2>
             <div class="pt-price"><small>1º mês</small><b>R$ 9,90</b></div>
             <ul class="pt-tags"><li>Novidades</li><li>Artigo + áudio</li><li>Temas 2027</li></ul>
+            <span class="pt-go">Explorar <svg class="i"><use href="#i-arrow"/></svg></span>
+          </div>
+        </a>
+
+        <a class="prod-tile t-revisoes" href="#revisoes" style="--d:3">
+          <div class="pt-bg"><img src="img/pratica-2.jpg" alt="" /></div>
+          <div class="pt-top"><img class="pt-logo" src="img/logo-emergency.png" alt="Emergency Talks" /><span class="pt-chip">Presencial</span></div>
+          <div>
+            <span class="pt-eyebrow">Revisões</span>
+            <h2 class="pt-name"><em>TEME</em></h2>
+            <p class="pt-desc">Revisão Prática e Revisão Teórica para a prova de título</p>
+            <ul class="pt-tags"><li>Vídeo</li><li>Fotos</li><li>Como funciona</li></ul>
             <span class="pt-go">Explorar <svg class="i"><use href="#i-arrow"/></svg></span>
           </div>
         </a>
@@ -1073,11 +1072,12 @@ body[data-route="premio"] .admin-gear{display:flex}
           </svg>
         </div>
         <div class="pc-text">
-          <span class="pc-eyebrow">Só aqui no evento</span>
+          <span class="pc-eyebrow">Exclusivo para quem fecha com a gente</span>
           <b>Ganhe seu Prêmio!</b>
-          <span>Gire a roleta e leve até <strong>6 meses de Atualiza Talks</strong>. Todo giro dá prêmio.</span>
+
+          <span>Fechou uma compra com a gente aqui no estande? Gire a roleta e leve até <strong>6 meses de Atualiza Talks</strong>. Todo giro dá prêmio.</span>
         </div>
-        <span class="btn btn-gold btn-lg"><svg class="i"><use href="#i-gift"/></svg> Girar a roleta</span>
+        <span class="btn btn-gold btn-lg"><svg class="i"><use href="#i-gift"/></svg> Ver os prêmios</span>
       </a>
 
       <div class="marquee" aria-hidden="true">
@@ -1114,7 +1114,7 @@ body[data-route="premio"] .admin-gear{display:flex}
       <div class="premio-head">
         <span class="kicker" style="--ac-rgb:245,196,81"><i></i> Todo giro dá prêmio</span>
         <h1 class="premio-title">Ganhe seu <span class="gold-txt">Prêmio!</span></h1>
-        <p>Gire a roleta e descubra o que você leva. O prêmio máximo é de <b>6 meses de Atualiza Talks</b>.</p>
+        <p>Exclusiva para quem <b>fecha uma compra com a gente</b> aqui no estande. Feche a sua, a nossa equipe libera o giro e você descobre o que leva. O prêmio máximo é de <b>6 meses de Atualiza Talks</b>.</p>
       </div>
 
       <div id="wheelArea">
@@ -1222,8 +1222,18 @@ body[data-route="premio"] .admin-gear{display:flex}
   </div>
 </div>
 
-<!-- Configurações da roleta (equipe) -->
-<div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="admTitle">
+<!-- Liberar giro (equipe, depois da compra) -->
+<div class="modal" id="libModal" role="dialog" aria-modal="true" aria-labelledby="libTitle">
+  <div class="admin-card lib-card">
+    <h3 id="libTitle">Liberar giro</h3>
+    <p class="sub">A roleta é exclusiva para quem fechou uma compra. A equipe Talks digita o PIN para liberar <b>um giro</b>.</p>
+    <div class="pin-row"><input id="libPin" type="password" inputmode="numeric" maxlength="8" placeholder="PIN da equipe" autocomplete="off" /><button class="btn btn-gold" id="libOk" type="button">Liberar</button></div>
+    <p class="adm-err" id="libErr"></p>
+    <div class="adm-btns"><button class="btn btn-glass btn-sm" id="libCancel" type="button">Cancelar</button></div>
+  </div>
+</div>
+
+<!-- Configurações da roleta (equipe) --><div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="admTitle">
   <div class="admin-card">
     <h3 id="admTitle">Configurações da roleta</h3>
     <p class="sub">Área da equipe Talks. As mudanças valem só para este aparelho.</p>
@@ -1234,7 +1244,7 @@ body[data-route="premio"] .admin-gear{display:flex}
     <div id="admBody" hidden>
       <div class="adm-sec">
         <h4>Modo de uso</h4>
-        <div class="adm-row"><div class="nm">Modo estande<small>Giros ilimitados, botão "Próximo participante" e volta ao início após 2 min parado.</small></div><label class="switch"><input type="checkbox" id="admEstande" /><i></i></label></div>
+        <div class="adm-row"><div class="nm">Modo estande<small>Botão "Próximo participante", resgate por QR code e volta ao início após 2 min.parado.</small></div><label class="switch"><input type="checkbox" id="admEstande" /><i></i></label></div>
         <div class="adm-row"><div class="nm">Som da roleta</div><label class="switch"><input type="checkbox" id="admSom" /><i></i></label></div>
       </div>
       <div class="adm-sec">
@@ -1269,9 +1279,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261116c"></script>
-<script src="js/app.js?v=20261116c"></script>
-<script src="js/roleta.js?v=20261116c"></script>
+<script src="js/dados.js?v=20261118a"></script>
+<script src="js/app.js?v=20261118a"></script>
+<script src="js/roleta.js?v=20261118a"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>

@@ -432,3 +432,6 @@ var FATIAS = ['m1', 'caneta', 'm2', 'copo', 'm3', 'm1', 'caneta', 'copo', 'm1', 
 
 /* PIN da área da equipe (engrenagem no canto da tela da roleta) */
 var ADMIN_PIN = '2027';
+
+/* PIN que a equipe digita para liberar um giro depois que a pessoa fecha a compra */
+var GIRO_PIN = '2027';
