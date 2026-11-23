@@ -21,7 +21,7 @@
 
   /* ---------------- configuração (pesos e prêmios ligados) ---------------- */
   var cfg = ler(K_CFG, {});
-  function peso(k) { var c = cfg[k]; if (c && c.on === false) return 0; return c && c.peso != null ? c.peso : PREMIOS[k].peso; }
+  function peso(k) { var c = cfg[k]; return c && c.on === false ? 0 : 1; }
   var fatias = [], total = 0;
   function layout() {
     var ativas = FATIAS.filter(function (k) { return peso(k) > 0; });
@@ -29,7 +29,6 @@
     var a = 0;
     fatias = ativas.map(function (k) { var span = peso(k) / total * 360, f = { k: k, a0: a, a1: a + span }; a += span; return f; });
   }
-  function chance(k) { if (!total) return 0; return FATIAS.filter(function (x) { return x === k; }).length * peso(k) / total * 100; }
   layout();
 
   /* ---------------- desenho da roda ---------------- */
@@ -215,23 +214,23 @@
   function aplicar(a) { var t = 'rotate(' + a + 'deg)'; canvas.style.transform = t; hl.style.transform = t; }
   function fatiaEm(ang) { var p = ((-ang % 360) + 360) % 360; for (var i = 0; i < fatias.length; i++) if (p >= fatias[i].a0 && p < fatias[i].a1) return i; return fatias.length - 1; }
   function chutar() { pointer.classList.remove('kick'); void pointer.offsetWidth; pointer.classList.add('kick'); }
-  /* a roleta é só para quem fechou uma compra: a equipe libera um giro por vez com o PIN */
-  var liberado = false;
-  function podeGirar() { return liberado; }
-
+  /* prêmio com porDia (6 meses = 1 por dia) só sai enquanto não bateu o limite de hoje neste aparelho */
+  function podeSairHoje(k) {
+    var lim = PREMIOS[k].porDia; if (!lim) return true;
+    var hoje = new Date().toDateString();
+    return ler(K_HIST, []).filter(function (h) { return h.k === k && new Date(h.ts).toDateString() === hoje; }).length < lim;
+  }
   function girar() {
     if (girando || !fatias.length || $('#winModal').classList.contains('on')) return;
-    if (!podeGirar()) { abrirLiberar(); return; }
-    liberado = false;
     Som.init();
     girando = true; document.body.classList.add('spinning');
     spinBtn.disabled = true; spinBtn.innerHTML = '<svg class="i"><use href="#i-refresh"/></svg> Girando...';
     destacar(null); luz('gira'); Som.whoosh();
 
-    /* sorteio uniforme do ponto de parada, longe das divisórias */
-    var alvo = Math.random() * 360, f = fatias[fatiaEm(-alvo)];
-    var m = Math.min(2.4, (f.a1 - f.a0) * .2);
-    alvo = Math.max(f.a0 + m, Math.min(f.a1 - m, alvo));
+    /* sorteio: uma fatia entre as que ainda podem sair hoje, todas com a mesma chance, e um ponto dentro dela longe das divisórias */
+    var livres = fatias.filter(function (x) { return podeSairHoje(x.k); }); if (!livres.length) livres = fatias;
+    var f = livres[Math.floor(Math.random() * livres.length)];
+    var m = Math.min(2.4, (f.a1 - f.a0) * .2), alvo = f.a0 + m + Math.random() * (f.a1 - f.a0 - 2 * m);
 
     var voltas = 6 + Math.floor(Math.random() * 3);
     var atual = ((rot % 360) + 360) % 360, desejado = (360 - alvo) % 360, delta = desejado - atual;
@@ -258,14 +257,11 @@
     requestAnimationFrame(quadro);
   }
 
-  /* quem vai girar: nome e WhatsApp do formulário */
-  var pessoa = null;
   function terminou(f) {
-    var P = PREMIOS[f.k], res = { k: f.k, ts: Date.now(), nome: pessoa ? pessoa.nome : '', whats: pessoa ? pessoa.whats : '', compra: pessoa ? pessoa.compra : '' };
+    var P = PREMIOS[f.k], res = { k: f.k, ts: Date.now() };
     destacar(f); luz(P.max ? 'max' : 'ganhou'); Som.vitoria(P.max);
     var hist = ler(K_HIST, []); hist.unshift(res); gravar(K_HIST, hist.slice(0, 2000));
     Planilha.enviar(res);
-    pessoa = null;
     setTimeout(function () {
       girando = false; document.body.classList.remove('spinning');
       abrirPremio(res, true);
@@ -297,9 +293,12 @@
   addEventListener('online', function () { Planilha.esvaziar(); });
   Planilha.esvaziar();
 
-  /* ---------------- cartão do prêmio ---------------- */  function icone(P) {
+  /* ---------------- cartão do prêmio ---------------- */
+  function icone(P) {
     if (P.ico === 'copo') return '<svg viewBox="0 0 72 72"><path d="M20 23h32l-4.2 39.4A4 4 0 0 1 43.8 66H28.2a4 4 0 0 1-4-3.6z" fill="#F6F6F7" stroke="#F5C451" stroke-width="2.5"/><rect x="16" y="16" width="40" height="8" rx="3" fill="#F51627" stroke="#F5C451" stroke-width="1.5"/><path d="M40 16l6-11h7" stroke="#F5C451" stroke-width="3" fill="none" stroke-linecap="round"/><text x="36" y="48" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="11" fill="#0a0a0c">TALKS</text></svg>';
-    if (P.ico === 'caneta') return '<svg viewBox="0 0 72 72"><g transform="rotate(40 36 36)"><rect x="30" y="4" width="12" height="48" rx="5" fill="#1c1c22" stroke="#F5C451" stroke-width="2"/><rect x="30" y="4" width="12" height="11" rx="4" fill="#F51627"/><rect x="41" y="9" width="3.5" height="24" rx="1.7" fill="#F5C451"/><path d="M30.5 52h11L36 68z" fill="#F5C451"/><circle cx="36" cy="66" r="1.5" fill="#1c1c22"/></g></svg>';
+    if (P.ico === 'camisa') return '<svg viewBox="0 0 72 72"><path d="M26 10l-16 8 6 14 6-3v31h28V29l6 3 6-14-16-8c-1 5-5 8-10 8s-9-3-10-8z" fill="#1c1c22" stroke="#F5C451" stroke-width="2.5" stroke-linejoin="round"/><text x="36" y="47" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="10" fill="#F51627">TALKS</text></svg>';
+    if (P.ico === 'caderno') return '<svg viewBox="0 0 72 72"><rect x="16" y="8" width="42" height="56" rx="5" fill="#F6F6F7" stroke="#F5C451" stroke-width="2.5"/><rect x="16" y="8" width="9" height="56" rx="3" fill="#F51627"/><line x1="31" y1="24" x2="51" y2="24" stroke="#8E9098" stroke-width="2.5" stroke-linecap="round"/><line x1="31" y1="33" x2="51" y2="33" stroke="#8E9098" stroke-width="2.5" stroke-linecap="round"/><line x1="31" y1="42" x2="45" y2="42" stroke="#8E9098" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    if (P.ico === 'aula') return '<svg viewBox="0 0 72 72"><rect x="8" y="14" width="56" height="38" rx="6" fill="#141418" stroke="#F5C451" stroke-width="2.5"/><path d="M31 25v16l13-8z" fill="#F51627"/><line x1="26" y1="60" x2="46" y2="60" stroke="#F5C451" stroke-width="3" stroke-linecap="round"/></svg>';
     return '<svg viewBox="0 0 72 72"><rect x="8" y="13" width="56" height="52" rx="9" fill="#141418" stroke="#F5C451" stroke-width="3"/><path d="M8 22a9 9 0 0 1 9-9h38a9 9 0 0 1 9 9v6H8z" fill="#F51627"/><line x1="22" y1="6" x2="22" y2="19" stroke="#F5C451" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="6" x2="50" y2="19" stroke="#F5C451" stroke-width="4" stroke-linecap="round"/><text x="36" y="56" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="28" fill="#fff">' + P.n + '</text><text x="36" y="25.5" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="800" font-size="7" letter-spacing="1" fill="#fff">' + (P.n === '1' ? 'MÊS' : 'MESES') + '</text></svg>';
   }
   function abrirPremio(res, novo) {
@@ -307,7 +306,7 @@
     card.classList.toggle('jackpot', !!P.max);
     card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
     $('#winKicker').textContent = res.nome ? 'Olá, ' + res.nome.split(' ')[0] + '!' : 'Parabéns!';
-    var wc = $('#winCompra'); wc.hidden = !res.compra;
+    var wc = $('#winCompra'); wc.hidden = !res.compra; $('.win-label').textContent = res.compra ? 'e ganhou na roleta' : 'Você ganhou';
     if (res.compra) { wc.innerHTML = 'Você adquiriu <b></b>'; $('b', wc).textContent = res.compra; }
     $('#winIco').innerHTML = icone(P);
     $('#winPrize').textContent = P.nome;
@@ -320,7 +319,7 @@
   function fecharPremio() { $('#winModal').classList.remove('on'); }
   $('#winClose').addEventListener('click', fecharPremio);
   $('#winModal').addEventListener('click', function (e) { if (e.target.id === 'winModal' && !girando) fecharPremio(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fecharPremio(); fecharAdmin(); fecharLiberar(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fecharPremio(); fecharAdmin(); } });
 
   /* ---------------- estado da tela ---------------- */
   function atualizarEstado() {
@@ -329,42 +328,10 @@
       spinBtn.disabled = !fatias.length;
       spinBtn.innerHTML = '<svg class="i"><use href="#i-refresh"/></svg> Girar a roleta';
     }
-    $('#spinNote').innerHTML = !fatias.length ? 'Roleta pausada pela equipe.' : liberado && pessoa ? 'Giro liberado para <b>' + pessoa.nome.split(' ')[0] + '</b> · todo giro dá prêmio' : 'Comprou com a gente? Coloque nome e WhatsApp e gire · <b>todo giro dá prêmio</b>';
+    $('#spinNote').innerHTML = !fatias.length ? 'Roleta pausada pela equipe.' : 'Comprou com a gente? É só girar · <b>todo giro dá prêmio</b>';
   }
 
-  /* formulário antes do giro: nome + WhatsApp */
-  var lib = $('#libModal'), libForm = $('#libForm');
-  COMPRAS.forEach(function (n) { var o = document.createElement('option'); o.textContent = n; libForm.compra.appendChild(o); });
-  function soNumeros(s) { return String(s || '').replace(/\D/g, ''); }
-  function abrirLiberar() {
-    libForm.reset(); $('#libErr').textContent = '';
-    $$('input,select', libForm).forEach(function (x) { x.classList.remove('invalid'); });
-    lib.classList.add('on'); setTimeout(function () { libForm.nome.focus(); }, 60);
-  }
-  function fecharLiberar() { lib.classList.remove('on'); }
-  libForm.whats.addEventListener('input', function () {
-    var d = soNumeros(this.value).slice(0, 11);
-    this.value = d.length > 6 ? '(' + d.slice(0, 2) + ') ' + d.slice(2, d.length - 4) + '-' + d.slice(-4) : d.length > 2 ? '(' + d.slice(0, 2) + ') ' + d.slice(2) : d;
-  });
-  libForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var nome = libForm.nome.value.trim().replace(/\s+/g, ' '), whats = libForm.whats.value, compra = libForm.compra.value, erro = '';
-    $$('input,select', libForm).forEach(function (x) { x.classList.remove('invalid'); });
-    if (nome.split(' ').length < 2) { erro = 'Escreva seu nome completo.'; libForm.nome.classList.add('invalid'); libForm.nome.focus(); }
-    else if (soNumeros(whats).length < 10) { erro = 'Confira o WhatsApp com DDD.'; libForm.whats.classList.add('invalid'); libForm.whats.focus(); }
-    else if (!compra) { erro = 'Selecione o curso que você comprou.'; libForm.compra.classList.add('invalid'); libForm.compra.focus(); }
-    else if (ler(K_HIST, []).some(function (h) { return h.whats && soNumeros(h.whats) === soNumeros(whats); })) {
-      erro = 'Este WhatsApp já girou a roleta.'; libForm.whats.classList.add('invalid');
-    }
-    $('#libErr').textContent = erro;
-    if (erro) return;
-    pessoa = { nome: nome, whats: whats, compra: compra };
-    liberado = true; fecharLiberar(); destacar(null); atualizarEstado();
-    toast('Pronto, ' + nome.split(' ')[0] + '! Agora é só girar.');
-    spinBtn.scrollIntoView({ block: 'center', behavior: reduz ? 'auto' : 'smooth' });
-  });
-  $('#libCancel').addEventListener('click', fecharLiberar);
-  lib.addEventListener('click', function (e) { if (e.target === lib) fecharLiberar(); });  spinBtn.addEventListener('click', girar);
+  spinBtn.addEventListener('click', girar);
   hubBtn.addEventListener('click', girar);
   $('#nextPlayer').addEventListener('click', function () {
     fecharPremio(); destacar(null); luz('calmo'); scrollTo({ top: 0, behavior: 'smooth' }); toast('Pronto para o próximo participante!');
@@ -376,7 +343,7 @@
     var vistos = {};
     $('#legend').innerHTML = FATIAS.filter(function (k) { if (vistos[k] || !peso(k)) return false; vistos[k] = 1; return true; })
       .sort(function (a, b) { return (PREMIOS[b].max ? 1 : 0) - (PREMIOS[a].max ? 1 : 0); })
-      .map(function (k) { var P = PREMIOS[k]; return '<span class="' + (P.max ? 'top' : '') + '"><i style="background:linear-gradient(135deg,' + P.cor[0] + ',' + P.cor[1] + ')"></i>' + P.nome + (P.max ? ' · prêmio máximo' : '') + '</span>'; }).join('');
+      .map(function (k) { var P = PREMIOS[k]; return '<span class="' + (P.max ? 'top' : '') + '"><i style="background:linear-gradient(135deg,' + P.cor[0] + ',' + P.cor[1] + ')"></i>' + P.nome + (P.max ? ' · prêmio máximo' : '') + (P.porDia ? ' · ' + P.porDia + ' por dia' : '') + '</span>'; }).join('');
   }
 
   /* mini roleta da página inicial */
@@ -412,10 +379,8 @@
     $('#admSom').checked = Som.on;
     var vistos = {};
     $('#admPrizes').innerHTML = FATIAS.filter(function (k) { if (vistos[k]) return false; vistos[k] = 1; return true; }).map(function (k) {
-      var P = PREMIOS[k], c = cfg[k] || {}, on = c.on !== false, pv = c.peso != null ? c.peso : P.peso, n = FATIAS.filter(function (x) { return x === k; }).length;
-      return '<div class="adm-row" data-k="' + k + '"><div class="nm">' + P.nome + '<small>' + n + ' fatia' + (n > 1 ? 's' : '') + ' na roleta</small></div>' +
-        '<input type="range" min="1" max="30" step="1" value="' + pv + '" aria-label="Tamanho da fatia de ' + P.nome + '"' + (on ? '' : ' disabled') + ' />' +
-        '<span class="pct">' + chance(k).toFixed(1).replace('.', ',') + '%</span>' +
+      var P = PREMIOS[k], c = cfg[k] || {}, on = c.on !== false;
+      return '<div class="adm-row" data-k="' + k + '"><div class="nm">' + P.nome + '<small>' + (P.porDia ? 'até ' + P.porDia + ' por dia' : 'sem limite por dia') + '</small></div>' +
         '<label class="switch"><input type="checkbox"' + (on ? ' checked' : '') + ' aria-label="' + P.nome + ' disponível" /><i></i></label></div>';
     }).join('');
     var hist = ler(K_HIST, []), tot = {};
@@ -433,12 +398,9 @@
   $('#admPrizes').addEventListener('input', function (e) {
     var row = e.target.closest('[data-k]'); if (!row) return;
     var k = row.getAttribute('data-k'), c = cfg[k] = cfg[k] || {};
-    if (e.target.type === 'range') c.peso = +e.target.value;
-    if (e.target.type === 'checkbox') { c.on = e.target.checked; $('input[type=range]', row).disabled = !c.on; }
+    if (e.target.type === 'checkbox') c.on = e.target.checked;
     gravar(K_CFG, cfg); refazer();
-    $$('#admPrizes [data-k]').forEach(function (r) { $('.pct', r).textContent = chance(r.getAttribute('data-k')).toFixed(1).replace('.', ',') + '%'; });
   });
-  $('#admUnlock').addEventListener('click', function () { liberado = true; atualizarEstado(); toast('Giro liberado'); });
   $('#admClear').addEventListener('click', function () {
     if (!confirm('Apagar o histórico de prêmios deste aparelho?')) return;
     gravar(K_HIST, []); pintarAdmin(); toast('Histórico zerado');

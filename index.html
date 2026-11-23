@@ -667,15 +667,6 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 .cad-card form input:focus,.cad-card form select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(245,22,39,.25)}
 .cad-card form .invalid{border-color:var(--bad)}
 #cadForm .btn{width:100%;margin-top:4px;color:#fff;background:linear-gradient(100deg,#FF2436,#A90F1B);box-shadow:0 0 22px rgba(245,22,39,.45)}
-.lib-card{border-color:rgba(245,196,81,.6);background:linear-gradient(170deg,#1d1509,#0c0b0d 60%);box-shadow:0 0 70px rgba(245,196,81,.22),0 40px 100px rgba(0,0,0,.8);text-align:center}
-.lib-card .cad-head{flex-direction:column;align-items:center;gap:12px;padding:0 10px;margin-bottom:22px}
-.lib-wheel{width:96px;height:96px;filter:drop-shadow(0 0 22px rgba(245,196,81,.5))}
-.lib-wheel svg{width:100%;height:100%;animation:spin 8s linear infinite}
-.lib-card .cad-head h2 em{color:var(--gold-hot)}
-.lib-card form{text-align:left}
-.lib-card form input:focus,.lib-card form select:focus{border-color:var(--gold-hot);box-shadow:0 0 0 3px rgba(245,196,81,.25)}
-.lib-card form .btn{width:100%;margin-top:6px;font-size:1.15rem;padding:17px}
-.lib-note{font-size:.74rem;color:var(--gray-mid);text-align:center}
 .win-compra{font-size:1rem;color:var(--white-warm);margin:2px 0 14px}
 .win-compra b{color:#fff}
 .cad-err{min-height:1.1em;font-size:.85rem;color:var(--bad)}
@@ -1086,7 +1077,7 @@ body[data-route="premio"] .admin-gear{display:flex}
         <div class="pc-text">
           <span class="pc-eyebrow">Comprou com a gente?</span>
           <b>Gire a roleta!</b>
-          <span>Depois da sua compra, coloque seu nome e WhatsApp e gire a roleta. Todo giro dá prêmio: até <strong>6 meses de Atualiza Talks</strong>.</span>
+          <span>Fechou sua compra? É só girar. Todo giro dá prêmio: até <strong>6 meses de Atualiza Talks</strong>.</span>
         </div>
         <span class="btn btn-gold btn-lg"><svg class="i"><use href="#i-gift"/></svg> Girar a roleta</span>
       </a>
@@ -1131,7 +1122,7 @@ body[data-route="premio"] .admin-gear{display:flex}
       <div class="premio-head">
         <span class="kicker" style="--ac-rgb:245,196,81"><i></i> Todo giro dá prêmio</span>
         <h1 class="premio-title">Ganhe seu <span class="gold-txt">Prêmio!</span></h1>
-        <p>Comprou com a gente? Coloque seu nome e WhatsApp, gire a roleta e descubra o que você leva. O prêmio máximo é de <b>6 meses de Atualiza Talks</b>.</p>
+        <p>Comprou com a gente? É só girar e descobrir o que você leva. O prêmio máximo é de <b>6 meses de Atualiza Talks</b>.</p>
       </div>
 
       <div id="wheelArea">
@@ -1238,32 +1229,6 @@ body[data-route="premio"] .admin-gear{display:flex}
   </div>
 </div>
 
-<!-- Antes de girar: nome, WhatsApp e o que a pessoa comprou -->
-<div class="modal" id="libModal" role="dialog" aria-modal="true" aria-labelledby="libTitle">
-  <div class="cad-card lib-card">
-    <button class="round-btn cad-x" id="libCancel" type="button" aria-label="Fechar"><svg class="i"><use href="#i-x"/></svg></button>
-    <div class="cad-head">
-      <span class="lib-wheel" aria-hidden="true"><svg viewBox="-50 -50 100 100"><g data-mini-wheel></g><circle r="46" fill="none" stroke="#F5C451" stroke-width="4"/><circle r="9" fill="#0a0a0c" stroke="#F5C451" stroke-width="2.5"/></svg></span>
-      <div>
-        <span class="cad-kicker">Comprou com a gente?</span>
-        <h2 id="libTitle">Falta pouco para <em>girar a roleta</em></h2>
-        <p>Preencha seus dados para liberar o seu giro. Todo giro dá prêmio.</p>
-      </div>
-    </div>
-    <form id="libForm" novalidate>
-      <label>Nome completo<input name="nome" required autocomplete="name" placeholder="Seu nome e sobrenome" /></label>
-      <label>WhatsApp<input name="whats" required inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" /></label>
-      <label>O que você comprou?
-        <select name="compra" required>
-          <option value="">Selecione o curso</option>
-        </select>
-      </label>
-      <p class="cad-err" id="libErr" role="alert"></p>
-      <button class="btn btn-gold" type="submit"><svg class="i"><use href="#i-refresh"/></svg> Liberar meu giro</button>
-      <p class="lib-note">Use o mesmo WhatsApp da sua compra.</p>
-    </form>
-  </div>
-</div>
 <!-- Configurações da roleta (equipe) -->
 <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="admTitle">
   <div class="admin-card">
@@ -1280,8 +1245,8 @@ body[data-route="premio"] .admin-gear{display:flex}
         <div class="adm-row"><div class="nm">Som da roleta</div><label class="switch"><input type="checkbox" id="admSom" /><i></i></label></div>
       </div>
       <div class="adm-sec">
-        <h4>Prêmios e chances</h4>
-        <p class="sub" style="margin-bottom:6px">A chance de cada prêmio é igual ao tamanho da fatia na roleta. Desligue um prêmio quando o estoque acabar.</p>
+        <h4>Prêmios</h4>
+        <p class="sub" style="margin-bottom:6px">Todas as fatias têm a mesma chance. Desligue um prêmio quando o estoque acabar: a fatia some e as outras se dividem igualmente.</p>
         <div id="admPrizes"></div>
       </div>
       <div class="adm-sec">
@@ -1290,7 +1255,6 @@ body[data-route="premio"] .admin-gear{display:flex}
         <div class="adm-hist" id="admHist"></div>
         <div class="adm-btns">
           <button class="btn btn-glass btn-sm" id="admCsv">Baixar lista (.csv)</button>
-          <button class="btn btn-glass btn-sm" id="admUnlock">Liberar novo giro</button>
           <button class="btn btn-glass btn-sm" id="admClear">Zerar histórico</button>
         </div>
       </div>
@@ -1311,9 +1275,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261119d"></script>
-<script src="js/app.js?v=20261119d"></script>
-<script src="js/roleta.js?v=20261119d"></script>
+<script src="js/dados.js?v=20261123b"></script>
+<script src="js/app.js?v=20261123b"></script>
+<script src="js/roleta.js?v=20261123b"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>

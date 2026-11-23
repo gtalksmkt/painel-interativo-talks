@@ -387,20 +387,24 @@ var REVISOES = {
 
 /* ------------------------------------------------------------------
    ROLETA · prêmios
-   peso = tamanho da fatia (e a chance real de cair nela).
-   A soma dos pesos das fatias abaixo dá 100, então peso = %.
+   Todas as fatias têm o mesmo tamanho e a mesma chance.
+   porDia = quantas vezes o prêmio pode sair por dia neste aparelho;
+   depois disso a roleta não para mais nele até o dia seguinte.
+   Prêmio esgotado: desligue na engrenagem da tela da roleta.
    ------------------------------------------------------------------ */
 var PREMIOS = {
-  m1:     { nome: '1 mês de Atualiza Talks',   curto: '1 MÊS',   sub: 'ATUALIZA TALKS', tipo: 'assinatura', peso: 10, cor: ['#FF3A49', '#B70412'], txt: '#FFFFFF', ico: 'cal', n: '1' },
-  caneta: { nome: 'Caneta Talks',              curto: 'CANETA',  sub: 'BRINDE TALKS',   tipo: 'brinde',     peso: 10, cor: ['#2a2a31', '#111115'], txt: '#FFFFFF', ico: 'caneta' },
-  m2:     { nome: '2 meses de Atualiza Talks', curto: '2 MESES', sub: 'ATUALIZA TALKS', tipo: 'assinatura', peso: 9,  cor: ['#9E0A16', '#4f0309'], txt: '#FFFFFF', ico: 'cal', n: '2' },
-  copo:   { nome: 'Copo Talks',                curto: 'COPO',    sub: 'BRINDE TALKS',   tipo: 'brinde',     peso: 10, cor: ['#FFFFFF', '#CFD1D8'], txt: '#0a0a0c', ico: 'copo' },
-  m3:     { nome: '3 meses de Atualiza Talks', curto: '3 MESES', sub: 'ATUALIZA TALKS', tipo: 'assinatura', peso: 7,  cor: ['#141418', '#050506'], txt: '#F5C451', ico: 'cal', n: '3' },
-  m6:     { nome: '6 meses de Atualiza Talks', curto: '6 MESES', sub: 'PRÊMIO MÁXIMO',  tipo: 'assinatura', peso: 4,  cor: ['#FFE9A8', '#C8922F'], txt: '#1a1205', ico: 'cal', n: '6', max: true }
+  m6:      { nome: '6 meses de Atualiza Talks', curto: '6 MESES',  sub: 'PRÊMIO MÁXIMO',  tipo: 'assinatura', cor: ['#FFE9A8', '#C8922F'], txt: '#1a1205', ico: 'cal', n: '6', max: true, porDia: 1 },
+  copo:    { nome: 'Copo',                      curto: 'COPO',     sub: 'BRINDE TALKS',   tipo: 'brinde',     cor: ['#FFFFFF', '#CFD1D8'], txt: '#0a0a0c', ico: 'copo' },
+  m1:      { nome: '1 mês de Atualiza Talks',   curto: '1 MÊS',    sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#FF3A49', '#B70412'], txt: '#FFFFFF', ico: 'cal', n: '1' },
+  camisa:  { nome: 'Camisa',                    curto: 'CAMISA',   sub: 'BRINDE TALKS',   tipo: 'brinde',     cor: ['#2a2a31', '#111115'], txt: '#FFFFFF', ico: 'camisa' },
+  m4:      { nome: '4 meses de Atualiza Talks', curto: '4 MESES',  sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#9E0A16', '#4f0309'], txt: '#FFFFFF', ico: 'cal', n: '4' },
+  caderno: { nome: 'Caderno de revisão',        curto: 'CADERNO',  sub: 'DE REVISÃO',     tipo: 'brinde',     cor: ['#FFFFFF', '#CFD1D8'], txt: '#0a0a0c', ico: 'caderno' },
+  m2:      { nome: '2 meses de Atualiza Talks', curto: '2 MESES',  sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#E8303F', '#8f0b16'], txt: '#FFFFFF', ico: 'cal', n: '2' },
+  aula:    { nome: 'Aula de degustação',        curto: 'AULA',     sub: 'DE DEGUSTAÇÃO',  tipo: 'brinde',     cor: ['#2a2a31', '#111115'], txt: '#FFFFFF', ico: 'aula' },
+  m3:      { nome: '3 meses de Atualiza Talks', curto: '3 MESES',  sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#141418', '#050506'], txt: '#F5C451', ico: 'cal', n: '3' }
 };
-/* ordem das fatias, no sentido horário a partir do ponteiro */
-var FATIAS = ['m1', 'caneta', 'm2', 'copo', 'm3', 'm1', 'caneta', 'copo', 'm1', 'caneta', 'm6'];
-
+/* ordem das fatias, no sentido horário a partir do ponteiro (uma fatia por prêmio) */
+var FATIAS = ['m6', 'copo', 'm1', 'camisa', 'm4', 'caderno', 'm2', 'aula', 'm3'];
 /* PIN da área da equipe (engrenagem no canto da tela da roleta) */
 var ADMIN_PIN = '2027';
 
@@ -412,14 +416,3 @@ var ADMIN_PIN = '2027';
 var PLANILHA = {
   url: 'https://script.google.com/macros/s/AKfycbwcRpotMd7Dvg9n9JONIyn4glBXW5sHUq-oLctMT2ohZnpyc3PRp6tySwYKf2pCANIuFQ/exec'
 };
-
-/* Opções de "O que você comprou?" na janela da roleta (vão para a coluna Compra da planilha) */
-var COMPRAS = [
-  'Preparatório TEME 2027 · Intensivo',
-  'Preparatório TEME 2027 · MasterClass',
-  'TEME Premium 2027',
-  'Atualiza Talks',
-  'Revisões TEME',
-  'The Big Pocus 2027',
-  'Outro curso do Grupo Talks'
-];
