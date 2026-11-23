@@ -21,7 +21,9 @@
 
   /* ---------------- configuração (pesos e prêmios ligados) ---------------- */
   var cfg = ler(K_CFG, {});
-  function peso(k) { var c = cfg[k]; return c && c.on === false ? 0 : 1; }
+  function peso(k) { var c = cfg[k]; return (c && c.on === false) || restam(k) === 0 ? 0 : 1; }
+  /* estoque que sobra (null = sem estoque definido), contando os giros guardados neste aparelho */
+  function restam(k) { var e = PREMIOS[k].estoque; if (e == null) return null; return Math.max(0, e - ler(K_HIST, []).filter(function (h) { return h.k === k; }).length); }
   var fatias = [], total = 0;
   function layout() {
     var ativas = FATIAS.filter(function (k) { return peso(k) > 0; });
@@ -214,7 +216,8 @@
   function aplicar(a) { var t = 'rotate(' + a + 'deg)'; canvas.style.transform = t; hl.style.transform = t; }
   function fatiaEm(ang) { var p = ((-ang % 360) + 360) % 360; for (var i = 0; i < fatias.length; i++) if (p >= fatias[i].a0 && p < fatias[i].a1) return i; return fatias.length - 1; }
   function chutar() { pointer.classList.remove('kick'); void pointer.offsetWidth; pointer.classList.add('kick'); }
-  /* prêmio com porDia (6 meses = 1 por dia) só sai enquanto não bateu o limite de hoje neste aparelho */
+  /* prêmio com porDia (6 meses = 1 por dia) só sai enquanto não bateu o limite de hoje neste aparelho;
+     o estoque já tira a fatia da roleta quando acaba (peso) */
   function podeSairHoje(k) {
     var lim = PREMIOS[k].porDia; if (!lim) return true;
     var hoje = new Date().toDateString();
@@ -261,11 +264,12 @@
     var P = PREMIOS[f.k], res = { k: f.k, ts: Date.now() };
     destacar(f); luz(P.max ? 'max' : 'ganhou'); Som.vitoria(P.max);
     var hist = ler(K_HIST, []); hist.unshift(res); gravar(K_HIST, hist.slice(0, 2000));
+    var acabou = restam(f.k) === 0;
     Planilha.enviar(res);
     setTimeout(function () {
       girando = false; document.body.classList.remove('spinning');
       abrirPremio(res, true);
-      setTimeout(function () { luz('calmo'); }, 2600);
+      setTimeout(function () { luz('calmo'); if (acabou) { rot = 0; aplicar(0); destacar(null); refazer(); } }, 2600);
       atualizarEstado();
     }, 900);
   }
@@ -297,8 +301,7 @@
   function icone(P) {
     if (P.ico === 'copo') return '<svg viewBox="0 0 72 72"><path d="M20 23h32l-4.2 39.4A4 4 0 0 1 43.8 66H28.2a4 4 0 0 1-4-3.6z" fill="#F6F6F7" stroke="#F5C451" stroke-width="2.5"/><rect x="16" y="16" width="40" height="8" rx="3" fill="#F51627" stroke="#F5C451" stroke-width="1.5"/><path d="M40 16l6-11h7" stroke="#F5C451" stroke-width="3" fill="none" stroke-linecap="round"/><text x="36" y="48" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="11" fill="#0a0a0c">TALKS</text></svg>';
     if (P.ico === 'camisa') return '<svg viewBox="0 0 72 72"><path d="M26 10l-16 8 6 14 6-3v31h28V29l6 3 6-14-16-8c-1 5-5 8-10 8s-9-3-10-8z" fill="#1c1c22" stroke="#F5C451" stroke-width="2.5" stroke-linejoin="round"/><text x="36" y="47" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="10" fill="#F51627">TALKS</text></svg>';
-    if (P.ico === 'caderno') return '<svg viewBox="0 0 72 72"><rect x="16" y="8" width="42" height="56" rx="5" fill="#F6F6F7" stroke="#F5C451" stroke-width="2.5"/><rect x="16" y="8" width="9" height="56" rx="3" fill="#F51627"/><line x1="31" y1="24" x2="51" y2="24" stroke="#8E9098" stroke-width="2.5" stroke-linecap="round"/><line x1="31" y1="33" x2="51" y2="33" stroke="#8E9098" stroke-width="2.5" stroke-linecap="round"/><line x1="31" y1="42" x2="45" y2="42" stroke="#8E9098" stroke-width="2.5" stroke-linecap="round"/></svg>';
-    if (P.ico === 'aula') return '<svg viewBox="0 0 72 72"><rect x="8" y="14" width="56" height="38" rx="6" fill="#141418" stroke="#F5C451" stroke-width="2.5"/><path d="M31 25v16l13-8z" fill="#F51627"/><line x1="26" y1="60" x2="46" y2="60" stroke="#F5C451" stroke-width="3" stroke-linecap="round"/></svg>';
+    if (P.ico === 'casaco') return '<svg viewBox="0 0 72 72"><path d="M27 8l-13 6-6 16 6 2v32h44V32l6-2-6-16-13-6-4 6h-10z" fill="#1c1c22" stroke="#F5C451" stroke-width="2.5" stroke-linejoin="round"/><line x1="36" y1="14" x2="36" y2="64" stroke="#F5C451" stroke-width="2"/><path d="M31 8c0 4 2 7 5 7s5-3 5-7" fill="none" stroke="#F5C451" stroke-width="2"/><text x="36" y="44" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="8" fill="#F51627">TALKS</text></svg>';
     return '<svg viewBox="0 0 72 72"><rect x="8" y="13" width="56" height="52" rx="9" fill="#141418" stroke="#F5C451" stroke-width="3"/><path d="M8 22a9 9 0 0 1 9-9h38a9 9 0 0 1 9 9v6H8z" fill="#F51627"/><line x1="22" y1="6" x2="22" y2="19" stroke="#F5C451" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="6" x2="50" y2="19" stroke="#F5C451" stroke-width="4" stroke-linecap="round"/><text x="36" y="56" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="900" font-size="28" fill="#fff">' + P.n + '</text><text x="36" y="25.5" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="800" font-size="7" letter-spacing="1" fill="#fff">' + (P.n === '1' ? 'MÊS' : 'MESES') + '</text></svg>';
   }
   function abrirPremio(res, novo) {
@@ -380,7 +383,7 @@
     var vistos = {};
     $('#admPrizes').innerHTML = FATIAS.filter(function (k) { if (vistos[k]) return false; vistos[k] = 1; return true; }).map(function (k) {
       var P = PREMIOS[k], c = cfg[k] || {}, on = c.on !== false;
-      return '<div class="adm-row" data-k="' + k + '"><div class="nm">' + P.nome + '<small>' + (P.porDia ? 'até ' + P.porDia + ' por dia' : 'sem limite por dia') + '</small></div>' +
+      return '<div class="adm-row" data-k="' + k + '"><div class="nm">' + P.nome + '<small>' + (P.estoque != null ? 'restam ' + restam(k) + ' de ' + P.estoque : P.porDia ? 'até ' + P.porDia + ' por dia' : 'sem limite') + '</small></div>' +
         '<label class="switch"><input type="checkbox"' + (on ? ' checked' : '') + ' aria-label="' + P.nome + ' disponível" /><i></i></label></div>';
     }).join('');
     var hist = ler(K_HIST, []), tot = {};
