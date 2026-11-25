@@ -174,15 +174,42 @@
     var h = m[2] || (String(v.vimeo).match(/[?&]h=([0-9a-f]+)/i) || [])[1] || '';
     return { id: m[1], h: h };
   }
+  /* formato real de cada vídeo (largura/altura e capa), lido do Vimeo uma vez só */
+  var FORMATO = {};
+  function formato(key) {
+    var v = VIDEOS[key], f = FORMATO[key], r = f ? f.w / f.h : (v.ratio || (v.vertical ? 9 / 16 : 16 / 9));
+    return { vert: r < 1, css: 'aspect-ratio:' + r.toFixed(4) };
+  }
   function videoHtml(key) {
-    var v = VIDEOS[key], vm = vimeo(v), cls = 'video-frame' + (v.vertical ? ' vert' : '');
+    var v = VIDEOS[key], vm = vimeo(v), fm = formato(key), cls = 'video-frame' + (fm.vert ? ' vert' : ''),
+      capa = v.poster || (FORMATO[key] && FORMATO[key].capa);
     /* sem link ainda: espaço reservado */
-    if (!vm) return '<div class="' + cls + ' vslot"><div class="vslot-in">' + ic('video') + '<b>Vídeo em breve</b><small>' + v.titulo + '</small></div></div>';
-    return '<div class="' + cls + '" data-video="' + key + '"><div class="video-poster" role="button" tabindex="0" aria-label="Assistir: ' + v.titulo + '">' +
-      (v.poster ? '<img src="' + v.poster + '" alt="" loading="lazy" />' : '') + '<span class="play-btn">' + ic('play') + '</span><b>' + v.titulo + '</b><small>Toque para assistir</small></div></div>';
+    if (!vm) return '<div class="' + cls + ' vslot" style="' + fm.css + '"><div class="vslot-in">' + ic('video') + '<b>Vídeo em breve</b><small>' + v.titulo + '</small></div></div>';
+    return '<div class="' + cls + '" style="' + fm.css + '" data-video="' + key + '"><div class="video-poster" role="button" tabindex="0" aria-label="Assistir: ' + v.titulo + '">' +
+      (capa ? '<img src="' + capa + '" alt="" loading="lazy" />' : '') + '<span class="play-btn">' + ic('play') + '</span><b>' + v.titulo + '</b><small>Toque para assistir</small></div></div>';
+  }
+  /* pergunta ao Vimeo o tamanho do vídeo e ajusta a moldura (em pé, deitado, mais largo) + capa */
+  function lerFormato(key) {
+    if (FORMATO[key] || lerFormato[key]) return;
+    lerFormato[key] = true;
+    var vm = vimeo(VIDEOS[key]);
+    fetch('https://vimeo.com/api/oembed.json?width=1280&url=' + encodeURIComponent('https://vimeo.com/' + vm.id + (vm.h ? '/' + vm.h : '')))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !d.width || !d.height) return;
+        FORMATO[key] = { w: d.width, h: d.height, capa: d.thumbnail_url || '' };
+        var fm = formato(key);
+        $$('[data-video="' + key + '"]').forEach(function (el) {
+          el.setAttribute('style', fm.css);
+          el.classList.toggle('vert', fm.vert);
+          var p = $('.video-poster', el);
+          if (p && !$('img', p) && FORMATO[key].capa) { var im = new Image(); im.src = FORMATO[key].capa; im.alt = ''; p.insertBefore(im, p.firstChild); }
+        });
+      }).catch(function () {});
   }
   function ligarVideos(root) {
     $$('[data-video]', root).forEach(function (fr) {
+      lerFormato(fr.getAttribute('data-video'));
       var p = $('.video-poster', fr);
       if (!p || p._ligado) return;
       p._ligado = true;
@@ -670,7 +697,7 @@
     painel.pratica = '<div class="sec-head"><span class="eyebrow">2ª fase · prova prática</span><h2>Treine como se estivesse diante da banca</h2><p>Simulação presencial no formato real da prova prática da ABRAMEDE, com professores titulados avaliando cada estação.</p></div>' +
       '<div class="rv-stats">' + pr.stats.map(function (s) { return '<div class="p-stat"><b>' + s.n + '</b><span>' + s.t + '</span></div>'; }).join('') + '</div>' +
       '<div class="block"><h3>A dinâmica em 3 movimentos</h3><div class="steps">' + pr.passos.map(function (p, n) { return '<div class="step glass"><span class="sn">0' + (n + 1) + '</span><h4>' + p.t + '</h4><p>' + p.p + '</p></div>'; }).join('') + '</div></div>' +
-      (pr.video ? '<div class="block"><h3>Veja um debriefing de verdade</h3><div class="vids">' + videoHtml(pr.video) + '</div></div>' : '') +
+      (pr.videos ? '<div class="block"><h3>Veja como é a Revisão Prática</h3><div class="vids">' + pr.videos.map(videoHtml).join('') + '</div></div>' : '') +
       '<div class="two block"><div><h3 style="font-size:1.5rem;margin-bottom:14px">O que está incluso</h3><ul class="check-list">' + pr.inclui.map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') + '</ul></div>' +
         '<div><h3 style="font-size:1.5rem;margin-bottom:14px">O que o debriefing aponta</h3><div class="chips" style="margin-bottom:18px">' + pr.debrief.map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>' +
         '<div class="rv-mosaic"><img src="img/pratica-4.jpg" alt="Treino na Revisão Prática" loading="lazy" data-lb="8" /><img src="img/pratica-5.jpg" alt="Debriefing" loading="lazy" data-lb="8" /><img src="img/pratica-1.jpg" alt="Via aérea" loading="lazy" data-lb="0" /></div></div></div>' +

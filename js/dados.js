@@ -33,17 +33,20 @@ var CADASTRO = {
    vertical: true = vídeo em pé (reels, 9:16). */
 var VIDEOS = {
   teme:           { vimeo: 'https://vimeo.com/1214813044/7917f77f1b', titulo: 'Conheça o TEME 2027', poster: 'img/galeria-2.jpg' },
-  teme_portal:    { vimeo: '', titulo: 'Por dentro do portal do aluno' },
-  teme_khalil:    { vimeo: '', titulo: 'Aula experimental · Dr. Khalil Feitosa' },
-  teme_nicole:    { vimeo: '', titulo: 'Aula experimental · Dra. Nicole Pinheiro' },
-  premium_video:  { vimeo: '', titulo: 'TEME Premium 2027', vertical: true },
-  premium_khalil: { vimeo: '', titulo: 'Dr. Khalil apresenta o Premium', vertical: true },
-  revisoes:       { vimeo: '', titulo: 'Revisões TEME em São Paulo', vertical: true },
-  debriefing:     { vimeo: '', titulo: 'Debriefing na Revisão Prática', vertical: true },
-  teorica:        { vimeo: '', titulo: 'Revisão Teórica 2026', vertical: true },
-  bigpocus:       { vimeo: '', titulo: 'The Big Pocus', vertical: true },
-  bigpocus_reels: { vimeo: '', titulo: 'Por dentro do The Big Pocus', vertical: true }
+  teme_portal:    { vimeo: 'https://vimeo.com/1249727444/dafb079e49', titulo: 'Por dentro do portal do aluno', ratio: 2028 / 1080 },
+  teme_khalil:    { vimeo: 'https://vimeo.com/1249728279', titulo: 'Aula experimental · Dr. Khalil Feitosa' },
+  teme_nicole:    { vimeo: 'https://vimeo.com/1249728484/3bfdef85ef', titulo: 'Aula experimental · Dra. Nicole Pinheiro' },
+  teme_patricia:  { vimeo: 'https://vimeo.com/1249728948', titulo: 'Aula experimental · Dra. Patricia Lopes' },
+  premium_video:  { vimeo: 'https://vimeo.com/1249729380', titulo: 'TEME Premium 2027', vertical: true },
+  premium_khalil: { vimeo: 'https://vimeo.com/1249730469', titulo: 'Dr. Khalil apresenta o Premium', vertical: true },
+  revisoes:       { vimeo: 'https://vimeo.com/1249730963', titulo: 'Revisões TEME em São Paulo', vertical: true },
+  autotreino:     { vimeo: 'https://vimeo.com/1249732932', titulo: 'Autotreinamento na Revisão Prática', vertical: true },
+  viaaerea:       { vimeo: 'https://vimeo.com/1249732624', titulo: 'Workshop Via Aérea', vertical: true },
+  teorica:        { vimeo: 'https://vimeo.com/1249733326', titulo: 'Revisão Teórica 2026', vertical: true },
+  bigpocus:       { vimeo: 'https://vimeo.com/1249733937', titulo: 'The Big Pocus', vertical: true },
+  bigpocus_reels: { vimeo: 'https://vimeo.com/1249757640', titulo: 'Por dentro do The Big Pocus', vertical: true }
 };
+/* o formato (em pé ou deitado) é lido sozinho do Vimeo; "vertical"/"ratio" só valem enquanto ele não responde */
 /* lista de arquivos numerados: lista('img/x-', 3, '.jpg') = x-01, x-02, x-03 */
 function lista(pre, n, ext) { var r = []; for (var i = 1; i <= n; i++) r.push(pre + (i < 10 ? '0' : '') + i + ext); return r; }
 
@@ -82,7 +85,7 @@ var PRODUTOS = {
     whatsMsg: 'Olá! Conheci o Preparatório TEME 2027 no Painel Interativo Talks e quero saber mais.',
     abas: ['geral', 'portal', 'aula', 'questoes', 'flashcards'],
     video: 'teme',
-    aulaVideos: ['teme_khalil', 'teme_nicole'],
+    aulaVideos: ['teme_khalil', 'teme_nicole', 'teme_patricia'],
     portalVideo: 'teme_portal',
 
     feats: [
@@ -345,7 +348,7 @@ var REVISOES = {
     { f: 'img/galeria-9.jpg', t: 'Momentos da turma', s: 'Encontros Talks' }
   ],
   pratica: {
-    video: 'debriefing',
+    videos: ['autotreino', 'viaaerea'],
     stats: [
       { n: '4', t: 'dias de imersão presencial' },
       { n: '+30', t: 'cenários realistas' },
