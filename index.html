@@ -694,6 +694,25 @@ button.pm-row:hover{border-color:rgba(var(--ac-rgb),.45);background:#16161c}
 .vids>.vert{flex:0 1 340px}
 .video-frame.vert{aspect-ratio:9/16;max-height:78vh}
 .vids>.video-frame.vert{flex:0 1 340px}
+/* vídeos em pé + painel explicativo ao lado */
+.vsplit{display:grid;grid-template-columns:auto minmax(0,1fr);gap:28px;align-items:center}
+.vsplit .vids{flex-wrap:nowrap;justify-content:flex-start}
+.vsplit .vids>.video-frame.vert{flex:0 0 auto;width:300px;max-height:none}
+.vsplit.n1 .vids>.video-frame.vert{width:340px}
+.vside{padding:30px 30px 32px;border-radius:24px;display:flex;flex-direction:column;gap:14px;align-self:stretch;justify-content:center}
+.vside .eyebrow{margin:0}
+.vside h3{font-size:clamp(1.7rem,2.6vw,2.4rem);line-height:1;margin:0}
+.vside p{color:var(--gray-light);font-size:1.02rem;line-height:1.55;margin:0}
+.vside .check-list{margin:4px 0 6px}
+.vside .btn{align-self:flex-start}
+@media(max-width:1100px){.vsplit{grid-template-columns:1fr}.vsplit .vids{flex-wrap:wrap;justify-content:center}.vsplit .vids>.video-frame.vert,.vsplit.n1 .vids>.video-frame.vert{width:min(300px,100%)}}
+/* Premium: Turma 01 completa, Turma 02 aberta */
+.turma-status{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+.turma-status span{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-head);text-transform:uppercase;letter-spacing:1.5px;font-size:.9rem;font-weight:700;padding:8px 16px;border-radius:999px}
+.turma-status .ts-off{color:var(--gray-light);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);text-decoration:line-through;text-decoration-color:rgba(255,90,102,.8)}
+.turma-status .ts-on{color:#1a1205;background:linear-gradient(100deg,#FFE08A,#C8922F);box-shadow:0 0 24px rgba(245,196,81,.35)}
+.turma-status .ts-on i{width:8px;height:8px;border-radius:50%;background:#1a1205;animation:tsPulse 1.6s ease-in-out infinite}
+@keyframes tsPulse{50%{opacity:.25}}
 .video-poster{background:radial-gradient(circle at 50% 40%,rgba(var(--ac-rgb),.32),#0a0a0c 70%)}
 .vslot{display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.03) 0 12px,transparent 12px 24px),#0c0c0f;border:1.5px dashed rgba(var(--ac-rgb),.45);box-shadow:none}
 .vslot-in{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:20px;color:var(--gray-light)}
@@ -1010,7 +1029,7 @@ body[data-route="premio"] .admin-gear{display:flex}
 
         <a class="prod-tile t-premium" href="#premium" style="--d:1">
           <div class="pt-bg"><img src="img/premium.jpg" alt="" /></div>
-          <div class="pt-top"><img class="pt-logo" src="img/logo-emergency.png" alt="Emergency Talks" /><span class="pt-chip">Turma 01 · 2027</span></div>
+          <div class="pt-top"><img class="pt-logo" src="img/logo-emergency.png" alt="Emergency Talks" /><span class="pt-chip">Turma 02 · vagas abertas</span></div>
           <div>
             <span class="pt-eyebrow">Preparação + Pós-graduação</span>
             <h2 class="pt-name">TEME <em>Premium</em></h2>
@@ -1269,9 +1288,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261125b"></script>
-<script src="js/app.js?v=20261125b"></script>
-<script src="js/roleta.js?v=20261125b"></script>
+<script src="js/dados.js?v=20261126a"></script>
+<script src="js/app.js?v=20261126a"></script>
+<script src="js/roleta.js?v=20261126a"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>

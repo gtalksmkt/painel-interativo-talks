@@ -33,19 +33,20 @@ var CADASTRO = {
    vertical: true = vídeo em pé (reels, 9:16). */
 var VIDEOS = {
   teme:           { vimeo: 'https://vimeo.com/1214813044/7917f77f1b', titulo: 'Conheça o TEME 2027', poster: 'img/galeria-2.jpg' },
-  teme_portal:    { vimeo: 'https://vimeo.com/1249727444/dafb079e49', titulo: 'Por dentro do portal do aluno', ratio: 2028 / 1080 },
-  teme_khalil:    { vimeo: 'https://vimeo.com/1249728279', titulo: 'Aula experimental · Dr. Khalil Feitosa' },
-  teme_nicole:    { vimeo: 'https://vimeo.com/1249728484/3bfdef85ef', titulo: 'Aula experimental · Dra. Nicole Pinheiro' },
-  teme_patricia:  { vimeo: 'https://vimeo.com/1249728948', titulo: 'Aula experimental · Dra. Patricia Lopes' },
-  premium_video:  { vimeo: 'https://vimeo.com/1249729380', titulo: 'TEME Premium 2027', vertical: true },
-  premium_khalil: { vimeo: 'https://vimeo.com/1249730469', titulo: 'Dr. Khalil apresenta o Premium', vertical: true },
-  revisoes:       { vimeo: 'https://vimeo.com/1249730963', titulo: 'Revisões TEME em São Paulo', vertical: true },
-  autotreino:     { vimeo: 'https://vimeo.com/1249732932', titulo: 'Autotreinamento na Revisão Prática', vertical: true },
-  viaaerea:       { vimeo: 'https://vimeo.com/1249732624', titulo: 'Workshop Via Aérea', vertical: true },
-  teorica:        { vimeo: 'https://vimeo.com/1249733326', titulo: 'Revisão Teórica 2026', vertical: true },
-  bigpocus:       { vimeo: 'https://vimeo.com/1249733937', titulo: 'The Big Pocus', vertical: true },
-  bigpocus_reels: { vimeo: 'https://vimeo.com/1249757640', titulo: 'Por dentro do The Big Pocus', vertical: true }
+  teme_portal:    { vimeo: 'https://vimeo.com/1250076832/89fe46cbfb', titulo: 'Por dentro do portal do aluno', ratio: 100 / 53.25 },
+  teme_khalil:    { vimeo: 'https://vimeo.com/1250077170/9351aedb92', titulo: 'Aula experimental · Dr. Khalil Feitosa' },
+  teme_nicole:    { vimeo: 'https://vimeo.com/1250077620/7380ba8d80', titulo: 'Aula experimental · Dra. Nicole Pinheiro' },
+  teme_patricia:  { vimeo: 'https://vimeo.com/1250077624/665d7bae49', titulo: 'Aula experimental · Dra. Patricia Lopes' },
+  premium_video:  { vimeo: 'https://vimeo.com/1250076732/6b2b8a7a73', titulo: 'TEME Premium 2027', vertical: true },
+  premium_khalil: { vimeo: 'https://vimeo.com/1250077631/f05a576ced', titulo: 'Dr. Khalil apresenta o Premium', vertical: true },
+  revisoes:       { vimeo: 'https://vimeo.com/1250076680/efba756b88', titulo: 'Revisões TEME em São Paulo' },
+  debriefing:     { vimeo: 'https://vimeo.com/1250076887/6f79bb439a', titulo: 'Debriefing na Revisão Prática', vertical: true },
+  viaaerea:       { vimeo: 'https://vimeo.com/1250076733/87610aa6a4', titulo: 'Workshop de POCUS e Via Aérea', vertical: true },
+  teorica:        { vimeo: 'https://vimeo.com/1250076831/b8ab459c08', titulo: 'Revisão Teórica 2026', vertical: true },
+  bigpocus:       { vimeo: 'https://vimeo.com/1250076711/89ce5e127c', titulo: 'The Big Pocus', vertical: true },
+  bigpocus_reels: { vimeo: 'https://vimeo.com/1250076791/e99fcafba6', titulo: 'Por dentro do The Big Pocus', vertical: true }
 };
+/* vídeos em pé ganham um painel explicativo ao lado (campo "videosSobre" de cada área, mais abaixo) */
 /* o formato (em pé ou deitado) é lido sozinho do Vimeo; "vertical"/"ratio" só valem enquanto ele não responde */
 /* lista de arquivos numerados: lista('img/x-', 3, '.jpg') = x-01, x-02, x-03 */
 function lista(pre, n, ext) { var r = []; for (var i = 1; i <= n; i++) r.push(pre + (i < 10 ? '0' : '') + i + ext); return r; }
@@ -163,11 +164,15 @@ var PRODUTOS = {
    Produto high ticket: sem preço no painel, todo CTA vai para a central.
    ------------------------------------------------------------------ */
 var PREMIUM = {
+  turma: 'Turma 02',
+  /* aviso no topo da página: a Turma 01 lotou */
+  status: 'Turma 01 completa · vagas abertas para a Turma 02',
   videos: ['premium_video', 'premium_khalil'],
-  whatsMsg: 'Olá! Conheci o TEME Premium no Painel Interativo Talks e quero saber mais sobre a Turma 01.',
+  videosSobre: { eyebrow: 'Turma 02 · vagas limitadas', t: 'Preparação para o TEME + pós-graduação', p: 'Aulas virtuais semanais, encontros ao vivo de questões e certificado de pós-graduação ao final.', itens: ['11 eixos temáticos virtuais', '10 encontros ao vivo de questões', '6 imersões presenciais em SP', '4 dias de revisões na fase final'] },
+  whatsMsg: 'Olá! Conheci o TEME Premium no Painel Interativo Talks e quero saber das vagas da Turma 02.',
   lead: 'A jornada que te possibilita concluir uma <b>pós-graduação em Medicina de Emergência</b> enquanto se prepara para o <b>Título de Especialista (TEME)</b>. Um caminho, duas conquistas: o certificado e o título.',
   stats: [
-    { n: '+100', t: 'aulas em 11 eixos temáticos' },
+    { n: '11', t: 'eixos temáticos virtuais' },
     { n: '10', t: 'encontros ao vivo de questões' },
     { n: '6', t: 'imersões presenciais em SP' },
     { n: '4', t: 'dias de revisões na fase final' }
@@ -187,7 +192,7 @@ var PREMIUM = {
     { ic: 'chart', t: 'Painel de desempenho', p: 'Seus acertos, suas lacunas e onde focar, com a evolução ao longo do curso.' },
     { ic: 'gift',  t: 'Bônus: cursos online', p: 'Acesso a cursos online do Talks para complementar a sua formação em emergência.', bonus: true }
   ],
-  certificado: 'O certificado de pós-graduação é exclusivo da modalidade TEME Premium. Fale com a nossa central para conhecer as condições da Turma 01.',
+  certificado: 'O certificado de pós-graduação é exclusivo da modalidade TEME Premium. Fale com a nossa central para conhecer as condições da Turma 02.',
   fases: [
     { tag: 'Fase 1 · Virtual assíncrona', t: '+100 aulas · 11 eixos temáticos', p: 'Mais de 100 aulas divididas nos 11 eixos temáticos, liberadas semanalmente no ritmo da programação didático-pedagógica.',
       chips: ['Via aérea', 'Cardiovascular', 'Clínica', 'Neuro', 'Trauma e APH', 'POCUS', 'Reanimação', 'Pediatria', 'Toxicologia', 'GO', 'Gestão'] },
@@ -197,14 +202,14 @@ var PREMIUM = {
   ],
   notaFases: 'A liberação semanal das aulas segue a programação didático-pedagógica do curso e pode não seguir a sequência cronológica dos módulos.',
   encontros: [
-    { t: 'ResusTalks', d: '22 a 24 de janeiro' },
-    { t: 'Trauma e APH', d: '26 a 28 de fevereiro' },
-    { t: 'Mapa do Choque + POCUS Cardio', d: '26 a 28 de março' },
-    { t: 'The Big POCUS', d: '23 a 25 de abril' },
-    { t: 'MAVA + Procedimentos', d: '21 a 23 de maio' },
-    { t: 'eMePed Talks', d: '25 a 27 de junho' }
+    { t: 'The Big POCUS', d: '15 a 17 de janeiro' },
+    { t: 'ResusTalks', d: '19 a 21 de fevereiro' },
+    { t: 'Mapa do Choque + POCUS Cardio', d: '12 a 14 de março' },
+    { t: 'MAVA + Procedimentos', d: '16 a 18 de abril' },
+    { t: 'Trauma e APH', d: '14 a 16 de maio' },
+    { t: 'Emergências Pediátricas', d: '18 a 20 de junho' }
   ],
-  horarios: [['Sexta-feira', '08:30 às 18:00'], ['Sábado', '08:30 às 18:00'], ['Domingo', '09:00 às 14:00 · simulado da prova teórica TEME']],
+  horarios: [['Sexta-feira', '08:30 às 18:00'], ['Sábado', '08:30 às 18:00'], ['Domingo', '09:00 às 14:00 · com Simulado TEME']],
   pratica: 'Simulação realística, uso de materiais e equipamentos, procedimentos e o dia a dia da emergência: a maior parte dos encontros é voltada para a prática real.'
 };
 
@@ -216,6 +221,7 @@ var BIGPOCUS = {
   quando: 'São Paulo/SP · 05 e 06 de março de 2027',
   /* aba "Fotos e vídeos" */
   videos: ['bigpocus', 'bigpocus_reels'],
+  videosSobre: { eyebrow: 'São Paulo · 05 e 06 de março de 2027', t: 'Dois dias de POCUS na prática', p: 'Ultrassom à beira-leito com emergencistas experientes, prática em modelos realistas e técnicas para aplicar no próximo plantão.', itens: ['9 blocos de aula e prática', '4 professores emergencistas', 'Grupo VIP no WhatsApp'] },
   foto: 'img/bp-foto-12.jpg',
   fotos: lista('img/bp-foto-', 28, '.jpg').map(function (f) { return { f: f, t: 'The Big Pocus', s: 'Última edição' }; }),
   lead: 'O curso presencial de <b>ultrassom à beira-leito (POCUS)</b> da Emergency Talks: a ferramenta que vai transformar sua tomada de decisão. Dois dias de hands-on em <b>São Paulo, 05 e 06 de março de 2027</b>.',
@@ -348,7 +354,8 @@ var REVISOES = {
     { f: 'img/galeria-9.jpg', t: 'Momentos da turma', s: 'Encontros Talks' }
   ],
   pratica: {
-    videos: ['autotreino', 'viaaerea'],
+    videos: ['debriefing', 'viaaerea'],
+    videosSobre: { eyebrow: 'Revisão Prática', t: 'Debriefing e workshops', p: 'Depois de cada estação, o professor mostra o que ajustar. Nos workshops de POCUS e via aérea, você treina a técnica com as próprias mãos.', itens: ['Estações no modelo da prova da ABRAMEDE', 'Debriefing com professores titulados', 'Workshops práticos de POCUS e Via Aérea'] },
     stats: [
       { n: '4', t: 'dias de imersão presencial' },
       { n: '+30', t: 'cenários realistas' },
@@ -373,6 +380,7 @@ var REVISOES = {
   },
   teorica: {
     video: 'teorica',
+    videoSobre: { eyebrow: 'Revisão Teórica', t: 'Um dia de revisão intensiva', p: 'Aulas intensivas alinhadas ao edital da ABRAMEDE para consolidar o conteúdo antes da prova teórica.', itens: ['Aulas com professores titulados', 'Conteúdo alinhado ao edital', 'Gravações para revisar até a prova'] },
     texto: 'A revisão da 1ª fase: um dia de aulas intensivas alinhadas ao edital da ABRAMEDE para consolidar o conteúdo antes da prova teórica.',
     inclui: [
       'Aulas intensivas com professores titulados',

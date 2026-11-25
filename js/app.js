@@ -188,6 +188,16 @@
     return '<div class="' + cls + '" style="' + fm.css + '" data-video="' + key + '"><div class="video-poster" role="button" tabindex="0" aria-label="Assistir: ' + v.titulo + '">' +
       (capa ? '<img src="' + capa + '" alt="" loading="lazy" />' : '') + '<span class="play-btn">' + ic('play') + '</span><b>' + v.titulo + '</b><small>Toque para assistir</small></div></div>';
   }
+  /* bloco de vídeos; com "sobre", os vídeos em pé ganham um painel explicativo ao lado (preenche a tela da TV) */
+  function vidsHtml(keys, sobre, cta) {
+    var vids = '<div class="vids">' + keys.map(videoHtml).join('') + '</div>';
+    if (!sobre) return vids;
+    return '<div class="vsplit n' + keys.length + '">' + vids + '<aside class="vside glass">' +
+      (sobre.eyebrow ? '<span class="eyebrow">' + sobre.eyebrow + '</span>' : '') + '<h3>' + sobre.t + '</h3>' +
+      (sobre.p ? '<p>' + sobre.p + '</p>' : '') +
+      (sobre.itens ? '<ul class="check-list">' + sobre.itens.map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') + '</ul>' : '') +
+      (cta || '') + '</aside></div>';
+  }
   /* pergunta ao Vimeo o tamanho do vídeo e ajusta a moldura (em pé, deitado, mais largo) + capa */
   function lerFormato(key) {
     if (FORMATO[key] || lerFormato[key]) return;
@@ -525,7 +535,7 @@
   function renderPremium() {
     var M = PREMIUM, el = $('#s-premium');
     var painel = {};
-    painel.pgeral = (M.videos ? '<div class="sec-head"><span class="eyebrow">Assista</span><h2>Conheça o TEME Premium</h2></div><div class="vids block">' + M.videos.map(videoHtml).join('') + '</div>' : '') +
+    painel.pgeral = (M.videos ? '<div class="sec-head"><span class="eyebrow">Assista</span><h2>Conheça o TEME Premium</h2></div><div class="block">' + vidsHtml(M.videos, M.videosSobre, btnWhats('premium', M.whatsMsg, 'Quero minha vaga na ' + M.turma, 'btn-gold')) + '</div>' : '') +
       '<div class="sec-head"><span class="eyebrow">Por que o Premium</span><h2>Uma jornada, dois resultados</h2><p>' + M.porque + '</p></div>' +
       '<div class="two block">' + M.resultados.map(function (r) {
         return '<div class="feat glass"><div class="ic">' + ic(r.ic) + '</div><h3>' + r.t + '</h3><p>' + r.p + '</p></div>';
@@ -533,7 +543,7 @@
       '<div class="block"><h3>O que está incluído</h3><div class="feat-grid four">' + M.inclui.map(function (f) {
         return '<div class="feat glass' + (f.bonus ? ' bonus' : '') + '"><div class="ic">' + ic(f.ic) + '</div><h3>' + f.t + '</h3><p>' + f.p + '</p></div>';
       }).join('') + '</div></div>' +
-      '<div class="diploma-row glass"><div class="diploma"><span class="dp-seal">' + ic('award') + '</span><span class="dp-t">Certificado de</span><b class="dp-h">Pós-graduação</b><span class="dp-line"></span><span class="dp-sm">Medicina de Emergência · Turma 01 · 2027</span></div>' +
+      '<div class="diploma-row glass"><div class="diploma"><span class="dp-seal">' + ic('award') + '</span><span class="dp-t">Certificado de</span><b class="dp-h">Pós-graduação</b><span class="dp-line"></span><span class="dp-sm">Medicina de Emergência · ' + M.turma + ' · 2027</span></div>' +
         '<div><h3>Você termina com o título no horizonte e a pós no currículo</h3><p>' + M.certificado + '</p>' + btnWhats('premium', M.whatsMsg, 'Quero minha vaga no Premium', 'btn-gold') + '</div></div>';
     painel.jornada = '<div class="sec-head"><span class="eyebrow">Como funciona</span><h2>A sua jornada até o título</h2></div>' +
       '<div class="phases">' + M.fases.map(function (f, n) {
@@ -541,7 +551,7 @@
           (f.chips ? '<div class="chips">' + f.chips.map(function (c) { return '<span>' + c + '</span>'; }).join('') + '</div>' : '') +
           (f.itens ? '<ul class="check-list">' + f.itens.map(function (c) { return '<li>' + ic('check') + c + '</li>'; }).join('') + '</ul>' : '') + '</div>';
       }).join('') + '</div><p class="p-note">' + M.notaFases + '</p>';
-    painel.presencial = '<div class="sec-head"><span class="eyebrow">Programação presencial · Calendário 2027</span><h2>6 encontros presenciais em São Paulo</h2><p>Imersões práticas com simulação realística, procedimentos e contato direto com professores titulados. Sempre em fins de semana, de sexta a domingo.</p></div>' +
+    painel.presencial = '<div class="sec-head"><span class="eyebrow">Programação presencial · Calendário 2027</span><h2>6 encontros presenciais em São Paulo · ' + M.turma + '</h2><p>Imersões práticas com simulação realística, procedimentos e contato direto com professores titulados. Sempre em fins de semana, de sexta a domingo.</p></div>' +
       '<div class="meets">' + M.encontros.map(function (e, n) {
         return '<div class="meet glass"><span class="mt-n">' + (n + 1) + '</span><div><h4>' + e.t + '</h4><span>' + e.d + '</span></div></div>';
       }).join('') + '</div>' +
@@ -552,14 +562,16 @@
 
     var abas = ['pgeral', 'jornada', 'presencial'];
     el.innerHTML = '<div class="container">' + voltar() +
-      heroHtml({ eyebrow: 'Emergency Talks · Turma 01 · 2027', titulo: 'TEME <span class="accent">Premium</span>',
+      '<div class="turma-status"><span class="ts-off">Turma 01 · completa</span><span class="ts-on"><i></i>Vagas abertas · ' + M.turma + '</span></div>' +
+      heroHtml({ eyebrow: 'Emergency Talks · ' + M.turma + ' · 2027', titulo: 'TEME <span class="accent">Premium</span>',
         lead: M.lead, stats: M.stats,
-        cta: btnWhats('premium', M.whatsMsg, 'Quero minha vaga', 'btn-gold') + '<button class="btn btn-glass" data-goto="presencial">' + ic('cal') + ' Ver encontros</button>',
-        nota: 'Vagas limitadas pela capacidade dos encontros presenciais.',
+        cta: btnWhats('premium', M.whatsMsg, 'Quero minha vaga na ' + M.turma, 'btn-gold') + '<button class="btn btn-glass" data-goto="presencial">' + ic('cal') + ' Ver encontros</button>',
+        nota: 'Turma 01 completa. Vagas limitadas para a ' + M.turma + '.',
         foto: 'img/premium.jpg', logo: 'img/logo-emergency.png', fotoCap: 'Preparação para o TEME + Pós-graduação' }) +
       tabsHtml(abas) +
       abas.map(function (k) { return '<div class="panel" data-panel="' + k + '">' + painel[k] + '</div>'; }).join('') +
       '</div>';
+    ligarVideos(el);
     wireTabs(el, {});
   }
 
@@ -583,7 +595,7 @@
           return '<li class="' + (pausa ? 'pause' : '') + '"><time>' + g[0] + '</time><span>' + g[1] + '</span></li>';
         }).join('') + '</ul></div>';
       }).join('') + '</div>';
-    painel.midia = midiaHtml('Veja como é o The Big Pocus', 'Vídeos e fotos da última edição. Toque numa foto para ampliar.', G.videos);
+    painel.midia = midiaHtml('Veja como é o The Big Pocus', 'Vídeos e fotos da última edição. Toque numa foto para ampliar.', G.videos, G.videosSobre, btnWhats('bigpocus', G.whatsMsg, 'Quero me inscrever'));
 
     var abas = ['midia', 'curso', 'programacao'];
     el.innerHTML = '<div class="container">' + voltar() +
@@ -602,9 +614,9 @@
 
   /* aba "Fotos e vídeos" (Revisões e The Big Pocus) */
   function btnMidia() { return '<button class="btn btn-gold" data-goto="midia">' + ic('image') + ' Ver fotos e vídeos</button>'; }
-  function midiaHtml(titulo, sub, videos) {
+  function midiaHtml(titulo, sub, videos, sobre, cta) {
     return '<div class="sec-head"><span class="eyebrow">Fotos e vídeos</span><h2>' + titulo + '</h2><p>' + sub + '</p></div>' +
-      '<div class="block"><h3>' + (videos.length > 1 ? 'Vídeos' : 'Vídeo') + '</h3><div class="vids">' + videos.map(videoHtml).join('') + '</div></div>' +
+      '<div class="block"><h3>' + (videos.length > 1 ? 'Vídeos' : 'Vídeo') + '</h3>' + vidsHtml(videos, sobre, cta) + '</div>' +
       '<div class="block"><h3>Fotos</h3><div data-car></div></div>';
   }
 
@@ -697,14 +709,14 @@
     painel.pratica = '<div class="sec-head"><span class="eyebrow">2ª fase · prova prática</span><h2>Treine como se estivesse diante da banca</h2><p>Simulação presencial no formato real da prova prática da ABRAMEDE, com professores titulados avaliando cada estação.</p></div>' +
       '<div class="rv-stats">' + pr.stats.map(function (s) { return '<div class="p-stat"><b>' + s.n + '</b><span>' + s.t + '</span></div>'; }).join('') + '</div>' +
       '<div class="block"><h3>A dinâmica em 3 movimentos</h3><div class="steps">' + pr.passos.map(function (p, n) { return '<div class="step glass"><span class="sn">0' + (n + 1) + '</span><h4>' + p.t + '</h4><p>' + p.p + '</p></div>'; }).join('') + '</div></div>' +
-      (pr.videos ? '<div class="block"><h3>Veja como é a Revisão Prática</h3><div class="vids">' + pr.videos.map(videoHtml).join('') + '</div></div>' : '') +
+      (pr.videos ? '<div class="block"><h3>Veja como é a Revisão Prática</h3>' + vidsHtml(pr.videos, pr.videosSobre) + '</div>' : '') +
       '<div class="two block"><div><h3 style="font-size:1.5rem;margin-bottom:14px">O que está incluso</h3><ul class="check-list">' + pr.inclui.map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') + '</ul></div>' +
         '<div><h3 style="font-size:1.5rem;margin-bottom:14px">O que o debriefing aponta</h3><div class="chips" style="margin-bottom:18px">' + pr.debrief.map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>' +
         '<div class="rv-mosaic"><img src="img/pratica-4.jpg" alt="Treino na Revisão Prática" loading="lazy" data-lb="8" /><img src="img/pratica-5.jpg" alt="Debriefing" loading="lazy" data-lb="8" /><img src="img/pratica-1.jpg" alt="Via aérea" loading="lazy" data-lb="0" /></div></div></div>' +
       '<p class="p-note">' + pr.nota + '</p>';
     painel.teorica = '<div class="sec-head"><span class="eyebrow">1ª fase · prova teórica</span><h2>Revise o que cai na teórica</h2><p>' + te.texto + '</p></div>' +
       '<div class="rv-stats" style="grid-template-columns:repeat(3,1fr)">' + te.stats.map(function (s) { return '<div class="p-stat"><b>' + s.n + '</b><span>' + s.t + '</span></div>'; }).join('') + '</div>' +
-      (te.video ? '<div class="block"><h3>Como foi a Revisão Teórica 2026</h3><div class="vids">' + videoHtml(te.video) + '</div></div>' : '') +
+      (te.video ? '<div class="block"><h3>Como foi a Revisão Teórica 2026</h3>' + vidsHtml([te.video], te.videoSobre) + '</div>' : '') +
       '<div class="two block"><ul class="check-list">' + te.inclui.map(function (t) { return '<li>' + ic('check') + t + '</li>'; }).join('') + '</ul>' +
         '<div class="glass" style="padding:24px"><h3 style="font-size:1.5rem;margin-bottom:8px">Edição 2027</h3><p style="color:var(--gray-light);margin-bottom:18px">Datas, local e formato da próxima turma serão divulgados em breve. Deixe seu contato com a nossa central para ser avisado(a) primeiro.</p>' +
         btnWhats('revisoes', R.whatsMsg, 'Quero ser avisado(a)') + '</div></div>';
