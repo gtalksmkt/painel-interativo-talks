@@ -829,7 +829,7 @@
       setTimeout(function () { form.nome.focus(); }, 80);
     }
     function fechar() { modal.classList.remove('on'); }
-    $('#promo').addEventListener('click', abrir);
+    if ($('#promo')) $('#promo').addEventListener('click', abrir);
     $('#cadClose').addEventListener('click', fechar);
     $('#cadDone').addEventListener('click', function () { form.reset(); fechar(); });
     modal.addEventListener('click', function (e) { if (e.target === modal) fechar(); });

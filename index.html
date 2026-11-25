@@ -31,7 +31,7 @@
 
   --font-head:'Barlow Condensed',-apple-system,BlinkMacSystemFont,sans-serif;
   --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
-  --maxw:1240px;--radius:22px;--hdr:68px;--promo:46px;--top:calc(var(--hdr) + var(--promo));
+  --maxw:1240px;--radius:22px;--hdr:68px;--promo:0px;--top:calc(var(--hdr) + var(--promo));
   --ease:cubic-bezier(.22,.61,.36,1);
   --spring:cubic-bezier(.34,1.56,.64,1);
 }
@@ -860,7 +860,7 @@ body[data-route="premio"] .admin-gear{display:flex}
   .rv-stats{grid-template-columns:1fr 1fr}
 }
 @media(max-width:640px){
-  :root{--hdr:60px;--promo:42px}
+  :root{--hdr:60px;--promo:0px}
   .brand{gap:10px}
   .brand-logo{height:28px}
   .brand-tag{font-size:.5rem;letter-spacing:1.6px;padding-left:10px}
@@ -988,12 +988,6 @@ body[data-route="premio"] .admin-gear{display:flex}
   </div>
 </header>
 
-<!-- Faixa de cadastro (abaixo do topo, em todas as telas) -->
-<button class="promo" id="promo" type="button" aria-haspopup="dialog">
-  <span class="promo-bag" data-ecobag aria-hidden="true"></span>
-  <span class="promo-tx"><b>Cadastre-se aqui</b> e ganhe <em>um curso + ecobag</em></span>
-  <span class="promo-go">Quero ganhar <svg class="i"><use href="#i-arrow"/></svg></span>
-</button>
 
 <main id="app">
 
@@ -1275,9 +1269,9 @@ body[data-route="premio"] .admin-gear{display:flex}
 <div class="toast" id="toast" role="status"></div>
 
 <!-- ?v= força o navegador a baixar a versão nova dos scripts junto com esta página; troque a cada publicação -->
-<script src="js/dados.js?v=20261125a"></script>
-<script src="js/app.js?v=20261125a"></script>
-<script src="js/roleta.js?v=20261125a"></script>
+<script src="js/dados.js?v=20261125b"></script>
+<script src="js/app.js?v=20261125b"></script>
+<script src="js/roleta.js?v=20261125b"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer onload="window.initQR && window.initQR()"></script>
 </body>
 </html>
