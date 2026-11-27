@@ -405,17 +405,14 @@ var REVISOES = {
    (Os dois contam os giros guardados neste aparelho: "Zerar histórico" na engrenagem zera a contagem.)
    ------------------------------------------------------------------ */
 var PREMIOS = {
-  m6:     { nome: '6 meses de Atualiza Talks', curto: '6 MESES', sub: 'PRÊMIO MÁXIMO',  tipo: 'assinatura', cor: ['#FFE9A8', '#C8922F'], txt: '#1a1205', ico: 'cal', n: '6', max: true, porDia: 1 },
-  copo:   { nome: 'Copo',                      curto: 'COPO',    sub: 'BRINDE TALKS',   tipo: 'brinde',     cor: ['#FFFFFF', '#CFD1D8'], txt: '#0a0a0c', ico: 'copo', estoque: 20 },
-  m1:     { nome: '1 mês de Atualiza Talks',   curto: '1 MÊS',   sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#FF3A49', '#B70412'], txt: '#FFFFFF', ico: 'cal', n: '1' },
-  camisa: { nome: 'Camisa',                    curto: 'CAMISA',  sub: 'BRINDE TALKS',   tipo: 'brinde',     cor: ['#2a2a31', '#111115'], txt: '#FFFFFF', ico: 'camisa', estoque: 21 },
-  m4:     { nome: '4 meses de Atualiza Talks', curto: '4 MESES', sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#9E0A16', '#4f0309'], txt: '#FFFFFF', ico: 'cal', n: '4' },
-  casaco: { nome: 'Casaco',                    curto: 'CASACO',  sub: 'BRINDE TALKS',   tipo: 'brinde',     cor: ['#FFFFFF', '#CFD1D8'], txt: '#0a0a0c', ico: 'casaco', estoque: 1 },
-  m2:     { nome: '2 meses de Atualiza Talks', curto: '2 MESES', sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#E8303F', '#8f0b16'], txt: '#FFFFFF', ico: 'cal', n: '2' },
-  m3:     { nome: '3 meses de Atualiza Talks', curto: '3 MESES', sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#141418', '#050506'], txt: '#F5C451', ico: 'cal', n: '3' }
+  m6: { nome: '6 meses de Atualiza Talks', curto: '6 MESES', sub: 'PRÊMIO MÁXIMO',  tipo: 'assinatura', cor: ['#FFE9A8', '#C8922F'], txt: '#1a1205', ico: 'cal', n: '6', max: true, porDia: 1 },
+  m1: { nome: '1 mês de Atualiza Talks',   curto: '1 MÊS',   sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#FF3A49', '#B70412'], txt: '#FFFFFF', ico: 'cal', n: '1', porDia: 0 },
+  m4: { nome: '4 meses de Atualiza Talks', curto: '4 MESES', sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#9E0A16', '#4f0309'], txt: '#FFFFFF', ico: 'cal', n: '4' },
+  m2: { nome: '2 meses de Atualiza Talks', curto: '2 MESES', sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#E8303F', '#8f0b16'], txt: '#FFFFFF', ico: 'cal', n: '2' },
+  m3: { nome: '3 meses de Atualiza Talks', curto: '3 MESES', sub: 'ATUALIZA TALKS', tipo: 'assinatura', cor: ['#141418', '#050506'], txt: '#F5C451', ico: 'cal', n: '3' }
 };
 /* ordem das fatias, no sentido horário a partir do ponteiro (uma fatia por prêmio) */
-var FATIAS = ['m6', 'copo', 'm1', 'camisa', 'm4', 'casaco', 'm2', 'm3'];
+var FATIAS = ['m6', 'm1', 'm4', 'm2', 'm3'];
 /* PIN da área da equipe (engrenagem no canto da tela da roleta) */
 var ADMIN_PIN = '2027';
 
