@@ -347,7 +347,7 @@
     var vistos = {};
     $('#legend').innerHTML = FATIAS.filter(function (k) { if (vistos[k] || !peso(k)) return false; vistos[k] = 1; return true; })
       .sort(function (a, b) { return (PREMIOS[b].max ? 1 : 0) - (PREMIOS[a].max ? 1 : 0); })
-      .map(function (k) { var P = PREMIOS[k]; return '<span class="' + (P.max ? 'top' : '') + '"><i style="background:linear-gradient(135deg,' + P.cor[0] + ',' + P.cor[1] + ')"></i>' + P.nome + (P.max ? ' · prêmio máximo' : '') + (P.porDia ? ' · ' + P.porDia + ' por dia' : '') + '</span>'; }).join('');
+      .map(function (k) { var P = PREMIOS[k]; return '<span class="' + (P.max ? 'top' : '') + '"><i style="background:linear-gradient(135deg,' + P.cor[0] + ',' + P.cor[1] + ')"></i>' + P.nome + (P.max ? ' · prêmio máximo' : '') + '</span>'; }).join('');
   }
 
   /* mini roleta da página inicial */
