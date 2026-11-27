@@ -399,7 +399,8 @@ var REVISOES = {
 /* ------------------------------------------------------------------
    ROLETA · prêmios
    Todas as fatias têm o mesmo tamanho e a mesma chance.
-   porDia  = quantas vezes o prêmio pode sair por dia neste aparelho.
+   porDia  = quantas vezes o prêmio pode sair por dia neste aparelho (0 = não sai hoje,
+             mas a fatia continua na roda — o participante não percebe).
    estoque = quantas unidades existem; quando acabam, a roleta não para mais nele.
    (Os dois contam os giros guardados neste aparelho: "Zerar histórico" na engrenagem zera a contagem.)
    ------------------------------------------------------------------ */

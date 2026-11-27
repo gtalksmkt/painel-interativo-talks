@@ -217,9 +217,10 @@
   function fatiaEm(ang) { var p = ((-ang % 360) + 360) % 360; for (var i = 0; i < fatias.length; i++) if (p >= fatias[i].a0 && p < fatias[i].a1) return i; return fatias.length - 1; }
   function chutar() { pointer.classList.remove('kick'); void pointer.offsetWidth; pointer.classList.add('kick'); }
   /* prêmio com porDia (6 meses = 1 por dia) só sai enquanto não bateu o limite de hoje neste aparelho;
-     o estoque já tira a fatia da roleta quando acaba (peso) */
+     o estoque já tira a fatia da roleta quando acaba (peso);
+     porDia: 0 = o prêmio NÃO sai hoje, mas a fatia continua na roda (o sorteio nunca para nela) */
   function podeSairHoje(k) {
-    var lim = PREMIOS[k].porDia; if (!lim) return true;
+    var lim = PREMIOS[k].porDia; if (lim == null) return true; if (lim === 0) return false;
     var hoje = new Date().toDateString();
     return ler(K_HIST, []).filter(function (h) { return h.k === k && new Date(h.ts).toDateString() === hoje; }).length < lim;
   }
